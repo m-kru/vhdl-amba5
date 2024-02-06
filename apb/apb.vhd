@@ -1,2 +1,78 @@
 library ieee;
    use ieee.std_logic_1164.all;
+   use ieee.numeric_std.all;
+
+-- apb package contains types and subprograms useful for designs with Advanced Peripheral Bus (APB).
+package apb is
+
+   -- protection_t is used to provide protection signaling
+   -- required for protection unit support.
+   type protection_t is record
+      data_instruction  : std_logic; -- Bit 2
+      secure_non_secure : std_logic; -- Bit 1
+      normal_privileged : std_logic; -- Bit 0
+   end record;
+
+   -- to_protection converts 3-bit std_logic_vector to protection_t.
+   function to_protection(slv : std_logic_vector(2 downto 0)) return protection_t;
+   -- to_slv converts protection_t to 3-bit std_logic_vector.
+   function to_slv(prot : protection_t) return std_logic_vector(2 downto 0);
+   -- is_data returns true if prot represents data access.
+   function is_data(prot : protection_t) return boolean;
+   -- is_instruction returns true if prot represents instruction access.
+   function is_instruction(prot : protection_t) return boolean;
+   -- is_secure returns true if prot represents secure access.
+   function is_secure(prot : protection_t) return boolean;
+   -- is_non_secure returns true if prot represents non-secure access.
+   function is_non_secure(prot : protection_t) return boolean;
+   -- is_normal returns true if prot represents normal access.
+   function is_normal(prot : protection_t) return boolean;
+   -- is_normal returns true if prot represents privileged access.
+   function is_privileged(prot : protection_t) return boolean;
+
+   -- signals_t record represents APB signaling.
+   --
+   -- The APB Specification defines some signals to be optional and have
+   -- user-defined widths. However, the signals_t record contains all possible
+   -- signals with a fixed maximum width. This is because such an approach is easier
+   -- to maintain and work with. There is no need to use unconstrained or generic
+   -- types everywhere. EDA tools are good at optimizing unused signals and
+   -- logic, so this approach costs the user nothing in the final design.
+   type signals_t is record
+      addr   : unsigned(31 downto 0);
+      prot   : protection_t;
+      nse    : std_logic;
+      selx   : std_logic;
+      enable : std_logic;
+      write  : std_logic;
+      wdata  : std_logic_vector(31 downto 0);
+      strb   : std_logic_vector(3 downto 0);
+      ready  : std_logic;
+      rdata  : std_logic_vector(31 downto 0);
+      slverr : std_logic;
+      wakeup : std_logic;
+      auser  : std_logic_vector(127 downto 0);
+      wuser  : std_logic_vector(15 downto 0);
+      ruser  : std_logic_vector(15 downto 0);
+      buser  : std_logic_vector(15 downto 0);
+   end record;
+
+   -- is_data returns true transaction is data transaction.
+   function is_data(sig : signals_t) return boolean;
+   -- is_data returns true transaction is instruction transaction.
+   function is_instruction(sig : signals_t) return boolean;
+   -- is_secure returns true if transaction is secure transaction.
+   function is_secure(sig : signals_t) return boolean;
+   -- is_non_secure returns true if transaction is non-secure transaction.
+   function is_non_secure(sig : signals_t) return boolean;
+   -- is_normal returns true if transaction is normal transaction.
+   function is_normal(sig : signals_t) return boolean;
+   -- is_privileged returns true if transaction is privileged transaction.
+   function is_privileged(sig : signals_t) return boolean;
+
+end package;
+
+
+package body apb is
+
+end package body;
