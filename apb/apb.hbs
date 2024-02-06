@@ -1,5 +1,23 @@
 namespace eval vhdl::amba::apb {
-    namespace eval pkg {
-        hbs::Register
-    }
+	namespace eval pkg {
+		proc src {} {
+			hbs::SetLib "apb"
+			hbs::AddFile apb.vhd
+		}
+
+		proc _tb {top} {
+			hbs::SetTool "nvc"
+			hbs::SetTop $top
+			src
+			hbs::SetLib ""
+		}
+
+		# Testbench for protection_t functions.
+		proc tb-prot-funcs {} {
+			_tb "tb_prot_funcs"
+			hbs::AddFile tb/tb-prot-funcs.vhd
+			hbs::Run
+		}
+		hbs::Register
+	}
 }

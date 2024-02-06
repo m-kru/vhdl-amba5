@@ -16,7 +16,7 @@ package apb is
    -- to_protection converts 3-bit std_logic_vector to protection_t.
    function to_protection(slv : std_logic_vector(2 downto 0)) return protection_t;
    -- to_slv converts protection_t to 3-bit std_logic_vector.
-   function to_slv(prot : protection_t) return std_logic_vector(2 downto 0);
+   function to_slv(prot : protection_t) return std_logic_vector;
    -- is_data returns true if prot represents data access.
    function is_data(prot : protection_t) return boolean;
    -- is_instruction returns true if prot represents instruction access.
@@ -74,5 +74,45 @@ end package;
 
 
 package body apb is
+
+   --
+   -- protection_t functions
+   --
+
+   function to_protection(slv : std_logic_vector(2 downto 0)) return protection_t is
+      variable prot : protection_t;
+   begin
+      prot.data_instruction  := slv(2);
+      prot.secure_non_secure := slv(1);
+      prot.normal_privileged := slv(0);
+      return prot;
+   end function;
+
+   function to_slv(prot : protection_t) return std_logic_vector is
+      variable slv : std_logic_vector(2 downto 0);
+   begin
+      slv(2) := prot.data_instruction;
+      slv(1) := prot.secure_non_secure;
+      slv(0) := prot.normal_privileged;
+      return slv;
+   end function;
+
+   function is_data(prot : protection_t) return boolean is
+      begin return prot.data_instruction = '0'; end function;
+
+   function is_instruction(prot : protection_t) return boolean is
+      begin return prot.data_instruction = '1'; end function;
+
+   function is_secure(prot : protection_t) return boolean is
+      begin return prot.secure_non_secure = '0'; end function;
+
+   function is_non_secure(prot : protection_t) return boolean is
+      begin return prot.secure_non_secure = '1'; end function;
+
+   function is_normal(prot : protection_t) return boolean is
+      begin return prot.normal_privileged = '0'; end function;
+
+   function is_privileged(prot : protection_t) return boolean is
+      begin return prot.normal_privileged = '1'; end function;
 
 end package body;
