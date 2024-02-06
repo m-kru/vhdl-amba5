@@ -30,15 +30,15 @@ package apb is
    -- is_normal returns true if prot represents privileged access.
    function is_privileged(prot : protection_t) return boolean;
 
-   -- signals_t record represents APB signaling.
+   -- interface_t record represents APB interface signals.
    --
-   -- The APB Specification defines some signals to be optional and have
-   -- user-defined widths. However, the signals_t record contains all possible
+   -- The APB Specification defines some interface signals to be optional and have
+   -- user-defined widths. However, the interface_t record contains all possible
    -- signals with a fixed maximum width. This is because such an approach is easier
    -- to maintain and work with. There is no need to use unconstrained or generic
    -- types everywhere. EDA tools are good at optimizing unused signals and
    -- logic, so this approach costs the user nothing in the final design.
-   type signals_t is record
+   type interface_t is record
       addr   : unsigned(31 downto 0);
       prot   : protection_t;
       nse    : std_logic;
@@ -58,17 +58,38 @@ package apb is
    end record;
 
    -- is_data returns true transaction is data transaction.
-   function is_data(sig : signals_t) return boolean;
+   function is_data(iface : interface_t) return boolean;
    -- is_data returns true transaction is instruction transaction.
-   function is_instruction(sig : signals_t) return boolean;
+   function is_instruction(iface : interface_t) return boolean;
    -- is_secure returns true if transaction is secure transaction.
-   function is_secure(sig : signals_t) return boolean;
+   function is_secure(iface : interface_t) return boolean;
    -- is_non_secure returns true if transaction is non-secure transaction.
-   function is_non_secure(sig : signals_t) return boolean;
+   function is_non_secure(iface : interface_t) return boolean;
    -- is_normal returns true if transaction is normal transaction.
-   function is_normal(sig : signals_t) return boolean;
+   function is_normal(iface : interface_t) return boolean;
    -- is_privileged returns true if transaction is privileged transaction.
-   function is_privileged(sig : signals_t) return boolean;
+   function is_privileged(iface : interface_t) return boolean;
+
+   view requester_view of interface_t is
+      addr   : out;
+      prot   : out;
+      nse    : out;
+      selx   : out;
+      enable : out;
+      write  : out;
+      wdata  : out;
+      strb   : out;
+      ready  : in;
+      rdata  : in;
+      slverr : in;
+      wakeup : out;
+      auser  : out;
+      wuser  : out;
+      ruser  : in;
+      buser  : in;
+   end view;
+
+   alias completer_view is requester_view'converse;
 
 end package;
 
@@ -115,4 +136,26 @@ package body apb is
    function is_privileged(prot : protection_t) return boolean is
       begin return prot.normal_privileged = '1'; end function;
 
+   --
+   -- interface_t functions
+   --
+
+   function is_data(iface : interface_t) return boolean is
+      begin return is_data(iface.prot); end function;
+
+   function is_instruction(iface : interface_t) return boolean is
+      begin return is_instruction(iface.prot); end function;
+
+   function is_secure(iface : interface_t) return boolean is
+      begin return is_secure(iface.prot); end function;
+
+   function is_non_secure(iface : interface_t) return boolean is
+      begin return is_non_secure(iface.prot); end function;
+
+   function is_normal(iface : interface_t) return boolean is
+      begin return is_normal(iface.prot); end function;
+
+   function is_privileged(iface : interface_t) return boolean is
+      begin return is_privileged(iface.prot); end function;
+   
 end package body;
