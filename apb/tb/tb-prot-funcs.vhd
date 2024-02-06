@@ -2,7 +2,7 @@ library ieee;
    use ieee.std_logic_1164.all;
 
 library apb;
-   use apb.apb;
+   use apb.apb.all;
 
 entity tb_prot_funcs is
 end entity;
@@ -10,38 +10,46 @@ end entity;
 architecture test of tb_prot_funcs is
 begin
    main : process is
-      variable prot : apb.protection_t := ('0', '0', '0');
+      variable prot : protection_t := ('0', '0', '0');
    begin
-      assert apb.is_data(prot);
-      assert not apb.is_instruction(prot);
-      assert apb.is_secure(prot);
-      assert not apb.is_non_secure(prot);
-      assert apb.is_normal(prot);
-      assert not apb.is_privileged(prot);
+      report to_string(prot);
+      report to_debug(prot);
+      assert is_data(prot);
+      assert not is_instruction(prot);
+      assert is_secure(prot);
+      assert not is_non_secure(prot);
+      assert is_normal(prot);
+      assert not is_privileged(prot);
 
       prot.data_instruction := '1';
-      assert not apb.is_data(prot);
-      assert apb.is_instruction(prot);
-      assert apb.is_secure(prot);
-      assert not apb.is_non_secure(prot);
-      assert apb.is_normal(prot);
-      assert not apb.is_privileged(prot);
+      report to_string(prot);
+      report to_debug(prot);
+      assert not is_data(prot);
+      assert is_instruction(prot);
+      assert is_secure(prot);
+      assert not is_non_secure(prot);
+      assert is_normal(prot);
+      assert not is_privileged(prot);
 
       prot.secure_non_secure := '1';
-      assert not apb.is_data(prot);
-      assert apb.is_instruction(prot);
-      assert not apb.is_secure(prot);
-      assert apb.is_non_secure(prot);
-      assert apb.is_normal(prot);
-      assert not apb.is_privileged(prot);
+      report to_string(prot);
+      report to_debug(prot);
+      assert not is_data(prot);
+      assert is_instruction(prot);
+      assert not is_secure(prot);
+      assert is_non_secure(prot);
+      assert is_normal(prot);
+      assert not is_privileged(prot);
 
       prot.normal_privileged := '1';
-      assert not apb.is_data(prot);
-      assert apb.is_instruction(prot);
-      assert not apb.is_secure(prot);
-      assert apb.is_non_secure(prot);
-      assert not apb.is_normal(prot);
-      assert apb.is_privileged(prot);
+      report to_string(prot);
+      report to_debug(prot);
+      assert not is_data(prot);
+      assert is_instruction(prot);
+      assert not is_secure(prot);
+      assert is_non_secure(prot);
+      assert not is_normal(prot);
+      assert is_privileged(prot);
 
       std.env.finish;
    end process;

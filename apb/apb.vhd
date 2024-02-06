@@ -29,6 +29,10 @@ package apb is
    function is_normal(prot : protection_t) return boolean;
    -- is_normal returns true if prot represents privileged access.
    function is_privileged(prot : protection_t) return boolean;
+   -- to_string converts protection_t to string for printing.
+   function to_string(prot : protection_t) return string;
+   -- to_debug converts protection_t to string for pretty printing.
+   function to_debug(prot : protection_t) return string;
 
    -- interface_t record represents APB interface signals.
    --
@@ -135,6 +139,23 @@ package body apb is
 
    function is_privileged(prot : protection_t) return boolean is
       begin return prot.normal_privileged = '1'; end function;
+
+   function to_string(prot : protection_t) return string is
+   begin
+      return "('" &
+         to_string(prot.data_instruction) & "', '" &
+         to_string(prot.secure_non_secure) & "', '" &
+         to_string(prot.normal_privileged) & "')";
+   end function;
+
+   function to_debug(prot : protection_t) return string is
+   begin
+      return "(" & LF &
+         "   data_instruction => '" & to_string(prot.data_instruction) & "'," & LF &
+         "   secure_non_secure => '" & to_string(prot.secure_non_secure) & "'," & LF &
+         "   normal_privileged => '" & to_string(prot.normal_privileged) & "'" & LF &
+         ")";
+   end function;
 
    --
    -- interface_t functions
