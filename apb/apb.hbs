@@ -7,6 +7,7 @@ namespace eval vhdl::amba::apb {
 
 		proc _tb {top} {
 			hbs::SetTool "nvc"
+			hbs::SetPostElaborationCallback hbs::SetArgsPrefix "--messages=compact"
 			hbs::SetTop $top
 			src
 			hbs::SetLib ""
