@@ -2,6 +2,7 @@ namespace eval vhdl::amba::apb {
 	namespace eval pkg {
 		proc src {} {
 			hbs::SetLib "apb"
+			hbs::SetStd "2019"
 			hbs::AddFile apb.vhd
 		}
 
@@ -19,6 +20,16 @@ namespace eval vhdl::amba::apb {
 			hbs::AddFile tb/tb-prot-funcs.vhd
 			hbs::Run
 		}
+		hbs::Register
+	}
+
+	namespace eval checker {
+		proc src {} {
+			hbs::SetLib "apb"
+			hbs::SetStd "2019"
+			hbs::AddFile checker.vhd
+		}
+
 		hbs::Register
 	}
 }

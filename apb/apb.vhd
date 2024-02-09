@@ -5,6 +5,33 @@ library ieee;
 -- apb package contains types and subprograms useful for designs with Advanced Peripheral Bus (APB).
 package apb is
 
+   -- state_t is type represents operating states as defined in the specification.
+   -- The ACCESS state is is named ACCSS as "access" is VHDL keyword.
+   type state_t is (IDLE, SETUP, ACCSS);
+
+   type interface_errors_t is record
+      -- PSLVERR related
+      setup_entry : std_logic; -- Invalid SETUP state entry condition, PSELx = 1, but PENABLE = 1 instead of 0.
+      setup_stall : std_logic; -- Interface spent in SETUP state more than one clock cycle.
+      -- PWAKEUP related
+      wakeup_ready : std_logic; -- PWAKEUP was deasserted before PREADY assertion, when PWAKEUP and PSELx were high.
+   end record;
+
+   constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0');
+
+   -- interface_warnings_t represents scenarios not forbidden by the specification, but not recommended.
+   type interface_warnings_t is record
+      -- PSLVERR related
+      slverr_sel    : std_logic; -- PSLVERR high, but PSELx low.
+      slverr_enable : std_logic; -- PSLVERR high, but PENABLE low.
+      slverr_ready  : std_logic; -- PSLVERR high, but PREADY low.
+      -- PWAKEUP related
+      wakeup_selx        : std_logic; -- PSELx asserted, but PWAKEUP was low in the previous clock cycle.
+      wakeup_no_transfer : std_logic; -- PWAKEUP asserted and deasserted, but there were no transfer.
+   end record;
+
+   constant INTERFACE_WARNINGS_NONE : interface_warnings_t := ('0', '0', '0', '0', '0');
+
    -- protection_t is used to provide protection signaling
    -- required for protection unit support.
    type protection_t is record
