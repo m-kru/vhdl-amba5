@@ -4,8 +4,9 @@ library ieee;
 library work;
    use work.apb.all;
 
-
+-- PREFIX - optional prefix used in report messages.
 entity Checker is
+   generic (PREFIX : string := "apb: checker: ");
    port (
       clk_i      : in  std_logic;
       aresetn_i  : in  std_logic;
@@ -80,18 +81,29 @@ begin
             if iface_i.selx and iface_i.enable and iface_i.ready then
                state <= IDLE;
             end if;
+
+            if iface_i.addr /= prev_addr then
+               errors_o.addr_change <= '1';
+               report
+                  PREFIX & "addr change in ACCESS state, " & to_string(prev_addr) & " -> " & to_string(iface_i.addr)
+                  severity error;
+            end if;
+
          end case;
 
          if iface_i.slverr = '1' and iface_i.selx = '0' then
             warnings_o.slverr_sel <= '1';
+            report PREFIX & "slverr high, but selx low" severity warning;
          end if;
 
          if iface_i.slverr = '1' and iface_i.enable = '0' then
             warnings_o.slverr_enable <= '1';
+            report PREFIX & "slverr high, but enable low" severity warning;
          end if;
 
          if iface_i.slverr = '1' and iface_i.ready = '0' then
             warnings_o.slverr_ready <= '1';
+            report PREFIX & "slverr high, but ready low" severity warning;
          end if;
 
          if iface_i.selx = '1' and prev_wakeup = '0' then
@@ -103,6 +115,7 @@ begin
          end if;
          if iface_i.wakeup = '0' and prev_wakeup = '1' and awaiting_transfer then
             warnings_o.wakeup_no_transfer <= '1';
+            report PREFIX & "assert and deassert of wakeup without transfer" severity warning;
          end if;
 
       end if;
