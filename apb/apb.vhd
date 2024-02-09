@@ -15,9 +15,17 @@ package apb is
       setup_stall : std_logic; -- Interface spent in SETUP state more than one clock cycle.
       -- PWAKEUP related
       wakeup_ready : std_logic; -- PWAKEUP was deasserted before PREADY assertion, when PWAKEUP and PSELx were high.
+      -- Errors related to value change in the transition between SETUP and ACCESS state or between cycles in the ACCESS state.
+      addr_change  : std_logic;
+      prot_change  : std_logic;
+      write_change : std_logic;
+      wdata_change : std_logic;
+      strb_change  : std_logic;
+      auser_change : std_logic;
+      wuser_change : std_logic;
    end record;
 
-   constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0');
+   constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
    -- interface_warnings_t represents scenarios not forbidden by the specification, but not recommended.
    type interface_warnings_t is record

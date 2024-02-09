@@ -24,12 +24,27 @@ architecture Check of Checker is
    signal prev_wakeup : std_logic;
    signal awaiting_transfer : boolean;
 
+   signal prev_addr  : std_logic_vector(31 downto 0);
+   signal prev_prot  : protection_t;
+   signal prev_write : std_logic;
+   signal prev_wdata : std_logic_vector(31 downto 0);
+   signal prev_strb  : std_logic_vector(3 downto 0);
+   signal prev_auser : std_logic_vector(127 downto 0);
+   signal prev_wuser : std_logic_vector(15 downto 0);
+
 begin
 
    prev_iface_sampling : process (clk_i) is
    begin
       if rising_edge(clk_i) then
          prev_wakeup <= iface_i.wakeup;
+         prev_addr   <= iface_i.addr;
+         prev_prot   <= iface_i.prot;
+         prev_write  <= iface_i.write;
+         prev_wdata  <= iface_i.wdata;
+         prev_strb   <= iface_i.strb;
+         prev_auser  <= iface_i.auser;
+         prev_wuser  <= iface_i.wuser;
       end if;
    end process;
 
@@ -62,6 +77,9 @@ begin
                errors_o.setup_stall <= '1';
             end if;
          when ACCSS =>
+            if iface_i.selx and iface_i.enable and iface_i.ready then
+               state <= IDLE;
+            end if;
          end case;
 
          if iface_i.slverr = '1' and iface_i.selx = '0' then
