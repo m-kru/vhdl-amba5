@@ -149,6 +149,12 @@ package apb is
    -- is_privileged returns true if transaction is privileged transaction.
    function is_privileged(iface : interface_t) return boolean;
 
+   -- to_string converts interface_t to string for printing.
+   function to_string(iface : interface_t) return string;
+
+   -- to_debug converts interface_t to string for pretty printing.
+   function to_debug(iface : interface_t; indent_level : natural := 0) return string;
+
    view requester_view of interface_t is
       addr   : out;
       prot   : out;
@@ -233,7 +239,7 @@ package body apb is
       variable indent : string(0 to 3 * indent_level - 1) := (others => ' ');
    begin
       return "(" & LF &
-         indent & "   data_instruction => '"  & to_string(prot.data_instruction)  & "'," & LF &
+         indent & "   data_instruction  => '" & to_string(prot.data_instruction)  & "'," & LF &
          indent & "   secure_non_secure => '" & to_string(prot.secure_non_secure) & "'," & LF &
          indent & "   normal_privileged => '" & to_string(prot.normal_privileged) & "'"  & LF &
          indent & ")";
@@ -285,5 +291,50 @@ package body apb is
 
    function is_privileged(iface : interface_t) return boolean is
       begin return is_privileged(iface.prot); end function;
+
+   function to_string(iface : interface_t) return string is
+   begin
+      return "(" &
+         "addr => x"""  & to_hstring(iface.addr)   & """, " &
+         "prot => "     & to_string(iface.prot)    & ", "   &
+         "nse => '"     & to_string(iface.nse)     & "', "  &
+         "selx => '"    & to_string(iface.selx)    & "', "  &
+         "enable => '"  & to_string(iface.enable)  & "', "  &
+         "write => '"   & to_string(iface.write)   & "', "  &
+         "wdata => x""" & to_hstring(iface.wdata)  & """, " &
+         "strb => """   & to_string(iface.strb)    & """, " &
+         "ready => '"   & to_string(iface.ready)   & "', "  &
+         "rdata => x""" & to_hstring(iface.rdata)  & """, " &
+         "slverr => '"  & to_string(iface.slverr)  & "', "  &
+         "wakeup => '"  & to_string(iface.wakeup)  & "', "  &
+         "auser => x""" & to_hstring(iface.auser)  & """, " &
+         "wuser => x""" & to_hstring(iface.wuser)  & """, " &
+         "ruser => x""" & to_hstring(iface.ruser)  & """, " &
+         "buser => x""" & to_hstring(iface.buser)  & """)";
+   end function;
+
+
+   function to_debug(iface : interface_t; indent_level : natural := 0) return string is
+      variable indent : string(0 to 3 * indent_level - 1) := (others => ' ');
+   begin
+      return "(" & LF &
+         indent & "   addr => """    & to_string(iface.addr)   & """, " & LF &
+         indent & "   prot => "      & to_debug(iface.prot, indent_level + 1) & ", " & LF &
+         indent & "   nse    => '"   & to_string(iface.nse)    & "', "  & LF &
+         indent & "   selx   => '"   & to_string(iface.selx)   & "', "  & LF &
+         indent & "   enable => '"   & to_string(iface.enable) & "', "  & LF &
+         indent & "   write  => '"   & to_string(iface.write)  & "', "  & LF &
+         indent & "   wdata  => """  & to_string(iface.wdata)  & """, " & LF &
+         indent & "   strb   => """  & to_string(iface.strb)   & """, " & LF &
+         indent & "   ready  => '"   & to_string(iface.ready)  & "', "  & LF &
+         indent & "   rdata  => """  & to_string(iface.rdata)  & """, " & LF &
+         indent & "   slverr => '"   & to_string(iface.slverr) & "', "  & LF &
+         indent & "   wakeup => '"   & to_string(iface.wakeup) & "', "  & LF &
+         indent & "   auser  => """  & to_string(iface.auser)  & """, " & LF &
+         indent & "   wuser  => """  & to_string(iface.wuser)  & """, " & LF &
+         indent & "   ruser  => """  & to_string(iface.ruser)  & """, " & LF &
+         indent & "   buser  => """  & to_string(iface.buser)  & """"   & LF &
+         indent & ")";
+   end function;
 
 end package body;
