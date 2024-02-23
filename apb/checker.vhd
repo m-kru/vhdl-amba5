@@ -98,43 +98,50 @@ package body checker is
     if iface.addr /= ck.prev_iface.addr then
       ck.errors_o.addr_change := '1';
       report
-        ck.prefix & "addr change in " & whenn & ", " & to_string(ck.prev_iface.addr) & " -> " & to_string(iface.addr)
+        ck.prefix & "addr change in " & whenn & ", " & to_string(ck.prev_iface.addr) & " -> " & to_string(iface.addr) &
+        ", iface := " & to_debug(iface)
         severity error;
     end if;
     if iface.prot /= ck.prev_iface.prot then
-      ck.errors_o.addr_change := '1';
+      ck.errors_o.prot_change := '1';
       report
-        ck.prefix & "prot change in " & whenn & ", " & to_string(ck.prev_iface.prot) & " -> " & to_string(iface.prot)
+        ck.prefix & "prot change in " & whenn & ", " & to_string(ck.prev_iface.prot) & " -> " & to_string(iface.prot) &
+        ", iface := " & to_debug(iface)
         severity error;
     end if;
     if iface.write /= ck.prev_iface.write then
-      ck.errors_o.addr_change := '1';
+      ck.errors_o.write_change := '1';
       report
-        ck.prefix & "write change in " & whenn & ", " & to_string(ck.prev_iface.write) & " -> " & to_string(iface.write)
+        ck.prefix & "write change in " & whenn & ", '" & to_string(ck.prev_iface.write) & "' -> '" & to_string(iface.write) &
+        "', iface := " & to_debug(iface)
         severity error;
     end if;
     if iface.wdata /= ck.prev_iface.wdata then
-      ck.errors_o.addr_change := '1';
+      ck.errors_o.wdata_change := '1';
       report
-        ck.prefix & "wdata change in " & whenn & ", " & to_string(ck.prev_iface.wdata) & " -> " & to_string(iface.wdata)
+        ck.prefix & "wdata change in " & whenn & ", " & to_string(ck.prev_iface.wdata) & " -> " & to_string(iface.wdata) &
+        ", iface := " & to_debug(iface)
         severity error;
     end if;
     if iface.strb /= ck.prev_iface.strb then
-      ck.errors_o.addr_change := '1';
+      ck.errors_o.strb_change := '1';
       report
-        ck.prefix & "strb change in " & whenn & ", " & to_string(ck.prev_iface.strb) & " -> " & to_string(iface.strb)
+        ck.prefix & "strb change in " & whenn & ", """ & to_string(ck.prev_iface.strb) & """ -> """ & to_string(iface.strb) &
+        """, iface := " & to_debug(iface)
         severity error;
     end if;
     if iface.auser /= ck.prev_iface.auser then
-      ck.errors_o.addr_change := '1';
+      ck.errors_o.auser_change := '1';
       report
-        ck.prefix & "auser change in " & whenn & ", " & to_string(ck.prev_iface.auser) & " -> " & to_string(iface.auser)
+        ck.prefix & "auser change in " & whenn & ", """ & to_string(ck.prev_iface.auser) & """ -> """ & to_string(iface.auser) &
+        """, iface := " & to_debug(iface)
         severity error;
     end if;
     if iface.wuser /= ck.prev_iface.wuser then
-      ck.errors_o.addr_change := '1';
+      ck.errors_o.wuser_change := '1';
       report
-        ck.prefix & "wuser change in " & whenn & ", " & to_string(ck.prev_iface.wuser) & " -> " & to_string(iface.wuser)
+        ck.prefix & "wuser change in " & whenn & ", """ & to_string(ck.prev_iface.wuser) & """ -> """ & to_string(iface.wuser) &
+        """, iface := " & to_debug(iface)
         severity error;
     end if;
 
@@ -174,7 +181,7 @@ package body checker is
       end if;
     else
       ck.errors_o.setup_stall := '1';
-      report ck.prefix & "SETUP state stall" severity error;
+      report ck.prefix & "SETUP state stall, iface := " & to_debug(iface) severity error;
     end if;
 
     return ck;
@@ -189,6 +196,9 @@ package body checker is
     if iface.selx = '1' and iface.enable = '1' and iface.ready = '1' then
       ck.awaiting_transfer := false;
       ck.state := IDLE;
+    elsif iface.wakeup = '0' then
+      ck.errors_o.wakeup_ready := '1';
+      report ck.prefix & "wakeup deasserted before ready assertion, iface := " & to_debug(iface) severity error;
     end if;
 
     return ck;

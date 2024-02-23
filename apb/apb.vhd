@@ -10,6 +10,7 @@ package apb is
   type state_t is (IDLE, SETUP, ACCSS);
 
 
+  -- interface_errors_t represents scenarios defined as erroneous by the specification.
   type interface_errors_t is record
     -- PSLVERR related
     setup_entry : std_logic; -- Invalid SETUP state entry condition, PSELx = 1, but PENABLE = 1 instead of 0.
@@ -44,11 +45,11 @@ package apb is
   -- interface_warnings_t represents scenarios not forbidden by the specification, but not recommended.
   type interface_warnings_t is record
     -- PSLVERR related
-    slverr_selx  : std_logic; -- PSLVERR high, but PSELx low.
+    slverr_selx   : std_logic; -- PSLVERR high, but PSELx low.
     slverr_enable : std_logic; -- PSLVERR high, but PENABLE low.
     slverr_ready  : std_logic; -- PSLVERR high, but PREADY low.
     -- PWAKEUP related
-    wakeup_selx      : std_logic; -- PSELx asserted, but PWAKEUP was low in the previous clock cycle.
+    wakeup_selx        : std_logic; -- PSELx asserted, but PWAKEUP was low in the previous clock cycle.
     wakeup_no_transfer : std_logic; -- PWAKEUP asserted and deasserted, but there were no transfer.
   end record;
 
@@ -280,10 +281,10 @@ package body apb is
     variable indent : string(0 to 2 * indent_level - 1) := (others => ' ');
   begin
     return "(" & LF &
-      indent & "  slverr_selx  => '"  & to_string(warnings.slverr_selx)   & "', " & LF &
+      indent & "  slverr_selx   => '" & to_string(warnings.slverr_selx)   & "', " & LF &
       indent & "  slverr_enable => '" & to_string(warnings.slverr_enable) & "', " & LF &
       indent & "  slverr_ready  => '" & to_string(warnings.slverr_ready)  & "', " & LF &
-      indent & "  wakeup_selx  => '"  & to_string(warnings.wakeup_selx)   & "', " & LF &
+      indent & "  wakeup_selx   => '" & to_string(warnings.wakeup_selx)   & "', " & LF &
       indent & "  wakeup_no_transfer => '" & to_string(warnings.wakeup_no_transfer) & "'" & LF &
       indent & ")";
   end function;
@@ -427,12 +428,12 @@ package body apb is
     return "(" & LF &
       indent & "  addr => """   & to_string(iface.addr)   & """, " & LF &
       indent & "  prot => "     & to_debug(iface.prot, indent_level + 1) & ", " & LF &
-      indent & "  nse   => '"   & to_string(iface.nse)    & "', "  & LF &
-      indent & "  selx  => '"   & to_string(iface.selx)   & "', "  & LF &
+      indent & "  nse    => '"  & to_string(iface.nse)    & "', "  & LF &
+      indent & "  selx   => '"  & to_string(iface.selx)   & "', "  & LF &
       indent & "  enable => '"  & to_string(iface.enable) & "', "  & LF &
       indent & "  write  => '"  & to_string(iface.write)  & "', "  & LF &
       indent & "  wdata  => """ & to_string(iface.wdata)  & """, " & LF &
-      indent & "  strb  => """  & to_string(iface.strb)   & """, " & LF &
+      indent & "  strb   => """ & to_string(iface.strb)   & """, " & LF &
       indent & "  ready  => '"  & to_string(iface.ready)  & "', "  & LF &
       indent & "  rdata  => """ & to_string(iface.rdata)  & """, " & LF &
       indent & "  slverr => '"  & to_string(iface.slverr) & "', "  & LF &
