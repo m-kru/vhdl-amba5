@@ -48,6 +48,11 @@ package apb is
 
   constant INTERFACE_WARNINGS_NONE : interface_warnings_t := ('0', '0', '0', '0', '0');
 
+  -- init initializes protection_t with attributes set to given values.
+  function init(
+    slverr_selx, slverr_enable, slverr_ready, wakeup_selx, wakeup_no_transfer : std_logic := '0'
+  ) return interface_warnings_t;
+
   -- to_string converts interface_warnings_t to string for printing.
   function to_string(warnings : interface_warnings_t) return string;
 
@@ -232,6 +237,16 @@ package body apb is
   --
   -- interface_warnings_t
   --
+
+  function init(
+    slverr_selx, slverr_enable, slverr_ready, wakeup_selx, wakeup_no_transfer : std_logic := '0'
+  ) return interface_warnings_t is
+    constant warnings : interface_warnings_t := (
+      slverr_selx, slverr_enable, slverr_ready, wakeup_selx, wakeup_no_transfer
+    ); 
+  begin
+    return warnings;
+  end function;
 
   function to_string(warnings : interface_warnings_t) return string is
   begin
