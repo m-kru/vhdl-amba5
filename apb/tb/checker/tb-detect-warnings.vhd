@@ -115,6 +115,28 @@ begin
          slverr_selx => '0', slverr_enable => '0', slverr_ready => '0', wakeup_selx => '1', wakeup_no_transfer => '0'
       ) report to_debug(ck.warnings_o) severity failure;
 
+      --
+      -- wakeup_no_transfer warning test
+      --
+      iface := init;
+      wait for 1 us;
+      ck := reset(ck);
+
+      iface.wakeup := '1';
+      ck := clock(ck, iface);
+
+      assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
+      assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
+
+      iface.wakeup := '0';
+      wait for 1 ns;
+      ck := clock(ck, iface);
+
+      assert ck.errors_o = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
+      assert ck.warnings_o = (
+         slverr_selx => '0', slverr_enable => '0', slverr_ready => '0', wakeup_selx => '0', wakeup_no_transfer => '1'
+      ) report to_debug(ck.warnings_o) severity failure;
+
       wait;
    end process;
 
