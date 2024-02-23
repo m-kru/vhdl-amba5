@@ -28,6 +28,12 @@ package apb is
 
   constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
+  -- init initializes interface_errors_t with attributes set to given values.
+  function init(
+    setup_entry, setup_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
+    strb_change, auser_change, wuser_change : std_logic := '0'
+  ) return interface_errors_t;
+
   -- to_string converts interface_errors_t to string for printing.
   function to_string(errors : interface_errors_t) return string;
 
@@ -48,7 +54,7 @@ package apb is
 
   constant INTERFACE_WARNINGS_NONE : interface_warnings_t := ('0', '0', '0', '0', '0');
 
-  -- init initializes protection_t with attributes set to given values.
+  -- init initializes interface_warnings_t with attributes set to given values.
   function init(
     slverr_selx, slverr_enable, slverr_ready, wakeup_selx, wakeup_no_transfer : std_logic := '0'
   ) return interface_warnings_t;
@@ -201,6 +207,18 @@ package body apb is
   --
   -- interface_errors_t
   --
+
+  function init(
+    setup_entry, setup_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
+    strb_change, auser_change, wuser_change : std_logic := '0'
+  ) return interface_errors_t is
+    constant errors : interface_errors_t := (
+      setup_entry, setup_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
+      strb_change, auser_change, wuser_change
+    );
+  begin
+    return errors;
+  end function;
 
   function to_string(errors : interface_errors_t) return string is
   begin
