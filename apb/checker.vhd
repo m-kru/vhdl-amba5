@@ -27,24 +27,7 @@ package checker is
     errors_o   => INTERFACE_ERRORS_NONE,
     warnings_o => INTERFACE_WARNINGS_NONE,
     state      => ACCSS,
-    prev_iface => (
-      addr   => (others => '0'),
-      prot   => ('0', '0', '0'),
-      nse    => '0',
-      selx   => '1',
-      enable => '1',
-      write  => '0',
-      wdata  => (others => '0'),
-      strb   => "1111",
-      ready  => '0',
-      rdata  => (others => '0'),
-      slverr => '0',
-      wakeup => '1',
-      auser  => (others => '0'),
-      wuser  => (others => '0'),
-      ruser  => (others => '0'),
-      buser  => (others => '0')
-    ),
+    prev_iface => init(selx => '1', enable => '1', strb => "1111", wakeup => '1'),
     awaiting_transfer => true
   );
 
