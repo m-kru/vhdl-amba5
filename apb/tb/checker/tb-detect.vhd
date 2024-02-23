@@ -28,7 +28,7 @@ begin
       iface.ready  := '1';
       ck := clock(ck, iface);
 
-      assert ck.errors_o = INTERFACE_ERRORS_NONE severity failure;
+      assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
       assert ck.warnings_o = (
          slverr_selx => '1', slverr_enable => '0', slverr_ready => '0', wakeup_selx => '0', wakeup_no_transfer => '0'
       ) report to_debug(ck.warnings_o) severity failure;
@@ -37,7 +37,7 @@ begin
       wait for 1 ns;
       ck := clock(ck, iface);
 
-      assert ck.errors_o = INTERFACE_ERRORS_NONE severity failure;
+      assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
       assert ck.warnings_o = (
          slverr_selx => '1', slverr_enable => '0', slverr_ready => '0', wakeup_selx => '0', wakeup_no_transfer => '0'
       ) report to_debug(ck.warnings_o) severity failure;
@@ -45,7 +45,7 @@ begin
       wait for 1 ns;
       ck := clock(ck, iface, clear => '1');
 
-      assert ck.errors_o   = INTERFACE_ERRORS_NONE   severity failure;
+      assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
       assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
 
       ck := reset(ck);
@@ -62,7 +62,7 @@ begin
       iface.selx := '1';
       ck := clock(ck, iface);
 
-      assert ck.errors_o = INTERFACE_ERRORS_NONE severity failure;
+      assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
       assert ck.warnings_o = (
          slverr_selx => '0', slverr_enable => '1', slverr_ready => '0', wakeup_selx => '0', wakeup_no_transfer => '0'
       ) report to_debug(ck.warnings_o) severity failure;
@@ -71,7 +71,7 @@ begin
       wait for 1 ns;
       ck := reset(ck);
 
-      assert ck.errors_o   = INTERFACE_ERRORS_NONE  severity failure;
+      assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
       assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
 
       ck := reset(ck);
@@ -84,13 +84,13 @@ begin
       iface := ck.prev_iface;
       ck := clock(ck, iface);
 
-      assert ck.errors_o   = INTERFACE_ERRORS_NONE   severity failure;
+      assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
       assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
 
       iface.slverr := '1';
       ck := clock(ck, iface);
 
-      assert ck.errors_o   = INTERFACE_ERRORS_NONE   severity failure;
+      assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
       assert ck.warnings_o = (
          slverr_selx => '0', slverr_enable => '0', slverr_ready => '1', wakeup_selx => '0', wakeup_no_transfer => '0'
       ) report to_debug(ck.warnings_o) severity failure;

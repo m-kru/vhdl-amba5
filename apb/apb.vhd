@@ -28,6 +28,12 @@ package apb is
 
    constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
+   -- to_string converts interface_errors_t to string for printing.
+   function to_string(errors : interface_errors_t) return string;
+
+   -- to_debug converts interface_errors_t to string for pretty printing.
+   function to_debug(errors : interface_errors_t; indent_level : natural := 0) return string;
+
 
    -- interface_warnings_t represents scenarios not forbidden by the specification, but not recommended.
    type interface_warnings_t is record
@@ -188,6 +194,42 @@ end package;
 package body apb is
 
    --
+   -- interface_errors_t
+   --
+
+   function to_string(errors : interface_errors_t) return string is
+   begin
+      return "(" &
+         "setup_entry => '"  & to_string(errors.setup_entry)  & "', " &
+         "setup_stall => '"  & to_string(errors.setup_stall)  & "', " &
+         "wakeup_ready => '" & to_string(errors.wakeup_ready) & "', " &
+         "addr_change => '"  & to_string(errors.addr_change)  & "', " &
+         "prot_change => '"  & to_string(errors.prot_change)  & "', " &
+         "write_change => '" & to_string(errors.write_change) & "', " &
+         "wdata_change => '" & to_string(errors.wdata_change) & "', " &
+         "strb_change => '"  & to_string(errors.strb_change)  & "', " &
+         "auser_change => '" & to_string(errors.auser_change) & "', " &
+         "wuser_change => '" & to_string(errors.wuser_change) & "')";
+   end function;
+
+   function to_debug(errors : interface_errors_t; indent_level : natural := 0) return string is
+      variable indent : string(0 to 3 * indent_level - 1) := (others => ' ');
+   begin
+      return "(" & LF &
+         indent & "   setup_entry  => '"  & to_string(errors.setup_entry)  & "'," & LF &
+         indent & "   setup_stall  => '"  & to_string(errors.setup_stall)  & "'," & LF &
+         indent & "   wakeup_ready => '" & to_string(errors.wakeup_ready) & "'," & LF &
+         indent & "   addr_change  => '"  & to_string(errors.addr_change)  & "'," & LF &
+         indent & "   prot_change  => '"  & to_string(errors.prot_change)  & "'," & LF &
+         indent & "   write_change => '" & to_string(errors.write_change) & "'," & LF &
+         indent & "   wdata_change => '" & to_string(errors.wdata_change) & "'," & LF &
+         indent & "   strb_change  => '"  & to_string(errors.strb_change)  & "'," & LF &
+         indent & "   auser_change => '" & to_string(errors.auser_change) & "'," & LF &
+         indent & "   wuser_change => '" & to_string(errors.wuser_change) & "'"  & LF &
+         indent & ")";
+   end function;
+
+   --
    -- interface_warnings_t
    --
 
@@ -205,7 +247,7 @@ package body apb is
       variable indent : string(0 to 3 * indent_level - 1) := (others => ' ');
    begin
       return "(" & LF &
-         indent & "   slverr_selx   => '"  & to_string(warnings.slverr_selx)  & "', " & LF &
+         indent & "   slverr_selx   => '" & to_string(warnings.slverr_selx)  & "', " & LF &
          indent & "   slverr_enable => '" & to_string(warnings.slverr_enable) & "', " & LF &
          indent & "   slverr_ready  => '" & to_string(warnings.slverr_ready) & "', " & LF &
          indent & "   wakeup_selx   => '" & to_string(warnings.wakeup_selx) & "', " & LF &
