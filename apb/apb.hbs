@@ -43,6 +43,13 @@ namespace eval vhdl::amba::apb {
 		proc tb-detect-warnings {} {
 			_tb "tb_detect_warnings"
 			hbs::AddFile tb/checker/tb-detect-warnings.vhd
+			hbs::Run
+		}
+
+		# Testbench for errors detection logic.
+		proc tb-detect-errors {} {
+			_tb "tb_detect_errors"
+			hbs::AddFile tb/checker/tb-detect-errors.vhd
 			hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=failure"
 			hbs::Run
 		}
