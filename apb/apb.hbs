@@ -39,10 +39,10 @@ namespace eval vhdl::amba::apb {
 			hbs::SetLib ""
 		}
 
-		# Testbench for detection logic.
-		proc tb-detect {} {
-			_tb "tb_detect"
-			hbs::AddFile tb/checker/tb-detect.vhd
+		# Testbench for warnings detection logic.
+		proc tb-detect-warnings {} {
+			_tb "tb_detect_warnings"
+			hbs::AddFile tb/checker/tb-detect-warnings.vhd
 			hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=failure"
 			hbs::Run
 		}

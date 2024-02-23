@@ -6,14 +6,14 @@ library apb;
    use apb.checker.all;
 
 
-entity tb_detect is
+entity tb_detect_warnings is
 end entity;
 
 
-architecture test of tb_detect is
+architecture test of tb_detect_warnings is
 begin
 
-   test_slverr_warnings : process is
+   main : process is
       variable ck : checker_t := init;
       variable iface : interface_t := init;
    begin
@@ -48,18 +48,20 @@ begin
       assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
       assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
 
-      ck := reset(ck);
-      wait for 1 us;
-
       --
       -- slverr_enable warning test
       --
+      iface := init;
+      wait for 1 us;
+      ck := reset(ck);
+
       iface.wakeup := '1';
       ck := clock(ck, iface);
 
       iface.slverr := '1';
       iface.ready := '1';
       iface.selx := '1';
+      wait for 1 ns;
       ck := clock(ck, iface);
 
       assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
@@ -74,12 +76,13 @@ begin
       assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
       assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
 
-      ck := reset(ck);
-      wait for 1 us;
-
       --
       -- slverr_ready warning test
       --
+      iface := init;
+      wait for 1 us;
+      ck := reset(ck);
+
       ck := ACCESS_STATE_WAITING_FOR_READY;
       iface := ck.prev_iface;
       ck := clock(ck, iface);
@@ -88,11 +91,28 @@ begin
       assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
 
       iface.slverr := '1';
+      wait for 1 ns;
       ck := clock(ck, iface);
 
       assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
       assert ck.warnings_o = (
          slverr_selx => '0', slverr_enable => '0', slverr_ready => '1', wakeup_selx => '0', wakeup_no_transfer => '0'
+      ) report to_debug(ck.warnings_o) severity failure;
+
+      --
+      -- wakeup_selx warning test
+      --
+      iface := init;
+      wait for 1 us;
+      ck := reset(ck);
+
+      iface.wakeup := '1';
+      iface.selx := '1';
+      ck := clock(ck, iface);
+
+      assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
+      assert ck.warnings_o = (
+         slverr_selx => '0', slverr_enable => '0', slverr_ready => '0', wakeup_selx => '1', wakeup_no_transfer => '0'
       ) report to_debug(ck.warnings_o) severity failure;
 
       wait;

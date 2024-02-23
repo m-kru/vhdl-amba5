@@ -103,6 +103,7 @@ package body checker is
 
       if iface.selx = '1' and ck.prev_iface.wakeup = '0' then
          ck.warnings_o.wakeup_selx := '1';
+         report ck.prefix & "selx asserted, but wakeup was low in previous clock cycle" severity warning;
       end if;
 
       return ck;
