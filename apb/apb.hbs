@@ -8,7 +8,7 @@ namespace eval vhdl::amba::apb {
 
 		proc _tb {top} {
 			hbs::SetTool "nvc"
-			hbs::SetPostElaborationCallback hbs::SetArgsPrefix "--messages=compact"
+			hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
 			hbs::SetTop $top
 			src
 			hbs::SetLib ""
@@ -25,9 +25,26 @@ namespace eval vhdl::amba::apb {
 
 	namespace eval checker {
 		proc src {} {
+			hbs::AddDep vhdl::amba::apb::pkg::src
 			hbs::SetLib "apb"
 			hbs::SetStd "2019"
 			hbs::AddFile checker.vhd
+		}
+
+		proc _tb {top} {
+			hbs::SetTool "nvc"
+			hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
+			hbs::SetTop $top
+			src
+			hbs::SetLib ""
+		}
+
+		# Testbench for detection logic.
+		proc tb-detect {} {
+			_tb "tb_detect"
+			hbs::AddFile tb/checker/tb-detect.vhd
+			hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=failure"
+			hbs::Run
 		}
 
 		hbs::Register
