@@ -138,7 +138,6 @@ package body bfm is
     wait for 0 ns;
   end procedure write;
 
-
   procedure read (
     constant addr  : in unsigned(31 downto 0);
     signal   clk   : in std_logic;

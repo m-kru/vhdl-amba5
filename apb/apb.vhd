@@ -208,7 +208,6 @@ package apb is
 
 end package;
 
-
 package body apb is
 
   --
@@ -389,7 +388,6 @@ package body apb is
     return iface;
   end function;
 
-
   function is_data(iface : interface_t) return boolean is
     begin return is_data(iface.prot); end function;
 
@@ -428,7 +426,6 @@ package body apb is
       "ruser => x""" & to_hstring(iface.ruser) & """, " &
       "buser => x""" & to_hstring(iface.buser) & """)";
   end function;
-
 
   function to_debug(iface : interface_t; indent_level : natural := 0) return string is
     variable indent : string(0 to 2 * indent_level - 1) := (others => ' ');
