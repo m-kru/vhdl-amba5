@@ -64,4 +64,30 @@ namespace eval vhdl::amba::apb {
 
 		hbs::Register
 	}
+
+	namespace eval bfm {
+		proc src {} {
+			hbs::AddDep vhdl::amba::apb::pkg::src
+			hbs::SetLib "apb"
+			hbs::SetStd "2019"
+			hbs::AddFile bfm.vhd
+		}
+
+		proc _tb {top} {
+			hbs::SetTool "nvc"
+			hbs::AddDep vhdl::amba::apb::checker::src
+			hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
+			hbs::SetTop $top
+			src
+			hbs::SetLib ""
+		}
+
+		proc tb-write-transaction {} {
+			_tb "tb_write_transaction"
+			hbs::AddFile tb/bfm/tb-write-transaction.vhd
+			hbs::Run
+		}
+
+		hbs::Register
+	}
 }
