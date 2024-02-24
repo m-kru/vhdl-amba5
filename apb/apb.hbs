@@ -54,6 +54,14 @@ namespace eval vhdl::amba::apb {
 			hbs::Run
 		}
 
+		# Testbench checking that no warnings or errors are issued during correct transaction.
+		proc tb-correct-transaction {} {
+			_tb "tb_correct_transaction"
+			hbs::AddFile tb/checker/tb-correct-transaction.vhd
+			hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=warning"
+			hbs::Run
+		}
+
 		hbs::Register
 	}
 }
