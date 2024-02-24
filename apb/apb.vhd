@@ -7,6 +7,10 @@ package apb is
 
   -- state_t is type represents operating states as defined in the specification.
   -- The ACCESS state is is named ACCSS as "access" is VHDL keyword.
+  --
+  -- NOTE: The specification provides the state diagram. However, the diagram presents state
+  -- changes for the Requester. Completers or Checkers might use the same states, but they
+  -- might have different changes. Mainly when a single transaction contains multiple transfers.
   type state_t is (IDLE, SETUP, ACCSS);
 
 
