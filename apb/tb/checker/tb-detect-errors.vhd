@@ -68,7 +68,7 @@ begin
     -- wakeup_ready error test
     --
     wait for 1 us;
-    ck := ACCESS_STATE_WAITING_FOR_READY;
+    ck := READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY;
     iface := ck.prev_iface;
 
     ck := clock(ck, iface);
@@ -87,7 +87,7 @@ begin
     -- addr_change error test
     --
     wait for 1 us;
-    ck := ACCESS_STATE_WAITING_FOR_READY;
+    ck := READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY;
     iface := ck.prev_iface;
 
     ck := clock(ck, iface);
@@ -106,7 +106,7 @@ begin
     -- prot_change error test
     --
     wait for 1 us;
-    ck := ACCESS_STATE_WAITING_FOR_READY;
+    ck := READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY;
     iface := ck.prev_iface;
 
     ck := clock(ck, iface);
@@ -125,7 +125,7 @@ begin
     -- write_change error test
     --
     wait for 1 us;
-    ck := ACCESS_STATE_WAITING_FOR_READY;
+    ck := READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY;
     iface := ck.prev_iface;
 
     ck := clock(ck, iface);
@@ -144,7 +144,7 @@ begin
     -- wdata_change error test
     --
     wait for 1 us;
-    ck := ACCESS_STATE_WAITING_FOR_READY;
+    ck := WRITE_TRANSFER_ACCESS_STATE_WAITING_FOR_READY;
     iface := ck.prev_iface;
 
     ck := clock(ck, iface);
@@ -163,7 +163,7 @@ begin
     -- strb_change error test
     --
     wait for 1 us;
-    ck := ACCESS_STATE_WAITING_FOR_READY;
+    ck := WRITE_TRANSFER_ACCESS_STATE_WAITING_FOR_READY;
     iface := ck.prev_iface;
 
     ck := clock(ck, iface);
@@ -182,7 +182,7 @@ begin
     -- auser_change error test
     --
     wait for 1 us;
-    ck := ACCESS_STATE_WAITING_FOR_READY;
+    ck := READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY;
     iface := ck.prev_iface;
 
     ck := clock(ck, iface);
@@ -201,7 +201,7 @@ begin
     -- wuser_change error test
     --
     wait for 1 us;
-    ck := ACCESS_STATE_WAITING_FOR_READY;
+    ck := WRITE_TRANSFER_ACCESS_STATE_WAITING_FOR_READY;
     iface := ck.prev_iface;
 
     ck := clock(ck, iface);
@@ -214,6 +214,27 @@ begin
     ck := clock(ck, iface);
 
     assert ck.errors_o   = init(wuser_change => '1') report to_debug(ck.errors_o)  severity failure;
+    assert ck.warnings_o = INTERFACE_WARNINGS_NONE  report to_debug(ck.warnings_o) severity failure;
+
+    --
+    -- read_strb error test
+    --
+    wait for 1 us;
+    ck := reset(ck);
+    iface := init;
+    iface.wakeup := '1';
+
+    ck := clock(ck, iface);
+
+    assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
+    assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
+
+    iface.selx := '1';
+    iface.strb := "1010";
+    wait for 1 ns;
+    ck := clock(ck, iface);
+
+    assert ck.errors_o   = init(read_strb => '1') report to_debug(ck.errors_o)  severity failure;
     assert ck.warnings_o = INTERFACE_WARNINGS_NONE  report to_debug(ck.warnings_o) severity failure;
 
     wait;

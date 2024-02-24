@@ -77,7 +77,7 @@ begin
     wait for 1 us;
     ck := reset(ck);
 
-    ck := ACCESS_STATE_WAITING_FOR_READY;
+    ck := READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY;
     iface := ck.prev_iface;
     ck := clock(ck, iface);
 

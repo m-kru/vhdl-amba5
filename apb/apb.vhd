@@ -25,14 +25,16 @@ package apb is
     strb_change  : std_logic;
     auser_change : std_logic;
     wuser_change : std_logic;
+    -- Read transfer related
+    read_strb : std_logic; -- strb signal during read transfer is different than "0000".
   end record;
 
-  constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+  constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
   -- init initializes interface_errors_t with attributes set to given values.
   function init(
     setup_entry, setup_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
-    strb_change, auser_change, wuser_change : std_logic := '0'
+    strb_change, auser_change, wuser_change, read_strb : std_logic := '0'
   ) return interface_errors_t;
 
   -- to_string converts interface_errors_t to string for printing.
@@ -211,11 +213,11 @@ package body apb is
 
   function init(
     setup_entry, setup_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
-    strb_change, auser_change, wuser_change : std_logic := '0'
+    strb_change, auser_change, wuser_change, read_strb : std_logic := '0'
   ) return interface_errors_t is
     constant errors : interface_errors_t := (
       setup_entry, setup_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
-      strb_change, auser_change, wuser_change
+      strb_change, auser_change, wuser_change, read_strb
     );
   begin
     return errors;
@@ -233,7 +235,8 @@ package body apb is
       "wdata_change => '" & to_string(errors.wdata_change) & "', " &
       "strb_change => '"  & to_string(errors.strb_change)  & "', " &
       "auser_change => '" & to_string(errors.auser_change) & "', " &
-      "wuser_change => '" & to_string(errors.wuser_change) & "')";
+      "wuser_change => '" & to_string(errors.wuser_change) & "', " &
+      "read_strb => '"    & to_string(errors.read_strb)    & "')";
   end function;
 
   function to_debug(errors : interface_errors_t; indent_level : natural := 0) return string is
@@ -249,7 +252,8 @@ package body apb is
       indent & "  wdata_change => '" & to_string(errors.wdata_change) & "'," & LF &
       indent & "  strb_change  => '" & to_string(errors.strb_change)  & "'," & LF &
       indent & "  auser_change => '" & to_string(errors.auser_change) & "'," & LF &
-      indent & "  wuser_change => '" & to_string(errors.wuser_change) & "'"  & LF &
+      indent & "  wuser_change => '" & to_string(errors.wuser_change) & "'," & LF &
+      indent & "  read_strb    => '" & to_string(errors.read_strb)    & "'"  & LF &
       indent & ")";
   end function;
 

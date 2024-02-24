@@ -20,14 +20,25 @@ package checker is
     awaiting_transfer : boolean;
   end record;
 
-  -- ACCESS_STATE_WAITING_FOR_READY checker constant is useful for internal tests.
-  -- It puts checker into the ACCESS state waiting for the ready signal assertion.
-  constant ACCESS_STATE_WAITING_FOR_READY : checker_t := (
+  -- READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY checker constant is useful for internal tests.
+  -- It puts checker into the ACCESS state waiting for the ready signal assertion during read transfer.
+  constant READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY : checker_t := (
     prefix     => "apb: checker: ",
     errors_o   => INTERFACE_ERRORS_NONE,
     warnings_o => INTERFACE_WARNINGS_NONE,
     state      => ACCSS,
-    prev_iface => init(selx => '1', enable => '1', strb => "1111", wakeup => '1'),
+    prev_iface => init(selx => '1', enable => '1', wakeup => '1'),
+    awaiting_transfer => true
+  );
+
+  -- WRITE_TRANSFER_ACCESS_STATE_WAITING_FOR_READY checker constant is useful for internal tests.
+  -- It puts checker into the ACCESS state waiting for the ready signal assertion during write transfer.
+  constant WRITE_TRANSFER_ACCESS_STATE_WAITING_FOR_READY : checker_t := (
+    prefix     => "apb: checker: ",
+    errors_o   => INTERFACE_ERRORS_NONE,
+    warnings_o => INTERFACE_WARNINGS_NONE,
+    state      => ACCSS,
+    prev_iface => init(selx => '1', enable => '1', write => '1', strb => "1111", wakeup => '1'),
     awaiting_transfer => true
   );
 
@@ -69,6 +80,19 @@ package body checker is
   function stateless_checks(checker: checker_t; iface: interface_t) return checker_t is
     variable ck : checker_t := checker;
   begin
+    --
+    -- error checks
+    --   
+    if iface.selx = '1' and iface.write = '0' and iface.strb /= "0000" then
+      ck.errors_o.read_strb := '1';
+      report
+        ck.prefix & "strb = """ & to_string(iface.strb) & """ during read transfer, expecting ""0000"", iface := " & to_debug(iface)
+        severity error;
+    end if;
+
+    --
+    -- warning checks
+    --   
     if iface.slverr = '1' and iface.selx = '0' then
       ck.warnings_o.slverr_selx := '1';
       report ck.prefix & "slverr high, but selx low" severity warning;
