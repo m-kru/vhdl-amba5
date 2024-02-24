@@ -88,6 +88,12 @@ namespace eval vhdl::amba5::apb {
 			hbs::Run
 		}
 
+		proc tb-read-transaction {} {
+			_tb "tb_read_transaction"
+			hbs::AddFile tb/bfm/tb-read-transaction.vhd
+			hbs::Run
+		}
+
 		hbs::Register
 	}
 }
