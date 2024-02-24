@@ -118,14 +118,14 @@ package apb is
   -- types everywhere. EDA tools are good at optimizing unused signals and
   -- logic, so this approach costs the user nothing in the final design.
   type interface_t is record
-    addr  : unsigned(31 downto 0);
-    prot  : protection_t;
-    nse   : std_logic;
-    selx  : std_logic;
+    addr   : unsigned(31 downto 0);
+    prot   : protection_t;
+    nse    : std_logic;
+    selx   : std_logic;
     enable : std_logic;
     write  : std_logic;
     wdata  : std_logic_vector(31 downto 0);
-    strb  : std_logic_vector(3 downto 0);
+    strb   : std_logic_vector(3 downto 0);
     ready  : std_logic;
     rdata  : std_logic_vector(31 downto 0);
     slverr : std_logic;
@@ -137,14 +137,14 @@ package apb is
   end record;
 
   function init(
-    addr  : unsigned(31 downto 0) := (others => '0');
-    prot  : protection_t := ('0', '0', '0');
-    nse   : std_logic := '0';
-    selx  : std_logic := '0';
+    addr   : unsigned(31 downto 0) := (others => '0');
+    prot   : protection_t := ('0', '0', '0');
+    nse    : std_logic := '0';
+    selx   : std_logic := '0';
     enable : std_logic := '0';
     write  : std_logic := '0';
     wdata  : std_logic_vector(31 downto 0) := (others => '0');
-    strb  : std_logic_vector(3 downto 0) := (others => '0');
+    strb   : std_logic_vector(3 downto 0) := (others => '0');
     ready  : std_logic := '0';
     rdata  : std_logic_vector(31 downto 0) := (others => '0');
     slverr : std_logic := '0';
