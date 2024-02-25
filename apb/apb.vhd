@@ -1,3 +1,7 @@
+-- SPDX-License-Identifier: MIT
+-- https://github.com/m-kru/vhdl-amba5
+-- Copyright (c) 2024 Michał Kruszewski
+
 library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
