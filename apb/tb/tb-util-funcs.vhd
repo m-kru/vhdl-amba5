@@ -10,6 +10,15 @@ end entity;
 architecture test of tb_util_funcs is
 begin
 
+  test_masks_has_zero : process is
+    variable test0 : string := masks_has_zero((x"00000001", x"10000000"));
+    variable test1 : string := masks_has_zero((x"00000000", x"FFFFFFFF"));
+  begin
+    assert test0 = "" report test0;
+    assert test1 = "masks(0) has only zeros" report test1;
+    wait;
+  end process;
+
   test_addr_has_meta : process is
     variable test0 : string := addr_has_meta(x"00000000");
     variable test1 : string := addr_has_meta("000000000000000000000000000000W0");

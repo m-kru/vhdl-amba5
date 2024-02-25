@@ -233,9 +233,14 @@ package apb is
   -- util functions
   --
 
+  -- The masks_has_zero function checks wheter mask array has at least one mask with all bits set to '0'.
+  -- The returned string is empty if masks has no zero masks.
+  -- Otherwise, the string contains an error message.
+  function masks_has_zero(masks : mask_array_t) return string;
+
   -- The addr_has_meta checks wheter an address contains a meta value.
-  -- The returned string is empty if addr has no meta values. Otherwise,
-  -- the string contains an error message.
+  -- The returned string is empty if addr has no meta values.
+  -- Otherwise, the string contains an error message.
   function addr_has_meta(addr : unsigned(31 downto 0)) return string;
 
   -- The is_addr_aligned function checks whether address is aligned to 4 bytes.
@@ -502,6 +507,17 @@ package body apb is
   --
   -- util functions
   --
+
+  function masks_has_zero(masks : mask_array_t) return string is
+    constant zero : bit_vector(31 downto 0) := (others => '0');
+  begin
+    for m in masks'range loop
+      if masks(m) = zero then
+        return "masks(" & to_string(m) & ") has only zeros";
+      end if;
+    end loop;
+    return "";
+  end function;
 
   function addr_has_meta(addr : unsigned(31 downto 0)) return string is
   begin
