@@ -27,4 +27,13 @@ begin
     wait;
   end process;
 
+  test_are_addrs_aligned: process is
+    variable test0 : string := are_addrs_aligned((x"00000000", x"FFFFFFF0"));
+    variable test1 : string := are_addrs_aligned((x"00000000", x"22222221"));
+  begin
+    assert test0 = "" report test0;
+    assert test1 = "addr with index 1; unaligned addr := ""00100010001000100010001000100001"", bit 0 equals '1'" report test1;
+    wait;
+  end process;
+
 end architecture;

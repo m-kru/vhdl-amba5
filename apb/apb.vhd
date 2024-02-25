@@ -232,6 +232,11 @@ package apb is
   -- Otherwise, the returned string contains an error message.
   function is_addr_aligned(addr : unsigned(31 downto 0)) return string;
 
+  -- The are_addrs_aligned function checks whether all addresses in the array are aligned.
+  -- The returned string is empty if all addresses are aligned. Otherwise, the returned
+  -- string contains an error message.
+  function are_addrs_aligned(addrs : addr_array_t) return string;
+
 end package;
 
 package body apb is
@@ -485,6 +490,16 @@ package body apb is
     for b in 0 to 1 loop
       if addr(b) /= '0' then
         return "unaligned addr := """ & to_string(addr) & """, bit " & to_string(b) & " equals '" & to_string(addr(b)) & "'";
+      end if;
+    end loop;
+    return "";
+  end function;
+
+  function are_addrs_aligned(addrs : addr_array_t) return string is
+  begin
+    for a in addrs'range loop
+      if is_addr_aligned(addrs(a)) /= "" then
+        return "addr with index " & to_string(a) & "; " & is_addr_aligned(addrs(a));
       end if;
     end loop;
     return "";
