@@ -26,6 +26,13 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
+    # Testbench for various util functions.
+    proc tb-util-funcs {} {
+      _tb "tb_util_funcs"
+      hbs::AddFile tb/tb-util-funcs.vhd
+      hbs::Run
+    }
+
     hbs::Register
   }
 

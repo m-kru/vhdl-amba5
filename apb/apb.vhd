@@ -9,6 +9,11 @@ library ieee;
 -- apb package contains types and subprograms useful for designs with Advanced Peripheral Bus (APB).
 package apb is
 
+  -- The addr_array_t represents an array of APB addresses. It is useful, for example, for the Crossbar
+  -- as it requires address and mask arrays.
+  type addr_array_t is array (natural range <>) of unsigned(31 downto 0);
+
+
   -- state_t is type represents operating states as defined in the specification.
   -- The ACCESS state is is named ACCSS as "access" is VHDL keyword.
   --
@@ -173,6 +178,8 @@ package apb is
     buser  : std_logic_vector( 15 downto 0) := (others => '-')
   ) return interface_t;
 
+  type interface_array_t is array (natural range <>) of interface_t;
+
   -- is_data returns true if transaction is data transaction.
   function is_data(iface : interface_t) return boolean;
 
@@ -217,6 +224,13 @@ package apb is
   end view;
 
   alias completer_view is requester_view'converse;
+
+  -- The is_addr_aligned function checks whether address is aligned to 4 bytes.
+  -- Unaligned address usage for transfer is not forbidden by the specification.
+  -- However, unaligned address does not make sense for Completer address space
+  -- start address. The returned string is empty if addr is aligned.
+  -- Otherwise, the returned string contains an error message.
+  function is_addr_aligned(addr : unsigned(31 downto 0)) return string;
 
 end package;
 
@@ -460,6 +474,20 @@ package body apb is
       indent & "  ruser  => """ & to_string(iface.ruser)  & """, " & LF &
       indent & "  buser  => """ & to_string(iface.buser)  & """"   & LF &
       indent & ")";
+  end function;
+
+  --
+  -- Util functions
+  --
+
+  function is_addr_aligned(addr : unsigned(31 downto 0)) return string is
+  begin
+    for b in 0 to 1 loop
+      if addr(b) /= '0' then
+        return "unaligned addr := """ & to_string(addr) & """, bit " & to_string(b) & " equals '" & to_string(addr(b)) & "'";
+      end if;
+    end loop;
+    return "";
   end function;
 
 end package body;
