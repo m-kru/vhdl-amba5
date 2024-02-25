@@ -67,4 +67,13 @@ begin
     wait;
   end process;
 
+  test_are_addrs_in_masks : process is
+    variable test0 : string := are_addrs_in_masks((x"A0000000", x"FA000000"), (x"F0000000", x"FF000000"));
+    variable test1 : string := are_addrs_in_masks((x"A0000000", x"FA000000"), (x"F0000000", x"F0000000"));
+  begin
+    assert test0 = "" report test0;
+    assert test1 = "index 1: addr ""11111010000000000000000000000000"" not in mask ""11110000000000000000000000000000""" report test1;
+    wait;
+  end process;
+
 end architecture;

@@ -256,9 +256,14 @@ package apb is
   function are_addrs_aligned(addrs : addr_array_t) return string;
 
   -- The is_addr_in_mask function checks whether address is within the given mask range.
-  -- The returned string is empty if addr is withini the given mask range.
+  -- The returned string is empty if addr is within the given mask range.
   -- Otherwise, the returned string contains an error message.
   function is_addr_in_mask(addr : unsigned(31 downto 0); mask : bit_vector(31 downto 0)) return string;
+
+  -- The are_addrs_in_masks function checks whether all addresses are within the given mask ranges.
+  -- The returned string is empty if all addresses are within the given mask ranges.
+  -- Otherwise, the returned string contains an error message.
+  function are_addrs_in_masks(addrs : addr_array_t; masks : mask_array_t) return string;
 
 end package;
 
@@ -558,4 +563,18 @@ package body apb is
     return "";
   end function;
 
+  function are_addrs_in_masks(addrs : addr_array_t; masks : mask_array_t) return string is
+  begin
+    assert addrs'length = masks'length
+      report "addrs length (" & to_string(addrs'length) & ") /= masks length (" & to_string(addrs'length) & ")"
+      severity failure;
+
+      for i in addrs'range loop
+        if is_addr_in_mask(addrs(i), masks(i)) /= "" then
+          return "index " & to_string(i) & ": " & is_addr_in_mask(addrs(i), masks(i));
+        end if;
+      end loop;
+
+      return "";
+  end function;
 end package body;
