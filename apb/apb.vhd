@@ -225,6 +225,15 @@ package apb is
 
   alias completer_view is requester_view'converse;
 
+  --
+  -- util functions
+  --
+
+  -- The addr_has_meta checks wheter an address contains a meta value.
+  -- The returned string is empty if addr has no meta values. Otherwise,
+  -- the string contains an error message.
+  function addr_has_meta(addr : unsigned(31 downto 0)) return string;
+
   -- The is_addr_aligned function checks whether address is aligned to 4 bytes.
   -- Unaligned address usage for transfer is not forbidden by the specification.
   -- However, unaligned address does not make sense for Completer address space
@@ -487,14 +496,24 @@ package body apb is
   end function;
 
   --
-  -- Util functions
+  -- util functions
   --
+
+  function addr_has_meta(addr : unsigned(31 downto 0)) return string is
+  begin
+    for b in addr'range loop
+      if addr(b) /= '0' and addr(b) /= '1' then
+        return "addr """ & to_string(addr) & """ has meta value at bit " & to_string(b);
+      end if;
+    end loop;
+    return "";
+  end function;
 
   function is_addr_aligned(addr : unsigned(31 downto 0)) return string is
   begin
     for b in 0 to 1 loop
       if addr(b) /= '0' then
-        return "unaligned addr := """ & to_string(addr) & """, bit " & to_string(b) & " equals '" & to_string(addr(b)) & "'";
+        return "unaligned addr """ & to_string(addr) & """, bit " & to_string(b) & " equals '" & to_string(addr(b)) & "'";
       end if;
     end loop;
     return "";
