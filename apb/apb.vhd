@@ -499,7 +499,7 @@ package body apb is
   begin
     for a in addrs'range loop
       if is_addr_aligned(addrs(a)) /= "" then
-        return "addr with index " & to_string(a) & "; " & is_addr_aligned(addrs(a));
+        return "addrs(" & to_string(a) & "): " & is_addr_aligned(addrs(a));
       end if;
     end loop;
     return "";
