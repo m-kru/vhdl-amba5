@@ -1,99 +1,99 @@
 namespace eval vhdl::amba5::apb {
-	namespace eval pkg {
-		proc src {} {
-			hbs::SetLib "apb"
-			hbs::SetStd "2019"
-			hbs::AddFile apb.vhd
-		}
+  namespace eval pkg {
+    proc src {} {
+      hbs::SetLib "apb"
+      hbs::SetStd "2019"
+      hbs::AddFile apb.vhd
+    }
 
-		proc _tb {top} {
-			hbs::SetTool "nvc"
-			hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
-			hbs::SetTop $top
-			src
-			hbs::SetLib ""
-		}
+    proc _tb {top} {
+      hbs::SetTool "nvc"
+      hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::SetTop $top
+      src
+      hbs::SetLib ""
+    }
 
-		# Testbench for protection_t functions.
-		proc tb-prot-funcs {} {
-			_tb "tb_prot_funcs"
-			hbs::AddFile tb/tb-prot-funcs.vhd
-			hbs::Run
-		}
-		hbs::Register
-	}
+    # Testbench for protection_t functions.
+    proc tb-prot-funcs {} {
+      _tb "tb_prot_funcs"
+      hbs::AddFile tb/tb-prot-funcs.vhd
+      hbs::Run
+    }
+    hbs::Register
+  }
 
-	namespace eval checker {
-		proc src {} {
-			hbs::AddDep vhdl::amba5::apb::pkg::src
-			hbs::SetLib "apb"
-			hbs::SetStd "2019"
-			hbs::AddFile checker.vhd
-		}
+  namespace eval checker {
+    proc src {} {
+      hbs::AddDep vhdl::amba5::apb::pkg::src
+      hbs::SetLib "apb"
+      hbs::SetStd "2019"
+      hbs::AddFile checker.vhd
+    }
 
-		proc _tb {top} {
-			hbs::SetTool "nvc"
-			hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
-			hbs::SetTop $top
-			src
-			hbs::SetLib ""
-		}
+    proc _tb {top} {
+      hbs::SetTool "nvc"
+      hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::SetTop $top
+      src
+      hbs::SetLib ""
+    }
 
-		# Testbench for warnings detection logic.
-		proc tb-detect-warnings {} {
-			_tb "tb_detect_warnings"
-			hbs::AddFile tb/checker/tb-detect-warnings.vhd
-			hbs::Run
-		}
+    # Testbench for warnings detection logic.
+    proc tb-detect-warnings {} {
+      _tb "tb_detect_warnings"
+      hbs::AddFile tb/checker/tb-detect-warnings.vhd
+      hbs::Run
+    }
 
-		# Testbench for errors detection logic.
-		proc tb-detect-errors {} {
-			_tb "tb_detect_errors"
-			hbs::AddFile tb/checker/tb-detect-errors.vhd
-			hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=failure"
-			hbs::Run
-		}
+    # Testbench for errors detection logic.
+    proc tb-detect-errors {} {
+      _tb "tb_detect_errors"
+      hbs::AddFile tb/checker/tb-detect-errors.vhd
+      hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=failure"
+      hbs::Run
+    }
 
-		# Testbench checking that no warnings or errors are issued during correct transaction.
-		proc tb-correct-transaction {} {
-			_tb "tb_correct_transaction"
-			hbs::AddFile tb/checker/tb-correct-transaction.vhd
-			hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=warning"
-			hbs::Run
-		}
+    # Testbench checking that no warnings or errors are issued during correct transaction.
+    proc tb-correct-transaction {} {
+      _tb "tb_correct_transaction"
+      hbs::AddFile tb/checker/tb-correct-transaction.vhd
+      hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=warning"
+      hbs::Run
+    }
 
-		hbs::Register
-	}
+    hbs::Register
+  }
 
-	namespace eval bfm {
-		proc src {} {
-			hbs::AddDep vhdl::amba5::apb::pkg::src
-			hbs::SetLib "apb"
-			hbs::SetStd "2019"
-			hbs::AddFile bfm.vhd
-		}
+  namespace eval bfm {
+    proc src {} {
+      hbs::AddDep vhdl::amba5::apb::pkg::src
+      hbs::SetLib "apb"
+      hbs::SetStd "2019"
+      hbs::AddFile bfm.vhd
+    }
 
-		proc _tb {top} {
-			hbs::SetTool "nvc"
-			hbs::AddDep vhdl::amba5::apb::checker::src
-			hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
-			hbs::SetTop $top
-			src
-			hbs::SetLib ""
-		}
+    proc _tb {top} {
+      hbs::SetTool "nvc"
+      hbs::AddDep vhdl::amba5::apb::checker::src
+      hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::SetTop $top
+      src
+      hbs::SetLib ""
+    }
 
-		proc tb-write-transaction {} {
-			_tb "tb_write_transaction"
-			hbs::AddFile tb/bfm/tb-write-transaction.vhd
-			hbs::Run
-		}
+    proc tb-write-transaction {} {
+      _tb "tb_write_transaction"
+      hbs::AddFile tb/bfm/tb-write-transaction.vhd
+      hbs::Run
+    }
 
-		proc tb-read-transaction {} {
-			_tb "tb_read_transaction"
-			hbs::AddFile tb/bfm/tb-read-transaction.vhd
-			hbs::Run
-		}
+    proc tb-read-transaction {} {
+      _tb "tb_read_transaction"
+      hbs::AddFile tb/bfm/tb-read-transaction.vhd
+      hbs::Run
+    }
 
-		hbs::Register
-	}
+    hbs::Register
+  }
 }
