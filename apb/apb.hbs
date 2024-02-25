@@ -1,4 +1,5 @@
 namespace eval vhdl::amba5::apb {
+  # The pkg core contains the APB package with all primary types and functions.
   namespace eval pkg {
     proc src {} {
       hbs::SetLib "apb"
@@ -24,6 +25,8 @@ namespace eval vhdl::amba5::apb {
     hbs::Register
   }
 
+  # The checker core is the interface checker core.
+  # It detects erroneous and unrecommended scenarios on the interface.
   namespace eval checker {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
@@ -66,6 +69,7 @@ namespace eval vhdl::amba5::apb {
     hbs::Register
   }
 
+  # The bfm is the Bus Function Model. It is useful only for simulation.
   namespace eval bfm {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
