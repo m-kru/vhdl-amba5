@@ -35,7 +35,7 @@ package apb is
 
   constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
-  -- init initializes interface_errors_t with attributes set to given values.
+  -- init initializes interface_errors_t with elements set to given values.
   function init(
     setup_entry, setup_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
     strb_change, auser_change, wuser_change, read_strb : std_logic := '0'
@@ -61,7 +61,7 @@ package apb is
 
   constant INTERFACE_WARNINGS_NONE : interface_warnings_t := ('0', '0', '0', '0', '0');
 
-  -- init initializes interface_warnings_t with attributes set to given values.
+  -- init initializes interface_warnings_t with elements set to given values.
   function init(
     slverr_selx, slverr_enable, slverr_ready, wakeup_selx, wakeup_no_transfer : std_logic := '0'
   ) return interface_warnings_t;
@@ -81,7 +81,7 @@ package apb is
     normal_privileged : std_logic; -- Bit 0
   end record;
 
-  -- init initializes protection_t with attributes set to given values.
+  -- init initializes protection_t with elements set to given values.
   function init(data_instruction, secure_non_secure, normal_privileged : std_logic := '0') return protection_t;
 
   -- to_protection converts 3-bit std_logic_vector to protection_t.
@@ -142,23 +142,31 @@ package apb is
     buser  : std_logic_vector(15 downto 0);
   end record;
 
+  -- init initializes interface_t with elements set to given values.
+  --
+  -- All mandatory elements except wakeup are initialized with the '0' value.
+  -- The wakeup element is initialized with the '1' value. This is because wakeup
+  -- is an optional signal in APB. However, a case when wakeup signal is absent
+  -- is exactly the same as the case when wakeup is tied to '1'.
+  -- 
+  -- All other optional elements are initialized with the do not care value '-'.
   function init(
     addr   : unsigned(31 downto 0) := (others => '0');
     prot   : protection_t := ('0', '0', '0');
-    nse    : std_logic := '0';
+    nse    : std_logic := '-';
     selx   : std_logic := '0';
     enable : std_logic := '0';
     write  : std_logic := '0';
     wdata  : std_logic_vector(31 downto 0) := (others => '0');
-    strb   : std_logic_vector(3 downto 0) := (others => '0');
+    strb   : std_logic_vector( 3 downto 0) := (others => '0');
     ready  : std_logic := '0';
     rdata  : std_logic_vector(31 downto 0) := (others => '0');
     slverr : std_logic := '0';
-    wakeup : std_logic := '0';
-    auser  : std_logic_vector(127 downto 0) := (others => '0');
-    wuser  : std_logic_vector(15 downto 0) := (others => '0');
-    ruser  : std_logic_vector(15 downto 0) := (others => '0');
-    buser  : std_logic_vector(15 downto 0) := (others => '0')
+    wakeup : std_logic := '1';
+    auser  : std_logic_vector(127 downto 0) := (others => '-');
+    wuser  : std_logic_vector( 15 downto 0) := (others => '-');
+    ruser  : std_logic_vector( 15 downto 0) := (others => '-');
+    buser  : std_logic_vector( 15 downto 0) := (others => '-')
   ) return interface_t;
 
   -- is_data returns true if transaction is data transaction.
@@ -367,20 +375,20 @@ package body apb is
   function init(
     addr   : unsigned(31 downto 0) := (others => '0');
     prot   : protection_t := ('0', '0', '0');
-    nse    : std_logic := '0';
+    nse    : std_logic := '-';
     selx   : std_logic := '0';
     enable : std_logic := '0';
     write  : std_logic := '0';
     wdata  : std_logic_vector(31 downto 0) := (others => '0');
-    strb   : std_logic_vector(3 downto 0) := (others => '0');
+    strb   : std_logic_vector( 3 downto 0) := (others => '0');
     ready  : std_logic := '0';
     rdata  : std_logic_vector(31 downto 0) := (others => '0');
     slverr : std_logic := '0';
-    wakeup : std_logic := '0';
-    auser  : std_logic_vector(127 downto 0) := (others => '0');
-    wuser  : std_logic_vector(15 downto 0) := (others => '0');
-    ruser  : std_logic_vector(15 downto 0) := (others => '0');
-    buser  : std_logic_vector(15 downto 0) := (others => '0')
+    wakeup : std_logic := '1';
+    auser  : std_logic_vector(127 downto 0) := (others => '-');
+    wuser  : std_logic_vector( 15 downto 0) := (others => '-');
+    ruser  : std_logic_vector( 15 downto 0) := (others => '-');
+    buser  : std_logic_vector( 15 downto 0) := (others => '-')
   ) return interface_t is
     constant iface : interface_t :=
       (addr, prot, nse, selx, enable, write, wdata, strb, ready, rdata, slverr, wakeup, auser, wuser, ruser, buser);

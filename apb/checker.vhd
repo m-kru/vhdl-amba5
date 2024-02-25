@@ -27,7 +27,7 @@ package checker is
     errors_o   => INTERFACE_ERRORS_NONE,
     warnings_o => INTERFACE_WARNINGS_NONE,
     state      => ACCSS,
-    prev_iface => init(selx => '1', enable => '1', wakeup => '1'),
+    prev_iface => init(selx => '1', enable => '1'),
     awaiting_transfer => true
   );
 
@@ -38,7 +38,7 @@ package checker is
     errors_o   => INTERFACE_ERRORS_NONE,
     warnings_o => INTERFACE_WARNINGS_NONE,
     state      => ACCSS,
-    prev_iface => init(selx => '1', enable => '1', write => '1', strb => "1111", wakeup => '1'),
+    prev_iface => init(selx => '1', enable => '1', write => '1', strb => "1111"),
     awaiting_transfer => true
   );
 

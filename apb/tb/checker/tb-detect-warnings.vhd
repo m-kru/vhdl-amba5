@@ -94,12 +94,15 @@ begin
     --
     -- wakeup_selx warning test
     --
-    iface := init;
+    iface := init(wakeup => '0');
     wait for 1 us;
     ck := reset(ck);
 
+    ck := clock(ck, iface);
+
     iface.wakeup := '1';
     iface.selx := '1';
+    wait for 1 ns;
     ck := clock(ck, iface);
 
     assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
@@ -108,11 +111,14 @@ begin
     --
     -- wakeup_no_transfer warning test
     --
-    iface := init;
+    iface := init(wakeup => '0');
     wait for 1 us;
     ck := reset(ck);
 
+    ck := clock(ck, iface);
+
     iface.wakeup := '1';
+    wait for 1 ns;
     ck := clock(ck, iface);
 
     assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
