@@ -36,4 +36,19 @@ begin
     wait;
   end process;
 
+  test_is_addr_in_mask: process is
+    variable test0 : string := is_addr_in_mask(x"A0000000", x"F0000000");
+    variable test1 : string := is_addr_in_mask(x"F0000000", x"F0000000");
+    variable test2 : string := is_addr_in_mask(x"F8000000", x"F0000000");
+    variable test3 : string := is_addr_in_mask(x"F0000000", x"0000000F");
+    variable test4 : string := is_addr_in_mask(x"0000000U", x"F0000000");
+  begin
+    assert test0 = "" report test0;
+    assert test1 = "" report test1;
+    assert test2 = "addr ""11111000000000000000000000000000"" not in mask ""11110000000000000000000000000000""" report test2;
+    assert test3 = "addr ""11110000000000000000000000000000"" not in mask ""00000000000000000000000000001111""" report test3;
+    assert test4 = "addr ""0000000000000000000000000000UUUU"" not in mask ""11110000000000000000000000000000""" report test4;
+    wait;
+  end process;
+
 end architecture;

@@ -237,6 +237,11 @@ package apb is
   -- string contains an error message.
   function are_addrs_aligned(addrs : addr_array_t) return string;
 
+  -- The is_addr_in_mask function checks whether address is within the given mask range.
+  -- The returned string is empty if addr is withini the given mask range.
+  -- Otherwise, the returned string contains an error message.
+  function is_addr_in_mask(addr, mask : unsigned(31 downto 0)) return string;
+
 end package;
 
 package body apb is
@@ -502,6 +507,15 @@ package body apb is
         return "addrs(" & to_string(a) & "): " & is_addr_aligned(addrs(a));
       end if;
     end loop;
+    return "";
+  end function;
+
+  function is_addr_in_mask(addr, mask : unsigned(31 downto 0)) return string is
+    constant zero : unsigned(31 downto 0) := (others => '0');
+  begin
+    if (addr and not mask) /= zero then
+      return "addr """ & to_string(addr) & """ not in mask """ & to_string(mask) & """";
+    end if;
     return "";
   end function;
 
