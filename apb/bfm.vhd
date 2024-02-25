@@ -56,7 +56,6 @@ package bfm is
 
 end package;
 
-
 package body bfm is
 
   procedure write (
