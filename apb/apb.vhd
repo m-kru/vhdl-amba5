@@ -10,11 +10,11 @@ library ieee;
 package apb is
 
   -- The addr_array_t represents an array of APB addresses. It is useful, for example, for the Crossbar
-  -- as it requires address array.
+  -- as it requires an address array.
   type addr_array_t is array (natural range <>) of unsigned(31 downto 0);
 
   -- The mask_array_t represents an array of APB masks. It is useful, for example, for the Crossbar
-  -- as it mask array.
+  -- as it requires a mask array.
   type mask_array_t is array (natural range <>) of bit_vector(31 downto 0);
 
 
@@ -577,4 +577,5 @@ package body apb is
 
       return "";
   end function;
+
 end package body;
