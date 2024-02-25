@@ -131,15 +131,15 @@ package apb is
     enable : std_logic;
     write  : std_logic;
     wdata  : std_logic_vector(31 downto 0);
-    strb   : std_logic_vector(3 downto 0);
+    strb   : std_logic_vector( 3 downto 0);
     ready  : std_logic;
     rdata  : std_logic_vector(31 downto 0);
     slverr : std_logic;
     wakeup : std_logic;
     auser  : std_logic_vector(127 downto 0);
-    wuser  : std_logic_vector(15 downto 0);
-    ruser  : std_logic_vector(15 downto 0);
-    buser  : std_logic_vector(15 downto 0);
+    wuser  : std_logic_vector( 15 downto 0);
+    ruser  : std_logic_vector( 15 downto 0);
+    buser  : std_logic_vector( 15 downto 0);
   end record;
 
   -- init initializes interface_t with elements set to given values.
