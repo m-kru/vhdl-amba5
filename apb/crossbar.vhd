@@ -14,7 +14,7 @@ entity Crossbar is
     REQUESTER_COUNT : positive := 1;
     COMPLETER_COUNT : positive;
     ADDRS : addr_array_t(0 to COMPLETER_COUNT - 1); -- Completer addresses 
-    MASKS : addr_array_t(0 to COMPLETER_COUNT - 1)  -- Completer address masks
+    MASKS : mask_array_t(0 to COMPLETER_COUNT - 1)  -- Completer address masks
   );
   port (
     arstn_i : in std_logic := '1';

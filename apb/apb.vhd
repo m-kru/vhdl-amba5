@@ -10,8 +10,12 @@ library ieee;
 package apb is
 
   -- The addr_array_t represents an array of APB addresses. It is useful, for example, for the Crossbar
-  -- as it requires address and mask arrays.
+  -- as it requires address array.
   type addr_array_t is array (natural range <>) of unsigned(31 downto 0);
+
+  -- The mask_array_t represents an array of APB masks. It is useful, for example, for the Crossbar
+  -- as it mask array.
+  type mask_array_t is array (natural range <>) of bit_vector(31 downto 0);
 
 
   -- state_t is type represents operating states as defined in the specification.
@@ -249,7 +253,7 @@ package apb is
   -- The is_addr_in_mask function checks whether address is within the given mask range.
   -- The returned string is empty if addr is withini the given mask range.
   -- Otherwise, the returned string contains an error message.
-  function is_addr_in_mask(addr, mask : unsigned(31 downto 0)) return string;
+  function is_addr_in_mask(addr : unsigned(31 downto 0); mask : bit_vector(31 downto 0)) return string;
 
 end package;
 
@@ -529,10 +533,10 @@ package body apb is
     return "";
   end function;
 
-  function is_addr_in_mask(addr, mask : unsigned(31 downto 0)) return string is
-    constant zero : unsigned(31 downto 0) := (others => '0');
+  function is_addr_in_mask(addr : unsigned(31 downto 0); mask : bit_vector(31 downto 0)) return string is
+    constant zero : std_logic_vector(31 downto 0) := (others => '0');
   begin
-    if (addr and not mask) /= zero then
+    if (std_logic_vector(addr) and not to_std_logic_vector(mask)) /= zero then
       return "addr """ & to_string(addr) & """ not in mask """ & to_string(mask) & """";
     end if;
     return "";
