@@ -270,9 +270,7 @@ package apb is
   -- Otherwise, the returned string contains an error message.
   function are_addrs_in_masks(addrs : addr_array_t; masks : mask_array_t) return string;
 
-  --function (is/has/check)_addr_space_overlap(addrs : addr_array_t; masks : mask_array_t) return string;
-
-    --return "addr space of Completer " & to_string(i) & " overlaps with addr space of Completer " to_string(j);
+  function does_addr_space_overlap(addrs : addr_array_t; masks : mask_array_t) return string;
 
 end package;
 
@@ -595,6 +593,28 @@ package body apb is
       end loop;
 
       return "";
+  end function;
+
+  function does_addr_space_overlap(addrs : addr_array_t; masks : mask_array_t) return string is
+    constant zero : std_logic_vector(31 downto 0) := (others => '0');
+  begin
+    assert addrs'length = masks'length
+      report "addrs length (" & to_string(addrs'length) & ") /= masks length (" & to_string(addrs'length) & ")"
+      severity failure;
+
+    for i in 0 to addrs'length - 2 loop
+      for j in i + 1 to addrs'length - 1 loop
+        if
+          (to_std_logic_vector(masks(i) and masks(j)) and std_logic_vector(addrs(i) xor addrs(j))) = zero
+        then
+          return "addr space " & to_string(i) & " overlaps with addr space " & to_string(j) & LF &
+            "  " & to_string(i) & ": addr = """ & to_string(addrs(i)) & """, mask = """ & to_string(masks(i)) & """" & LF &
+            "  " & to_string(j) & ": addr = """ & to_string(addrs(j)) & """, mask = """ & to_string(masks(j)) & """";
+        end if;
+      end loop;
+    end loop;
+
+    return "";
   end function;
 
 end package body;

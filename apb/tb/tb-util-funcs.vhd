@@ -85,4 +85,29 @@ begin
     wait;
   end process;
 
+  test_does_addr_space_overlap : process is
+    variable test0 : string := does_addr_space_overlap(
+      ("11111111111111111111111111000000", "11111111111111111111111111100000", "11111111111111111111111111110000"),
+      ("11111111111111111111111111100000", "11111111111111111111111111110000", "11111111111111111111111111110000")
+    );
+    variable test1 : string := does_addr_space_overlap((x"F0000000", x"F0000000"), (x"F0000000", x"F0000000"));
+    variable test2 : string := does_addr_space_overlap(
+      ("11111111111111111111111111110000", "11111111111111111111111111111000"),
+      ("11111111111111111111111111110000", "11111111111111111111111111111000")
+    );
+  begin
+    assert test0 = "" report test0;
+    assert test1 =
+      "addr space 0 overlaps with addr space 1" & LF &
+      "  0: addr = ""11110000000000000000000000000000"", mask = ""11110000000000000000000000000000""" & LF &
+      "  1: addr = ""11110000000000000000000000000000"", mask = ""11110000000000000000000000000000"""
+      report test1;
+    assert test2 =
+      "addr space 0 overlaps with addr space 1" & LF &
+      "  0: addr = ""11111111111111111111111111110000"", mask = ""11111111111111111111111111110000""" & LF &
+      "  1: addr = ""11111111111111111111111111111000"", mask = ""11111111111111111111111111111000"""
+      report test2;
+    wait;
+  end process;
+
 end architecture;
