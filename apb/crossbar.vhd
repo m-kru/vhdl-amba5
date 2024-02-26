@@ -13,8 +13,9 @@ entity Crossbar is
   generic (
     REQUESTER_COUNT : positive := 1;
     COMPLETER_COUNT : positive;
-    ADDRS : addr_array_t(0 to COMPLETER_COUNT - 1); -- Completer addresses 
-    MASKS : mask_array_t(0 to COMPLETER_COUNT - 1)  -- Completer address masks
+    ADDRS  : addr_array_t(0 to COMPLETER_COUNT - 1); -- Completer addresses 
+    MASKS  : mask_array_t(0 to COMPLETER_COUNT - 1); -- Completer address masks
+    PREFIX : string := "apb: crossbar: " -- Prefix used in report messages
   );
   port (
     arstn_i : in std_logic := '1';
@@ -38,9 +39,22 @@ architecture rtl of Crossbar is
   signal setup_entry     : std_logic_vector(0 to REQUESTER_COUNT - 1); -- SETUP state entry condition detected
   signal transaction_end : std_logic_vector(0 to REQUESTER_COUNT - 1); -- Transaction end detected
 
-  function verify_addrs_and_masks
+  -- Sanity checks
+  constant zero_mask_fail          string := masks_has_zero(MASKS);
+  constant addr_has_meta_fail      string := ;
+  constant unaligned_addr_fail     string := are_addrs_aligned(ADDRS);
+  constant addr_not_in_mask_fail   string := are_addrs_in_masks(ADDRS, MASKS);
+  constant addr_space_overlap_fail string := ;
 
 begin
+
+  -- Sanity checks
+  assert zero_mask_fail          = "" report PREFIX & zero_mask_fail          severity failure;
+  assert addr_has_meta_fail      = "" report PREFIX & addr_has_meta_fail      severity failure;
+  assert unaligned_addr_fail     = "" report PREFIX & unaligned_addr_fail     severity failure;
+  assert addr_not_in_mask_fail   = "" report PREFIX & addr_not_in_mask_fail   severity failure;
+  assert addr_space_overlap_fail = "" report PREFIX & addr_space_overlap_fail severity failure;
+
 
   prev_selx_driver : process (arstn_i, clk_i) is
   begin

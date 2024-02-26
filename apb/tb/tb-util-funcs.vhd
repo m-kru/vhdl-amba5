@@ -28,6 +28,15 @@ begin
     wait;
   end process;
 
+  test_addrs_has_meta : process is
+    variable test0 : string := addrs_has_meta((x"00000000", x"89ABCDEF"));
+    variable test1 : string := addrs_has_meta((x"12345678", x"123Z0000"));
+  begin
+    assert test0 = "" report test0;
+    assert test1 = "addrs(1): addr ""000100100011ZZZZ0000000000000000"" has meta value at bit 19" report test1;
+    wait;
+  end process;
+
   test_is_addr_aligned : process is
     variable test0 : string := is_addr_aligned(x"00000000");
     variable test1 : string := is_addr_aligned(x"00000004");

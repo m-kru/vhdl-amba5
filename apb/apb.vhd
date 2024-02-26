@@ -238,10 +238,15 @@ package apb is
   -- Otherwise, the string contains an error message.
   function masks_has_zero(masks : mask_array_t) return string;
 
-  -- The addr_has_meta checks wheter an address contains a meta value.
+  -- The addr_has_meta checks whether an address contains a meta value.
   -- The returned string is empty if addr has no meta values.
   -- Otherwise, the string contains an error message.
   function addr_has_meta(addr : unsigned(31 downto 0)) return string;
+
+  -- The addrs_has_meta checks whether all addresses in array has no meta values.
+  -- The returned string is empty if no address has meta value.
+  -- Otherwise, the string contains an error message.
+  function addrs_has_meta(addrs : addr_array_t) return string;
 
   -- The is_addr_aligned function checks whether address is aligned to 4 bytes.
   -- Unaligned address usage for transfer is not forbidden by the specification.
@@ -264,6 +269,10 @@ package apb is
   -- The returned string is empty if all addresses are within the given mask ranges.
   -- Otherwise, the returned string contains an error message.
   function are_addrs_in_masks(addrs : addr_array_t; masks : mask_array_t) return string;
+
+  --function (is/has/check)_addr_space_overlap(addrs : addr_array_t; masks : mask_array_t) return string;
+
+    --return "addr space of Completer " & to_string(i) & " overlaps with addr space of Completer " to_string(j);
 
 end package;
 
@@ -529,6 +538,16 @@ package body apb is
     for b in addr'range loop
       if addr(b) /= '0' and addr(b) /= '1' then
         return "addr """ & to_string(addr) & """ has meta value at bit " & to_string(b);
+      end if;
+    end loop;
+    return "";
+  end function;
+
+  function addrs_has_meta(addrs : addr_array_t) return string is
+  begin
+    for a in addrs'range loop
+      if addr_has_meta(addrs(a)) /= "" then
+        return "addrs(" & to_string(a) & "): " & addr_has_meta(addrs(a));
       end if;
     end loop;
     return "";
