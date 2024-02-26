@@ -41,10 +41,10 @@ architecture rtl of Crossbar is
 
   -- Sanity checks
   constant zero_mask_fail          string := masks_has_zero(MASKS);
-  constant addr_has_meta_fail      string := ;
+  constant addr_has_meta_fail      string := addrs_has_meta(ADDRS);
   constant unaligned_addr_fail     string := are_addrs_aligned(ADDRS);
   constant addr_not_in_mask_fail   string := are_addrs_in_masks(ADDRS, MASKS);
-  constant addr_space_overlap_fail string := ;
+  constant addr_space_overlap_fail string := does_addr_space_overlap(ADDRS, MASKS);
 
 begin
 
