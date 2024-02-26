@@ -13,12 +13,12 @@ library work;
 package checker is
 
   type checker_t is record
-    -- Configuration fields
+    -- Configuration elements
     prefix : string; -- Optional prefix used in report messages.
-    -- Output fields
+    -- Output elements
     errors_o   : interface_errors_t;
     warnings_o : interface_warnings_t;
-    -- Internal fields
+    -- Internal elements
     state : state_t;
     prev_iface : interface_t;
     awaiting_transfer : boolean;
@@ -73,7 +73,7 @@ package body checker is
   function reset(checker: checker_t) return checker_t is
     variable ck : checker_t := checker;
   begin
-    ck.errors_o  := INTERFACE_ERRORS_NONE;
+    ck.errors_o := INTERFACE_ERRORS_NONE;
     ck.warnings_o := INTERFACE_WARNINGS_NONE;
     ck.state := IDLE;
     ck.prev_iface := init;
