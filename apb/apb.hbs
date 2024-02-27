@@ -93,6 +93,7 @@ namespace eval vhdl::amba5::apb {
       hbs::SetTool "nvc"
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=warning"
       hbs::SetTop $top
       src
       hbs::SetLib ""
@@ -107,6 +108,12 @@ namespace eval vhdl::amba5::apb {
     proc tb-read {} {
       _tb "tb_read"
       hbs::AddFile tb/bfm/tb-read.vhd
+      hbs::Run
+    }
+
+    proc tb-writeb {} {
+      _tb "tb_writeb"
+      hbs::AddFile tb/bfm/tb-writeb.vhd
       hbs::Run
     }
 

@@ -17,6 +17,9 @@ package apb is
   -- as it requires a mask array.
   type mask_array_t is array (natural range <>) of bit_vector(31 downto 0);
 
+  -- The data_array_t represents an array of data.
+  type data_array_t is array (natural range <>) of std_logic_vector(31 downto 0);
+
 
   -- state_t is type represents operating states as defined in the specification.
   -- The ACCESS state is is named ACCSS as "access" is VHDL keyword.
