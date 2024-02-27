@@ -117,6 +117,12 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
+    proc tb-readb {} {
+      _tb "tb_readb"
+      hbs::AddFile tb/bfm/tb-readb.vhd
+      hbs::Run
+    }
+
     hbs::Register
   }
 }
