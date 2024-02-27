@@ -35,9 +35,15 @@ architecture rtl of Crossbar is
     CONNECTED     -- Requester and Completer directly exchange signals
   );
 
+  type completer_idx_t is natural range 0 to COMPLETER_COUNT - 1;
+
   signal prev_selx       : std_logic_vector(0 to REQUESTER_COUNT - 1);
   signal setup_entry     : std_logic_vector(0 to REQUESTER_COUNT - 1); -- SETUP state entry condition detected
   signal transaction_end : std_logic_vector(0 to REQUESTER_COUNT - 1); -- Transaction end detected
+
+  -- A vector of currently busy Completers.
+  -- The "busy" means it is currently connected to some Requester, not that it is busy processing.
+  signal busy : std_logic_vector(0 to COMPLETER_COUNT - 1);
 
   -- Sanity checks
   constant zero_mask_fail          string := masks_has_zero(MASKS);
@@ -56,6 +62,9 @@ begin
   assert addr_space_overlap_fail = "" report PREFIX & addr_space_overlap_fail severity failure;
 
 
+  -- Wakeup to or wszystkich wakeup Reqeesterów, które aktualnie adresują danego Completera.
+
+
   prev_selx_driver : process (arstn_i, clk_i) is
   begin
     if arstn_i = '0' then
@@ -72,6 +81,7 @@ begin
   begin
     setup_entry <= (others => '0');
     for r in 0 to REQUESTER_COUNT - 1 loop
+       -- XXX: Can enable signal check be removed? In a system free of bugs the selx rising edge is enough.
       if prev_selx(r) = '0' and requesters(r).selx = '1' and requesters(r).enable = '0' then
         setup_entry(r) <= '1';
       end if;
@@ -89,5 +99,16 @@ begin
     end loop;
   end process;
 
+
+  router : process (arstn_i, clk_i) is
+  begin
+    if arstn_i = '0' then
+      busy <= (others => '0');
+    elsif rising_edge(clk_i) then
+      for r in 0 to REQUESTER_COUNT - 1 loop
+
+      end loop;
+    end if;
+  end process;
 
 end architecture;
