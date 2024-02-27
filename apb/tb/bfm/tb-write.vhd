@@ -8,11 +8,11 @@ library apb;
   use apb.checker.all;
 
 
-entity tb_write_transaction is
+entity tb_write is
 end entity;
 
 
-architecture test of tb_write_transaction is
+architecture test of tb_write is
 
   signal clk : std_logic := '1';
 

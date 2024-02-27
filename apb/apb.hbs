@@ -98,15 +98,15 @@ namespace eval vhdl::amba5::apb {
       hbs::SetLib ""
     }
 
-    proc tb-write-transaction {} {
-      _tb "tb_write_transaction"
-      hbs::AddFile tb/bfm/tb-write-transaction.vhd
+    proc tb-write {} {
+      _tb "tb_write"
+      hbs::AddFile tb/bfm/tb-write.vhd
       hbs::Run
     }
 
-    proc tb-read-transaction {} {
-      _tb "tb_read_transaction"
-      hbs::AddFile tb/bfm/tb-read-transaction.vhd
+    proc tb-read {} {
+      _tb "tb_read"
+      hbs::AddFile tb/bfm/tb-read.vhd
       hbs::Run
     }
 
