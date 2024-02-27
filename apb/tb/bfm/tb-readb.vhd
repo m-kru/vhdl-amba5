@@ -46,7 +46,7 @@ begin
     if rising_edge(clk) then
       iface.ready <= '1';
       if iface.selx = '1'  then
-        iface.rdata <= DATA(to_integer(iface.addr));
+        iface.rdata <= DATA(to_integer(iface.addr/4));
       end if;
     end if;
   end process;

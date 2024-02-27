@@ -322,7 +322,7 @@ package body bfm is
       end if;
 
       -- Reenter SETUP state
-      iface.addr <= iface.addr + 1;
+      iface.addr <= iface.addr + 4;
       iface.wdata <= data(i+1);
       iface.enable <= '0';
       wait until rising_edge(clk) for cfg.timeout;
@@ -424,7 +424,7 @@ package body bfm is
       end if;
       
       -- Reenter SETUP state
-      iface.addr <= iface.addr + 1;
+      iface.addr <= iface.addr + 4;
       iface.enable <= '0';
       wait until rising_edge(clk) for cfg.timeout;
       if clk /= '1' then

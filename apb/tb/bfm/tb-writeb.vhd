@@ -46,7 +46,7 @@ begin
     if rising_edge(clk) then
       iface.ready <= '1';
       if iface.selx = '1' and iface.enable = '1' and iface.ready = '1' then
-        written_data(to_integer(iface.addr)) <= iface.wdata;
+        written_data(to_integer(iface.addr)/4) <= iface.wdata;
       end if;
     end if;
   end process;
