@@ -125,4 +125,29 @@ namespace eval vhdl::amba5::apb {
 
     hbs::Register
   }
+
+  # Mock Completer is a simple memory Completer that is always ready.
+  namespace eval mock-completer {
+    proc src {} {
+      hbs::SetLib "apb"
+      hbs::SetStd "2019"
+      hbs::AddDep vhdl::amba5::apb::pkg::src
+      hbs::AddFile mock-completer.vhd
+    }
+
+    proc tb {} {
+      hbs::SetTool "nvc"
+      hbs::SetTop "tb"
+      src
+      hbs::AddDep vhdl::amba5::apb::bfm::src
+      hbs::AddDep vhdl::amba5::apb::checker::src
+      hbs::SetLib ""
+      hbs::AddFile tb/mock-completer/tb.vhd
+      hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=warning --dump-arrays"
+      hbs::Run
+    }
+
+    hbs::Register
+  }
 }
