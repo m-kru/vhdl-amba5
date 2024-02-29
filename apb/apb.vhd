@@ -10,11 +10,11 @@ library ieee;
 package apb is
 
   -- The addr_array_t represents an array of APB addresses. It is useful, for example, for the Crossbar
-  -- as it requires an address array.
+  -- as it requires an address array generic.
   type addr_array_t is array (natural range <>) of unsigned(31 downto 0);
 
   -- The mask_array_t represents an array of APB masks. It is useful, for example, for the Crossbar
-  -- as it requires a mask array.
+  -- as it requires a mask array generic.
   type mask_array_t is array (natural range <>) of bit_vector(31 downto 0);
 
   -- The data_array_t represents an array of data.
@@ -52,16 +52,16 @@ package apb is
   constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
   -- The init function initializes interface_errors_t with elements set to given values.
-  function init(
+  function init (
     setup_entry, setup_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
     strb_change, auser_change, wuser_change, read_strb : std_logic := '0'
   ) return interface_errors_t;
 
   -- The to_string function converts interface_errors_t to string for printing.
-  function to_string(errors : interface_errors_t) return string;
+  function to_string (errors : interface_errors_t) return string;
 
   -- The to_debug function converts interface_errors_t to string for pretty printing.
-  function to_debug(errors : interface_errors_t; indent_level : natural := 0) return string;
+  function to_debug (errors : interface_errors_t; indent_level : natural := 0) return string;
 
 
   -- The interface_warnings_t represents scenarios not forbidden by the specification, but not recommended.
@@ -78,15 +78,15 @@ package apb is
   constant INTERFACE_WARNINGS_NONE : interface_warnings_t := ('0', '0', '0', '0', '0');
 
   -- The init function initializes interface_warnings_t with elements set to given values.
-  function init(
+  function init (
     slverr_selx, slverr_enable, slverr_ready, wakeup_selx, wakeup_no_transfer : std_logic := '0'
   ) return interface_warnings_t;
 
   -- The to_string function converts interface_warnings_t to string for printing.
-  function to_string(warnings : interface_warnings_t) return string;
+  function to_string (warnings : interface_warnings_t) return string;
 
   -- The to_debug function converts interface_warnings_t to string for pretty printing.
-  function to_debug(warnings : interface_warnings_t; indent_level : natural := 0) return string;
+  function to_debug (warnings : interface_warnings_t; indent_level : natural := 0) return string;
 
 
   -- The protection_t type is used to provide protection signaling required for protection unit support.
@@ -97,37 +97,37 @@ package apb is
   end record;
 
   -- The init function initializes protection_t with elements set to given values.
-  function init(data_instruction, secure_non_secure, normal_privileged : std_logic := '0') return protection_t;
+  function init (data_instruction, secure_non_secure, normal_privileged : std_logic := '0') return protection_t;
 
   -- The to_protection function converts 3-bit std_logic_vector to protection_t.
-  function to_protection(slv : std_logic_vector(2 downto 0)) return protection_t;
+  function to_protection (slv : std_logic_vector(2 downto 0)) return protection_t;
 
   -- The to_slv converts function protection_t to 3-bit std_logic_vector.
-  function to_slv(prot : protection_t) return std_logic_vector;
+  function to_slv (prot : protection_t) return std_logic_vector;
 
   -- The is_data function returns true if prot represents data access.
-  function is_data(prot : protection_t) return boolean;
+  function is_data (prot : protection_t) return boolean;
 
   -- The is_instruction function returns true if prot represents instruction access.
-  function is_instruction(prot : protection_t) return boolean;
+  function is_instruction (prot : protection_t) return boolean;
 
   -- The is_secure function returns true if prot represents secure access.
-  function is_secure(prot : protection_t) return boolean;
+  function is_secure (prot : protection_t) return boolean;
 
   -- The is_non_secure function returns true if prot represents non-secure access.
-  function is_non_secure(prot : protection_t) return boolean;
+  function is_non_secure (prot : protection_t) return boolean;
 
   -- The is_normal function returns true if prot represents normal access.
-  function is_normal(prot : protection_t) return boolean;
+  function is_normal (prot : protection_t) return boolean;
 
   -- The is_privileged function returns true if prot represents privileged access.
-  function is_privileged(prot : protection_t) return boolean;
+  function is_privileged (prot : protection_t) return boolean;
 
   -- The to_string function converts protection_t to string for printing.
-  function to_string(prot : protection_t) return string;
+  function to_string (prot : protection_t) return string;
 
   -- The to_debug function converts protection_t to string for pretty printing.
-  function to_debug(prot : protection_t; indent_level : natural := 0) return string;
+  function to_debug (prot : protection_t; indent_level : natural := 0) return string;
 
 
   -- The interface_t record represents APB interface signals.
@@ -187,28 +187,28 @@ package apb is
   type interface_array_t is array (natural range <>) of interface_t;
 
   -- The is_data function returns true if transaction is data transaction.
-  function is_data(iface : interface_t) return boolean;
+  function is_data (iface : interface_t) return boolean;
 
   -- The is_data function returns true if transaction is instruction transaction.
-  function is_instruction(iface : interface_t) return boolean;
+  function is_instruction (iface : interface_t) return boolean;
 
   -- The is_secure function returns true if transaction is secure transaction.
-  function is_secure(iface : interface_t) return boolean;
+  function is_secure (iface : interface_t) return boolean;
 
   -- The is_non_secure function returns true if transaction is non-secure transaction.
-  function is_non_secure(iface : interface_t) return boolean;
+  function is_non_secure (iface : interface_t) return boolean;
 
   -- The is_normal function returns true if transaction is normal transaction.
-  function is_normal(iface : interface_t) return boolean;
+  function is_normal (iface : interface_t) return boolean;
 
   -- The is_privileged function returns true if transaction is privileged transaction.
-  function is_privileged(iface : interface_t) return boolean;
+  function is_privileged (iface : interface_t) return boolean;
 
   -- The to_string function converts interface_t to string for printing.
-  function to_string(iface : interface_t) return string;
+  function to_string (iface : interface_t) return string;
 
   -- The to_debug function converts interface_t to string for pretty printing.
-  function to_debug(iface : interface_t; indent_level : natural := 0) return string;
+  function to_debug (iface : interface_t; indent_level : natural := 0) return string;
 
   view requester_view of interface_t is
     addr   : out;
@@ -238,41 +238,41 @@ package apb is
   -- The masks_has_zero function checks wheter mask array has at least one mask with all bits set to '0'.
   -- The returned string is empty if masks has no zero masks.
   -- Otherwise, the string contains an error message.
-  function masks_has_zero(masks : mask_array_t) return string;
+  function masks_has_zero (masks : mask_array_t) return string;
 
   -- The addr_has_meta checks whether an address contains a meta value.
   -- The returned string is empty if addr has no meta values.
   -- Otherwise, the string contains an error message.
-  function addr_has_meta(addr : unsigned(31 downto 0)) return string;
+  function addr_has_meta (addr : unsigned(31 downto 0)) return string;
 
   -- The addrs_has_meta checks whether all addresses in array has no meta values.
   -- The returned string is empty if no address has meta value.
   -- Otherwise, the string contains an error message.
-  function addrs_has_meta(addrs : addr_array_t) return string;
+  function addrs_has_meta (addrs : addr_array_t) return string;
 
   -- The is_addr_aligned function checks whether address is aligned to 4 bytes.
   -- Unaligned address usage for transfer is not forbidden by the specification.
   -- However, unaligned address does not make sense for Completer address space
   -- start address. The returned string is empty if addr is aligned.
   -- Otherwise, the returned string contains an error message.
-  function is_addr_aligned(addr : unsigned(31 downto 0)) return string;
+  function is_addr_aligned (addr : unsigned(31 downto 0)) return string;
 
   -- The are_addrs_aligned function checks whether all addresses in the array are aligned.
   -- The returned string is empty if all addresses are aligned. Otherwise, the returned
   -- string contains an error message.
-  function are_addrs_aligned(addrs : addr_array_t) return string;
+  function are_addrs_aligned (addrs : addr_array_t) return string;
 
   -- The is_addr_in_mask function checks whether address is within the given mask range.
   -- The returned string is empty if addr is within the given mask range.
   -- Otherwise, the returned string contains an error message.
-  function is_addr_in_mask(addr : unsigned(31 downto 0); mask : bit_vector(31 downto 0)) return string;
+  function is_addr_in_mask (addr : unsigned(31 downto 0); mask : bit_vector(31 downto 0)) return string;
 
   -- The are_addrs_in_masks function checks whether all addresses are within the given mask ranges.
   -- The returned string is empty if all addresses are within the given mask ranges.
   -- Otherwise, the returned string contains an error message.
-  function are_addrs_in_masks(addrs : addr_array_t; masks : mask_array_t) return string;
+  function are_addrs_in_masks (addrs : addr_array_t; masks : mask_array_t) return string;
 
-  function does_addr_space_overlap(addrs : addr_array_t; masks : mask_array_t) return string;
+  function does_addr_space_overlap (addrs : addr_array_t; masks : mask_array_t) return string;
 
 end package;
 
@@ -294,7 +294,7 @@ package body apb is
     return errors;
   end function;
 
-  function to_string(errors : interface_errors_t) return string is
+  function to_string (errors : interface_errors_t) return string is
   begin
     return "(" &
       "setup_entry => '"  & to_string(errors.setup_entry)  & "', " &
@@ -310,7 +310,7 @@ package body apb is
       "read_strb => '"    & to_string(errors.read_strb)    & "')";
   end function;
 
-  function to_debug(errors : interface_errors_t; indent_level : natural := 0) return string is
+  function to_debug (errors : interface_errors_t; indent_level : natural := 0) return string is
     variable indent : string(0 to 2 * indent_level - 1) := (others => ' ');
   begin
     return "(" & LF &
@@ -332,7 +332,7 @@ package body apb is
   -- interface_warnings_t
   --
 
-  function init(
+  function init (
     slverr_selx, slverr_enable, slverr_ready, wakeup_selx, wakeup_no_transfer : std_logic := '0'
   ) return interface_warnings_t is
     constant warnings : interface_warnings_t := (
@@ -342,7 +342,7 @@ package body apb is
     return warnings;
   end function;
 
-  function to_string(warnings : interface_warnings_t) return string is
+  function to_string (warnings : interface_warnings_t) return string is
   begin
     return "(" &
       "slverr_selx => '"   & to_string(warnings.slverr_selx)   & "', " &
@@ -352,7 +352,7 @@ package body apb is
       "wakeup_no_transfer => '" & to_string(warnings.wakeup_no_transfer) & "')";
   end function;
 
-  function to_debug(warnings : interface_warnings_t; indent_level : natural := 0) return string is
+  function to_debug (warnings : interface_warnings_t; indent_level : natural := 0) return string is
     variable indent : string(0 to 2 * indent_level - 1) := (others => ' ');
   begin
     return "(" & LF &
@@ -368,13 +368,13 @@ package body apb is
   -- protection_t
   --
 
-  function init(data_instruction, secure_non_secure, normal_privileged : std_logic := '0') return protection_t is
+  function init (data_instruction, secure_non_secure, normal_privileged : std_logic := '0') return protection_t is
     constant prot : protection_t := (data_instruction, secure_non_secure, normal_privileged);
   begin
     return prot;
   end function;
 
-  function to_protection(slv : std_logic_vector(2 downto 0)) return protection_t is
+  function to_protection (slv : std_logic_vector(2 downto 0)) return protection_t is
     variable prot : protection_t;
   begin
     prot.data_instruction  := slv(2);
@@ -383,7 +383,7 @@ package body apb is
     return prot;
   end function;
 
-  function to_slv(prot : protection_t) return std_logic_vector is
+  function to_slv (prot : protection_t) return std_logic_vector is
     variable slv : std_logic_vector(2 downto 0);
   begin
     slv(2) := prot.data_instruction;
@@ -392,25 +392,25 @@ package body apb is
     return slv;
   end function;
 
-  function is_data(prot : protection_t) return boolean is
+  function is_data (prot : protection_t) return boolean is
     begin return prot.data_instruction = '0'; end function;
 
-  function is_instruction(prot : protection_t) return boolean is
+  function is_instruction (prot : protection_t) return boolean is
     begin return prot.data_instruction = '1'; end function;
 
-  function is_secure(prot : protection_t) return boolean is
+  function is_secure (prot : protection_t) return boolean is
     begin return prot.secure_non_secure = '0'; end function;
 
-  function is_non_secure(prot : protection_t) return boolean is
+  function is_non_secure (prot : protection_t) return boolean is
     begin return prot.secure_non_secure = '1'; end function;
 
-  function is_normal(prot : protection_t) return boolean is
+  function is_normal (prot : protection_t) return boolean is
     begin return prot.normal_privileged = '0'; end function;
 
-  function is_privileged(prot : protection_t) return boolean is
+  function is_privileged (prot : protection_t) return boolean is
     begin return prot.normal_privileged = '1'; end function;
 
-  function to_string(prot : protection_t) return string is
+  function to_string (prot : protection_t) return string is
   begin
     return "(" &
       "data_instruction => '"  & to_string(prot.data_instruction)  & "', " &
@@ -418,7 +418,7 @@ package body apb is
       "normal_privileged => '" & to_string(prot.normal_privileged) & "')";
   end function;
 
-  function to_debug(prot : protection_t; indent_level : natural := 0) return string is
+  function to_debug (prot : protection_t; indent_level : natural := 0) return string is
     variable indent : string(0 to 2 * indent_level - 1) := (others => ' ');
   begin
     return "(" & LF &
@@ -432,7 +432,7 @@ package body apb is
   -- interface_t
   --
 
-  function init(
+  function init (
     addr   : unsigned(31 downto 0) := (others => '0');
     prot   : protection_t := ('0', '0', '0');
     nse    : std_logic := '-';
@@ -456,25 +456,25 @@ package body apb is
     return iface;
   end function;
 
-  function is_data(iface : interface_t) return boolean is
+  function is_data (iface : interface_t) return boolean is
     begin return is_data(iface.prot); end function;
 
-  function is_instruction(iface : interface_t) return boolean is
+  function is_instruction (iface : interface_t) return boolean is
     begin return is_instruction(iface.prot); end function;
 
-  function is_secure(iface : interface_t) return boolean is
+  function is_secure (iface : interface_t) return boolean is
     begin return is_secure(iface.prot); end function;
 
-  function is_non_secure(iface : interface_t) return boolean is
+  function is_non_secure (iface : interface_t) return boolean is
     begin return is_non_secure(iface.prot); end function;
 
-  function is_normal(iface : interface_t) return boolean is
+  function is_normal (iface : interface_t) return boolean is
     begin return is_normal(iface.prot); end function;
 
-  function is_privileged(iface : interface_t) return boolean is
+  function is_privileged (iface : interface_t) return boolean is
     begin return is_privileged(iface.prot); end function;
 
-  function to_string(iface : interface_t) return string is
+  function to_string (iface : interface_t) return string is
   begin
     return "(" &
       "addr => x"""  & to_hstring(iface.addr)  & """, " &
@@ -495,7 +495,7 @@ package body apb is
       "buser => x""" & to_hstring(iface.buser) & """)";
   end function;
 
-  function to_debug(iface : interface_t; indent_level : natural := 0) return string is
+  function to_debug (iface : interface_t; indent_level : natural := 0) return string is
     variable indent : string(0 to 2 * indent_level - 1) := (others => ' ');
   begin
     return "(" & LF &
@@ -522,7 +522,7 @@ package body apb is
   -- util functions
   --
 
-  function masks_has_zero(masks : mask_array_t) return string is
+  function masks_has_zero (masks : mask_array_t) return string is
     constant zero : bit_vector(31 downto 0) := (others => '0');
   begin
     for m in masks'range loop
@@ -533,7 +533,7 @@ package body apb is
     return "";
   end function;
 
-  function addr_has_meta(addr : unsigned(31 downto 0)) return string is
+  function addr_has_meta (addr : unsigned(31 downto 0)) return string is
   begin
     for b in addr'range loop
       if addr(b) /= '0' and addr(b) /= '1' then
@@ -543,7 +543,7 @@ package body apb is
     return "";
   end function;
 
-  function addrs_has_meta(addrs : addr_array_t) return string is
+  function addrs_has_meta (addrs : addr_array_t) return string is
   begin
     for a in addrs'range loop
       if addr_has_meta(addrs(a)) /= "" then
@@ -553,7 +553,7 @@ package body apb is
     return "";
   end function;
 
-  function is_addr_aligned(addr : unsigned(31 downto 0)) return string is
+  function is_addr_aligned (addr : unsigned(31 downto 0)) return string is
   begin
     for b in 0 to 1 loop
       if addr(b) /= '0' then
@@ -563,7 +563,7 @@ package body apb is
     return "";
   end function;
 
-  function are_addrs_aligned(addrs : addr_array_t) return string is
+  function are_addrs_aligned (addrs : addr_array_t) return string is
   begin
     for a in addrs'range loop
       if is_addr_aligned(addrs(a)) /= "" then
@@ -573,7 +573,7 @@ package body apb is
     return "";
   end function;
 
-  function is_addr_in_mask(addr : unsigned(31 downto 0); mask : bit_vector(31 downto 0)) return string is
+  function is_addr_in_mask (addr : unsigned(31 downto 0); mask : bit_vector(31 downto 0)) return string is
     constant zero : std_logic_vector(31 downto 0) := (others => '0');
   begin
     if (std_logic_vector(addr) and not to_std_logic_vector(mask)) /= zero then
@@ -582,7 +582,7 @@ package body apb is
     return "";
   end function;
 
-  function are_addrs_in_masks(addrs : addr_array_t; masks : mask_array_t) return string is
+  function are_addrs_in_masks (addrs : addr_array_t; masks : mask_array_t) return string is
   begin
     assert addrs'length = masks'length
       report "addrs length (" & to_string(addrs'length) & ") /= masks length (" & to_string(addrs'length) & ")"
@@ -597,7 +597,7 @@ package body apb is
       return "";
   end function;
 
-  function does_addr_space_overlap(addrs : addr_array_t; masks : mask_array_t) return string is
+  function does_addr_space_overlap (addrs : addr_array_t; masks : mask_array_t) return string is
     constant zero : std_logic_vector(31 downto 0) := (others => '0');
   begin
     assert addrs'length = masks'length
