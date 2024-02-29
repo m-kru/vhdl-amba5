@@ -63,7 +63,7 @@ begin
     wait for 1 ns;
     for i in DATA'range loop
       assert mc.memory(i) = DATA(i)
-        report "got: " & to_string(mc.memory(i)) & ", want: " & to_string(DATA(i));
+        report "got " & to_string(mc.memory(i)) & ", want " & to_string(DATA(i));
     end loop;
 
     -- Block read test
@@ -71,7 +71,7 @@ begin
     wait for 1 ns;
     for i in read_data'range loop
       assert read_data(i) = mc.memory(i)
-        report "got: " & to_string(read_data(i)) & ", want: " & to_string(mc.memory(i));
+        report "got " & to_string(read_data(i)) & ", want " & to_string(mc.memory(i));
     end loop;
 
     report stats_string(mc);

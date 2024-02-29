@@ -48,10 +48,10 @@ package checker is
 
   function init(prefix: string := "apb: checker: ") return checker_t;
 
-  -- reset resets checker. It enforces clear of errors and warnings and resets the checker state.
+  -- The reset function resets the checker. It enforces clear of errors and warnings and resets the checker state.
   function reset(checker: checker_t) return checker_t;
 
-  -- clock clocks checker state.
+  -- The clock function clocks checker state.
   --
   -- The clear input can be used to clear detected errors and warnings.
   -- Clearing has lower priority than detection so when error/warning is detected while clear is asserted

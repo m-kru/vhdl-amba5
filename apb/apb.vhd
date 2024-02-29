@@ -21,8 +21,8 @@ package apb is
   type data_array_t is array (natural range <>) of std_logic_vector(31 downto 0);
 
 
-  -- state_t is type represents operating states as defined in the specification.
-  -- The ACCESS state is is named ACCSS as "access" is VHDL keyword.
+  -- The state_t type represents operating states as defined in the specification.
+  -- The ACCESS state is named ACCSS as "access" is VHDL keyword.
   --
   -- NOTE: The specification provides the state diagram. However, the diagram presents state
   -- changes for the Requester. Completers or Checkers might use the same states, but they
@@ -30,7 +30,7 @@ package apb is
   type state_t is (IDLE, SETUP, ACCSS);
 
 
-  -- interface_errors_t represents scenarios defined as erroneous by the specification.
+  -- The interface_errors_t represents scenarios defined as erroneous by the specification.
   type interface_errors_t is record
     -- PSLVERR related
     setup_entry : std_logic; -- Invalid SETUP state entry condition, PSELx = 1, but PENABLE = 1 instead of 0.
@@ -51,20 +51,20 @@ package apb is
 
   constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
-  -- init initializes interface_errors_t with elements set to given values.
+  -- The init function initializes interface_errors_t with elements set to given values.
   function init(
     setup_entry, setup_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
     strb_change, auser_change, wuser_change, read_strb : std_logic := '0'
   ) return interface_errors_t;
 
-  -- to_string converts interface_errors_t to string for printing.
+  -- The to_string function converts interface_errors_t to string for printing.
   function to_string(errors : interface_errors_t) return string;
 
-  -- to_debug converts interface_errors_t to string for pretty printing.
+  -- The to_debug function converts interface_errors_t to string for pretty printing.
   function to_debug(errors : interface_errors_t; indent_level : natural := 0) return string;
 
 
-  -- interface_warnings_t represents scenarios not forbidden by the specification, but not recommended.
+  -- The interface_warnings_t represents scenarios not forbidden by the specification, but not recommended.
   type interface_warnings_t is record
     -- PSLVERR related
     slverr_selx   : std_logic; -- PSLVERR high, but PSELx low.
@@ -77,61 +77,60 @@ package apb is
 
   constant INTERFACE_WARNINGS_NONE : interface_warnings_t := ('0', '0', '0', '0', '0');
 
-  -- init initializes interface_warnings_t with elements set to given values.
+  -- The init function initializes interface_warnings_t with elements set to given values.
   function init(
     slverr_selx, slverr_enable, slverr_ready, wakeup_selx, wakeup_no_transfer : std_logic := '0'
   ) return interface_warnings_t;
 
-  -- to_string converts interface_warnings_t to string for printing.
+  -- The to_string function converts interface_warnings_t to string for printing.
   function to_string(warnings : interface_warnings_t) return string;
 
-  -- to_debug converts interface_warnings_t to string for pretty printing.
+  -- The to_debug function converts interface_warnings_t to string for pretty printing.
   function to_debug(warnings : interface_warnings_t; indent_level : natural := 0) return string;
 
 
-  -- protection_t is used to provide protection signaling
-  -- required for protection unit support.
+  -- The protection_t type is used to provide protection signaling required for protection unit support.
   type protection_t is record
     data_instruction  : std_logic; -- Bit 2
     secure_non_secure : std_logic; -- Bit 1
     normal_privileged : std_logic; -- Bit 0
   end record;
 
-  -- init initializes protection_t with elements set to given values.
+  -- The init function initializes protection_t with elements set to given values.
   function init(data_instruction, secure_non_secure, normal_privileged : std_logic := '0') return protection_t;
 
-  -- to_protection converts 3-bit std_logic_vector to protection_t.
+  -- The to_protection function converts 3-bit std_logic_vector to protection_t.
   function to_protection(slv : std_logic_vector(2 downto 0)) return protection_t;
 
-  -- to_slv converts protection_t to 3-bit std_logic_vector.
+  -- The to_slv converts function protection_t to 3-bit std_logic_vector.
   function to_slv(prot : protection_t) return std_logic_vector;
 
-  -- is_data returns true if prot represents data access.
+  -- The is_data function returns true if prot represents data access.
   function is_data(prot : protection_t) return boolean;
 
-  -- is_instruction returns true if prot represents instruction access.
+  -- The is_instruction function returns true if prot represents instruction access.
   function is_instruction(prot : protection_t) return boolean;
 
-  -- is_secure returns true if prot represents secure access.
+  -- The is_secure function returns true if prot represents secure access.
   function is_secure(prot : protection_t) return boolean;
 
-  -- is_non_secure returns true if prot represents non-secure access.
+  -- The is_non_secure function returns true if prot represents non-secure access.
   function is_non_secure(prot : protection_t) return boolean;
 
-  -- is_normal returns true if prot represents normal access.
+  -- The is_normal function returns true if prot represents normal access.
   function is_normal(prot : protection_t) return boolean;
 
-  -- is_normal returns true if prot represents privileged access.
+  -- The is_privileged function returns true if prot represents privileged access.
   function is_privileged(prot : protection_t) return boolean;
 
-  -- to_string converts protection_t to string for printing.
+  -- The to_string function converts protection_t to string for printing.
   function to_string(prot : protection_t) return string;
 
-  -- to_debug converts protection_t to string for pretty printing.
+  -- The to_debug function converts protection_t to string for pretty printing.
   function to_debug(prot : protection_t; indent_level : natural := 0) return string;
 
 
-  -- interface_t record represents APB interface signals.
+  -- The interface_t record represents APB interface signals.
   --
   -- The APB Specification defines some interface signals to be optional and have
   -- user-defined widths. However, the interface_t record contains all possible
@@ -158,7 +157,7 @@ package apb is
     buser  : std_logic_vector( 15 downto 0);
   end record;
 
-  -- init initializes interface_t with elements set to given values.
+  -- The init function initializes interface_t with elements set to given values.
   --
   -- All mandatory elements except wakeup are initialized with the '0' value.
   -- The wakeup element is initialized with the '1' value. This is because wakeup
@@ -187,28 +186,28 @@ package apb is
 
   type interface_array_t is array (natural range <>) of interface_t;
 
-  -- is_data returns true if transaction is data transaction.
+  -- The is_data function returns true if transaction is data transaction.
   function is_data(iface : interface_t) return boolean;
 
-  -- is_data returns true if transaction is instruction transaction.
+  -- The is_data function returns true if transaction is instruction transaction.
   function is_instruction(iface : interface_t) return boolean;
 
-  -- is_secure returns true if transaction is secure transaction.
+  -- The is_secure function returns true if transaction is secure transaction.
   function is_secure(iface : interface_t) return boolean;
 
-  -- is_non_secure returns true if transaction is non-secure transaction.
+  -- The is_non_secure function returns true if transaction is non-secure transaction.
   function is_non_secure(iface : interface_t) return boolean;
 
-  -- is_normal returns true if transaction is normal transaction.
+  -- The is_normal function returns true if transaction is normal transaction.
   function is_normal(iface : interface_t) return boolean;
 
-  -- is_privileged returns true if transaction is privileged transaction.
+  -- The is_privileged function returns true if transaction is privileged transaction.
   function is_privileged(iface : interface_t) return boolean;
 
-  -- to_string converts interface_t to string for printing.
+  -- The to_string function converts interface_t to string for printing.
   function to_string(iface : interface_t) return string;
 
-  -- to_debug converts interface_t to string for pretty printing.
+  -- The to_debug function converts interface_t to string for pretty printing.
   function to_debug(iface : interface_t; indent_level : natural := 0) return string;
 
   view requester_view of interface_t is

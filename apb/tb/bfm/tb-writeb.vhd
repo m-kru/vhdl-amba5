@@ -67,7 +67,7 @@ begin
 
     for i in written_data'range loop
       assert written_data(i) = DATA(i)
-        report to_string(i) & ": got: " & to_hstring(written_data(i)) & ", want: " & to_hstring(DATA(i));
+        report to_string(i) & ": got " & to_hstring(written_data(i)) & ", want " & to_hstring(DATA(i));
     end loop;
 
     wait for 3 ns;

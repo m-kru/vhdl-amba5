@@ -68,14 +68,14 @@ package body mock_completer is
         mc.memory(to_integer(iface.addr)/4) <= iface.wdata;
         if iface.enable = '1' then
           mc.write_count <= mc.write_count + 1;
-          report mc.prefix & "write: addr: x""" & to_hstring(iface.addr) & """, data: x""" & to_hstring(iface.wdata) & """";
+          report mc.prefix & "write: addr => x""" & to_hstring(iface.addr) & """, data => x""" & to_hstring(iface.wdata) & """";
         end if;
       -- Read
       else
         iface.rdata <= mc.memory(to_integer(iface.addr)/4);
         if iface.enable = '1' then
           mc.read_count <= mc.read_count + 1;
-          report mc.prefix & "read: addr: x""" & to_hstring(iface.addr) & """";
+          report mc.prefix & "read: addr => x""" & to_hstring(iface.addr) & """";
         end if;
       end if;
     end if;
