@@ -93,11 +93,38 @@ begin
 
 
   router : process (clk_i) is
+
+    function hot_bit_count (slv : std_logic_vector) return natural is
+      variable cnt : natural := 0;
+    begin
+      for i in slv'range loop
+        if slv(i) = '1' then cnt := cnt + 1; end if;
+      end loop;
+      return cnt;
+    end function;
+
+    function hot_bit_idx (slv : std_logic_vector) return natural is
+    begin
+      for i in slv'range loop
+        if slv(i) = '1' then return i; end if;
+      end loop;
+      report PREFIX & "hot bit not found in vector """ & to_string(slv) & """" severity failure;
+    end function;
+
+    -- Requester index
+    variable r : requester_range; 
+
   begin
     if rising_edge(clk_i) then
-      -- TODO: Add sanity checks that only one bit in completers(c) is high.
-
       for c in completer_range loop
+        -- Sanity check that at most one bit is asserted in the completer connection vector
+        if hot_bit_count(conn_matrix(c)) > 1 then
+          report
+            PREFIX & "completer " & to_string(c) & " has " & to_string(hot_bit_count(conn_matrix(c))) &
+            " connected requesters, conn_matrix(" & to_string(c) & ") => """ & to_string(conn_matrix(c)) & """"
+            severity failure;
+        end if;
+
         completers(c).addr   <= (others => '-');
         completers(c).prot   <= ('-', '-', '-');
         completers(c).nse    <= '-';
@@ -116,35 +143,34 @@ begin
               -- Generate SETUP entry condition for the Completer
               completers(c).selx <= '1';
               completers(c).enable <= '0';
+              exit;
             end if;
           end loop;
         -- There is already a connection between the Completer c and some Requester
         else
-          for r in requester_range loop
-            if conn_matrix(c)(r) = '1' then
-              if requesters(r).selx = '0' then
-                conn_matrix(c) <= (others => '0'); -- TODO: Is it better to clear whole vector or single bit?
-              else
-                -- Route interfaces
-                completers(c).addr   <= requesters(r).addr;
-                completers(c).prot   <= requesters(r).prot;
-                completers(c).nse    <= requesters(r).nse;
-                completers(c).selx   <= requesters(r).selx;
-                completers(c).enable <= requesters(r).enable;
-                completers(c).write  <= requesters(r).write;
-                completers(c).wdata  <= requesters(r).wdata;
-                completers(c).strb   <= requesters(r).strb;
-                completers(c).auser  <= requesters(r).auser;
-                completers(c).wuser  <= requesters(r).wuser;
+          r := hot_bit_idx(conn_matrix(c));
 
-                requesters(r).ready  <= completers(c).ready;
-                requesters(r).rdata  <= completers(c).rdata;
-                requesters(r).slverr <= completers(c).slverr;
-                requesters(r).ruser  <= completers(c).ruser;
-                requesters(r).buser  <= completers(c).buser;
-              end if;
-            end if;
-          end loop;
+          -- End of connection
+          if requesters(r).selx = '0' then 
+            conn_matrix(c) <= (others => '0'); -- TODO: Is it better to clear whole vector or single bit?
+          else -- Route interfaces
+            completers(c).addr   <= requesters(r).addr;
+            completers(c).prot   <= requesters(r).prot;
+            completers(c).nse    <= requesters(r).nse;
+            completers(c).selx   <= requesters(r).selx;
+            completers(c).enable <= requesters(r).enable;
+            completers(c).write  <= requesters(r).write;
+            completers(c).wdata  <= requesters(r).wdata;
+            completers(c).strb   <= requesters(r).strb;
+            completers(c).auser  <= requesters(r).auser;
+            completers(c).wuser  <= requesters(r).wuser;
+
+            requesters(r).ready  <= completers(c).ready;
+            requesters(r).rdata  <= completers(c).rdata;
+            requesters(r).slverr <= completers(c).slverr;
+            requesters(r).ruser  <= completers(c).ruser;
+            requesters(r).buser  <= completers(c).buser;
+          end if;
         end if;
       end loop;
     end if;
