@@ -4,6 +4,7 @@
 
 library ieee;
   use ieee.std_logic_1164.all;
+  use ieee.numeric_std.all;
 
 library work;
   use work.apb.all;
@@ -12,7 +13,7 @@ library work;
 entity Crossbar is
   generic (
     REQUESTER_COUNT : positive := 1;
-    COMPLETER_COUNT : positive;
+    COMPLETER_COUNT : positive := 1;
     ADDRS  : addr_array_t(0 to COMPLETER_COUNT - 1); -- Completer addresses 
     MASKS  : mask_array_t(0 to COMPLETER_COUNT - 1); -- Completer address masks
     PREFIX : string := "apb: crossbar: " -- Prefix used in report messages
@@ -20,82 +21,74 @@ entity Crossbar is
   port (
     arstn_i : in std_logic := '1';
     clk_i   : in std_logic;
-    requesters : view completer_view of interface_array_t(0 to COMPLETER_COUNT - 1); -- Connect requesters to this port
-    completers : view requester_view of interface_array_t(0 to REQUESTER_COUNT - 1); -- Connect completers to this port
+    requesters : view (completer_view) of interface_array_t(0 to COMPLETER_COUNT - 1); -- Connect requesters to this port
+    completers : view (requester_view) of interface_array_t(0 to REQUESTER_COUNT - 1)  -- Connect completers to this port
   );
 end entity;
 
 
 architecture rtl of Crossbar is
 
-  type connection_state_t is (
-    DISCONNECTED, -- Requester is not connected to any Completer
-    WAITING,      -- Requester is waiting as given Completer is connected to another Requester
-    SETUP,        -- The crossbar generates the SETUP state entry condition for Completer
-    CONNECTED     -- Requester and Completer directly exchange signals
-  );
+  subtype requester_range is natural range 0 to REQUESTER_COUNT - 1;
+  subtype completer_range is natural range 0 to COMPLETER_COUNT - 1;
 
-  type completer_idx_t is natural range 0 to COMPLETER_COUNT - 1;
-
-  signal prev_selx       : std_logic_vector(0 to REQUESTER_COUNT - 1);
-  signal setup_entry     : std_logic_vector(0 to REQUESTER_COUNT - 1); -- SETUP state entry condition detected
-  signal transaction_end : std_logic_vector(0 to REQUESTER_COUNT - 1); -- Transaction end detected
-
-  -- A vector of currently busy Completers.
-  -- The "busy" means it is currently connected to some Requester, not that it is busy processing.
-  signal busy : std_logic_vector(0 to COMPLETER_COUNT - 1);
+  constant REQ_ZERO : std_logic_vector(requester_range) := (others => '0');
 
   -- Sanity checks
-  constant zero_mask_fail          string := masks_has_zero(MASKS);
-  constant addr_has_meta_fail      string := addrs_has_meta(ADDRS);
-  constant unaligned_addr_fail     string := are_addrs_aligned(ADDRS);
-  constant addr_not_in_mask_fail   string := are_addrs_in_masks(ADDRS, MASKS);
-  constant addr_space_overlap_fail string := does_addr_space_overlap(ADDRS, MASKS);
+  --constant zero_mask_fail          : string := masks_has_zero(MASKS);
+  --constant addr_has_meta_fail      : string := addrs_has_meta(ADDRS);
+  --constant unaligned_addr_fail     : string := are_addrs_aligned(ADDRS);
+  --constant addr_not_in_mask_fail   : string := are_addrs_in_masks(ADDRS, MASKS);
+  --constant addr_space_overlap_fail : string := does_addr_space_overlap(ADDRS, MASKS);
+
+  type matrix_t is array (completer_range) of std_logic_vector(requester_range);
+
+  -- The addr_matrix contains information which Requesters currently address a given Completer.
+  -- For example, if addr_matrix(1)(2) = '1', then it means that Requester with index 2
+  -- addresses Completer with index 1.
+  signal addr_matrix : matrix_t;
+
+  -- The selx_matrix contains information which Requester want to access a given Completer.
+  signal selx_matrix : matrix_t;
+
+  -- The conn_matrix is the connection matrix.
+  signal conn_matrix : matrix_t;
 
 begin
 
   -- Sanity checks
-  assert zero_mask_fail          = "" report PREFIX & zero_mask_fail          severity failure;
-  assert addr_has_meta_fail      = "" report PREFIX & addr_has_meta_fail      severity failure;
-  assert unaligned_addr_fail     = "" report PREFIX & unaligned_addr_fail     severity failure;
-  assert addr_not_in_mask_fail   = "" report PREFIX & addr_not_in_mask_fail   severity failure;
-  assert addr_space_overlap_fail = "" report PREFIX & addr_space_overlap_fail severity failure;
+  --assert zero_mask_fail          = "" report PREFIX & zero_mask_fail          severity failure;
+  --assert addr_has_meta_fail      = "" report PREFIX & addr_has_meta_fail      severity failure;
+  --assert unaligned_addr_fail     = "" report PREFIX & unaligned_addr_fail     severity failure;
+  --assert addr_not_in_mask_fail   = "" report PREFIX & addr_not_in_mask_fail   severity failure;
+  --assert addr_space_overlap_fail = "" report PREFIX & addr_space_overlap_fail severity failure;
 
 
-  -- Wakeup to or wszystkich wakeup Reqeesterów, które aktualnie adresują danego Completera.
+  -- Wakeup to or wszystkich wakeup Reqesterów, które aktualnie adresują danego Completera.
 
 
-  prev_selx_driver : process (arstn_i, clk_i) is
+  addr_matrix_driver : process (all) is
   begin
-    if arstn_i = '0' then
-      prev_selx <= (others -> '0');
-    elsif rising_edge(clk_i)
-      for r in 0 to REQUESTER_COUNT - 1 loop
-        prev_selx(r) <= requesters(r).selx;
+    for c in completer_range loop
+      for r in requester_range loop
+        addr_matrix(c)(r) <= '0';
+        if (requesters(r).addr and unsigned(to_std_logic_vector(MASKS(c)))) = ADDRS(c) then
+          addr_matrix(c)(r) <= '1';
+        end if;
       end loop;
-    end if;
-  end process;
-
-
-  setup_entry_detector : process (all) is
-  begin
-    setup_entry <= (others => '0');
-    for r in 0 to REQUESTER_COUNT - 1 loop
-       -- XXX: Can enable signal check be removed? In a system free of bugs the selx rising edge is enough.
-      if prev_selx(r) = '0' and requesters(r).selx = '1' and requesters(r).enable = '0' then
-        setup_entry(r) <= '1';
-      end if;
     end loop;
   end process;
 
 
-  transaction_end_detector : process (all) is
+  selx_matrix_driver : process (all) is
   begin
-    transaction_end <= (others => '0');
-    for r in 0 to REQUESTER_COUNT - 1 loop
-      if prev_selx(r) = '1' and requesters(r).selx = '0' then
-        transaction_end(r) <= '1';
-      end if;
+    for c in completer_range loop
+      for r in requester_range loop
+        selx_matrix(c)(r) <= '0';
+        if addr_matrix(c)(r) = '1' and requesters(r).selx = '1' then
+          selx_matrix(c)(r) <= '1';
+        end if;
+      end loop;
     end loop;
   end process;
 
@@ -103,10 +96,59 @@ begin
   router : process (arstn_i, clk_i) is
   begin
     if arstn_i = '0' then
-      busy <= (others => '0');
+      -- TODO: Is there anything to reset?
     elsif rising_edge(clk_i) then
-      for r in 0 to REQUESTER_COUNT - 1 loop
+      -- TODO: Add sanity checks that only one bit in completers(c) is  high.
 
+      for c in completer_range loop
+        completers(c).addr   <= (others => '-');
+        completers(c).prot   <= ('-', '-', '-');
+        completers(c).nse    <= '-';
+        completers(c).selx   <= '0';
+        completers(c).enable <= '-';
+        completers(c).write  <= '-';
+        completers(c).wdata  <= (others => '-');
+        completers(c).strb   <= (others => '-');
+        completers(c).auser  <= (others => '-');
+        completers(c).wuser  <= (others => '-');
+
+        if conn_matrix(c) = REQ_ZERO then
+          for r in requester_range loop
+            if selx_matrix(c)(r) = '1' then
+              conn_matrix(c)(r) <= '1';
+              -- Generate SETUP entry condition for the Completer
+              completers(c).selx <= '1';
+              completers(c).enable <= '0';
+            end if;
+          end loop;
+        -- There is already a connection between the Completer c and some Requester
+        else
+          for r in requester_range loop
+            if conn_matrix(c)(r) = '1' then
+              if requesters(r).selx = '0' then
+                conn_matrix(c) <= (others => '0'); -- TODO: Is it better to clear whole vector or single bit?
+              else
+                -- Route interfaces
+                completers(c).addr   <= requesters(r).addr;
+                completers(c).prot   <= requesters(r).prot;
+                completers(c).nse    <= requesters(r).nse;
+                completers(c).selx   <= requesters(r).selx;
+                completers(c).enable <= requesters(r).enable;
+                completers(c).write  <= requesters(r).write;
+                completers(c).wdata  <= requesters(r).wdata;
+                completers(c).strb   <= requesters(r).strb;
+                completers(c).auser  <= requesters(r).auser;
+                completers(c).wuser  <= requesters(r).wuser;
+
+                requesters(r).ready  <= completers(c).ready;
+                requesters(r).rdata  <= completers(c).rdata;
+                requesters(r).slverr <= completers(c).slverr;
+                requesters(r).ruser  <= completers(c).ruser;
+                requesters(r).buser  <= completers(c).buser;
+              end if;
+            end if;
+          end loop;
+        end if;
       end loop;
     end if;
   end process;
