@@ -19,8 +19,7 @@ entity Crossbar is
     PREFIX : string := "apb: crossbar: " -- Prefix used in report messages
   );
   port (
-    arstn_i : in std_logic := '1';
-    clk_i   : in std_logic;
+    clk_i : in std_logic;
     requesters : view (completer_view) of interface_array_t(0 to COMPLETER_COUNT - 1); -- Connect requesters to this port
     completers : view (requester_view) of interface_array_t(0 to REQUESTER_COUNT - 1)  -- Connect completers to this port
   );
@@ -93,12 +92,10 @@ begin
   end process;
 
 
-  router : process (arstn_i, clk_i) is
+  router : process (clk_i) is
   begin
-    if arstn_i = '0' then
-      -- TODO: Is there anything to reset?
-    elsif rising_edge(clk_i) then
-      -- TODO: Add sanity checks that only one bit in completers(c) is  high.
+    if rising_edge(clk_i) then
+      -- TODO: Add sanity checks that only one bit in completers(c) is high.
 
       for c in completer_range loop
         completers(c).addr   <= (others => '-');
