@@ -46,10 +46,11 @@ package checker is
     awaiting_transfer => true
   );
 
-  function init(prefix: string := "apb: checker: ") return checker_t;
+  -- The init function initializes checker_t with prefix set to given value.
+  function init (prefix : string := "apb: checker: ") return checker_t;
 
   -- The reset function resets the checker. It enforces clear of errors and warnings and resets the checker state.
-  function reset(checker: checker_t) return checker_t;
+  function reset (checker : checker_t) return checker_t;
 
   -- The clock function clocks checker state.
   --
@@ -57,20 +58,20 @@ package checker is
   -- Clearing has lower priority than detection so when error/warning is detected while clear is asserted
   -- the errors_o/warnings_o will not be zeroed.
   -- Clearing does not modify the checker state.
-  function clock(checker: checker_t; iface: interface_t; clear : std_logic := '0') return checker_t;
+  function clock (checker : checker_t; iface : interface_t; clear : std_logic := '0') return checker_t;
 
 end package;
 
 package body checker is
 
-  function init(prefix: string := "apb: checker: ") return checker_t is
+  function init (prefix : string := "apb: checker: ") return checker_t is
     variable ck : checker_t(prefix(prefix'range));
   begin
     ck.prefix := prefix;
     return ck;
   end function;
 
-  function reset(checker: checker_t) return checker_t is
+  function reset (checker : checker_t) return checker_t is
     variable ck : checker_t := checker;
   begin
     ck.errors_o := INTERFACE_ERRORS_NONE;
@@ -81,7 +82,7 @@ package body checker is
     return ck;
   end function;
 
-  function stateless_checks(checker: checker_t; iface: interface_t) return checker_t is
+  function stateless_checks (checker : checker_t; iface : interface_t) return checker_t is
     variable ck : checker_t := checker;
   begin
     --
@@ -120,7 +121,7 @@ package body checker is
     return ck;
   end function;
 
-  function stable_checks(checker: checker_t; iface: interface_t; whenn : string) return checker_t is
+  function stable_checks (checker : checker_t; iface : interface_t; whenn : string) return checker_t is
     variable ck : checker_t := checker;
   begin
     if iface.addr /= ck.prev_iface.addr then
@@ -177,7 +178,7 @@ package body checker is
   end function;
 
   -- clock_idle clocks checker in IDLE state.
-  function clock_idle(checker: checker_t; iface: interface_t; clear : std_logic) return checker_t is
+  function clock_idle (checker : checker_t; iface : interface_t; clear : std_logic) return checker_t is
     variable ck : checker_t := checker;
   begin
     if iface.selx = '1' and iface.enable = '1' then
@@ -196,7 +197,7 @@ package body checker is
   end function;
 
   -- clock_setup clocks checker in SETUP state.
-  function clock_setup(checker: checker_t; iface: interface_t; clear : std_logic) return checker_t is
+  function clock_setup (checker : checker_t; iface : interface_t; clear : std_logic) return checker_t is
     variable ck : checker_t := checker;
   begin
     if iface.selx = '1' and iface.enable = '1' then
@@ -216,7 +217,7 @@ package body checker is
   end function;
 
   -- clock_access clocks checker in ACCESS state.
-  function clock_access(checker: checker_t; iface: interface_t; clear : std_logic) return checker_t is
+  function clock_access (checker : checker_t; iface : interface_t; clear : std_logic) return checker_t is
     variable ck : checker_t := checker;
   begin
     ck := stable_checks(ck, iface, "ACCESS state");
@@ -232,7 +233,7 @@ package body checker is
     return ck;
   end function;
 
-  function clock(checker: checker_t; iface : interface_t; clear : std_logic := '0') return checker_t is
+  function clock (checker : checker_t; iface : interface_t; clear : std_logic := '0') return checker_t is
     variable ck : checker_t := checker;
   begin
     if clear = '1' then
