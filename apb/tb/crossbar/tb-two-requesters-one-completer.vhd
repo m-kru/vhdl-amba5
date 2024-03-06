@@ -13,9 +13,13 @@ end entity;
 
 architecture test of tb_two_requesters_one_completer is
 
+  signal arstn : std_logic := '0';
   signal clk : std_logic := '1';
 
-  signal req0_iface, req1_iface, com_iface : interface_t;
+  signal bfm0_cfg : bfm.config_t := bfm.init(prefix => "apb: bfm0: ");
+  signal bfm1_cfg : bfm.config_t := bfm.init(prefix => "apb: bfm1: ");
+
+  signal req0_iface, req1_iface, com_iface : interface_t := init;
 
   signal req0_ck, req1_ck, com_ck : checker_t := init;
 
@@ -32,6 +36,14 @@ begin
   clk <= not clk after 0.5 ns;
 
 
+  reset_driver : process is
+  begin
+    wait for 2 ns;
+    arstn <= '1';
+    wait;
+  end process;
+
+
   interface_checkers : process (clk) is
   begin
     if rising_edge(clk) then
@@ -44,6 +56,17 @@ begin
 
   requester_0 : process is
   begin
+    wait until arstn = '1';
+    bfm.write(x"00000000", x"DEADBEEF", clk, req0_iface, cfg => bfm0_cfg);
+    wait for 2 ns;
+    wait;
+  end process;
+
+
+  requester_1 : process is
+  begin
+    wait until arstn = '1';
+    bfm.write(x"00000001", x"BEEFDEAD", clk, req1_iface, cfg => bfm1_cfg);
     wait for 2 ns;
     wait;
   end process;
@@ -63,7 +86,8 @@ begin
     ADDRS => (0 => "00000000000000000000000000000000"),
     MASKS => (0 => "11111111111111111111111111111000")
   ) port map (
-    clk_i => clk,
+    arstn_i => arstn,
+    clk_i   => clk,
     requesters(0) => req0_iface,
     requesters(1) => req1_iface,
     completers(0) => com_iface

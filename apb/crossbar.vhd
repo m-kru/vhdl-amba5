@@ -19,9 +19,10 @@ entity Crossbar is
     PREFIX : string := "apb: crossbar: " -- Prefix used in report messages
   );
   port (
-    clk_i : in std_logic;
-    requesters : view (completer_view) of interface_array_t(0 to COMPLETER_COUNT - 1); -- Connect requesters to this port
-    completers : view (requester_view) of interface_array_t(0 to REQUESTER_COUNT - 1)  -- Connect completers to this port
+    arstn_i : in std_logic := '1';
+    clk_i   : in std_logic;
+    requesters : view (completer_view) of interface_array_t(0 to REQUESTER_COUNT - 1); -- Connect requesters to this port
+    completers : view (requester_view) of interface_array_t(0 to COMPLETER_COUNT - 1)  -- Connect completers to this port
   );
 end entity;
 
@@ -32,13 +33,6 @@ architecture rtl of Crossbar is
   subtype completer_range is natural range 0 to COMPLETER_COUNT - 1;
 
   constant REQ_ZERO : std_logic_vector(requester_range) := (others => '0');
-
-  -- Sanity checks
-  --constant zero_mask_fail          : string := masks_has_zero(MASKS);
-  --constant addr_has_meta_fail      : string := addrs_has_meta(ADDRS);
-  --constant unaligned_addr_fail     : string := are_addrs_aligned(ADDRS);
-  --constant addr_not_in_mask_fail   : string := are_addrs_in_masks(ADDRS, MASKS);
-  --constant addr_space_overlap_fail : string := does_addr_space_overlap(ADDRS, MASKS);
 
   type matrix_t is array (completer_range) of std_logic_vector(requester_range);
 
@@ -53,14 +47,21 @@ architecture rtl of Crossbar is
   -- The conn_matrix is the connection matrix.
   signal conn_matrix : matrix_t;
 
+  -- Sanity checks
+  constant zero_mask_fail          : string := masks_has_zero(MASKS);
+  constant addr_has_meta_fail      : string := addrs_has_meta(ADDRS);
+  constant unaligned_addr_fail     : string := are_addrs_aligned(ADDRS);
+  constant addr_not_in_mask_fail   : string := are_addrs_in_masks(ADDRS, MASKS);
+  constant addr_space_overlap_fail : string := does_addr_space_overlap(ADDRS, MASKS);
+
 begin
 
   -- Sanity checks
-  --assert zero_mask_fail          = "" report PREFIX & zero_mask_fail          severity failure;
-  --assert addr_has_meta_fail      = "" report PREFIX & addr_has_meta_fail      severity failure;
-  --assert unaligned_addr_fail     = "" report PREFIX & unaligned_addr_fail     severity failure;
-  --assert addr_not_in_mask_fail   = "" report PREFIX & addr_not_in_mask_fail   severity failure;
-  --assert addr_space_overlap_fail = "" report PREFIX & addr_space_overlap_fail severity failure;
+  assert zero_mask_fail          = "" report PREFIX & zero_mask_fail          severity failure;
+  assert addr_has_meta_fail      = "" report PREFIX & addr_has_meta_fail      severity failure;
+  assert unaligned_addr_fail     = "" report PREFIX & unaligned_addr_fail     severity failure;
+  assert addr_not_in_mask_fail   = "" report PREFIX & addr_not_in_mask_fail   severity failure;
+  assert addr_space_overlap_fail = "" report PREFIX & addr_space_overlap_fail severity failure;
 
 
   -- Wakeup to or wszystkich wakeup Reqesterów, które aktualnie adresują danego Completera.
@@ -71,6 +72,7 @@ begin
     for c in completer_range loop
       for r in requester_range loop
         addr_matrix(c)(r) <= '0';
+        report to_debug(requesters(r));
         if (requesters(r).addr and unsigned(to_std_logic_vector(MASKS(c)))) = ADDRS(c) then
           addr_matrix(c)(r) <= '1';
         end if;
@@ -115,7 +117,11 @@ begin
     variable r : requester_range; 
 
   begin
-    if rising_edge(clk_i) then
+    if arstn_i = '0' then
+      for c in completer_range loop
+        conn_matrix(c) <= (others => '0');
+      end loop;
+    elsif rising_edge(clk_i) then
       for c in completer_range loop
         -- Sanity check that at most one bit is asserted in the completer connection vector
         if hot_bit_count(conn_matrix(c)) > 1 then

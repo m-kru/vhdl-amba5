@@ -28,6 +28,12 @@ package bfm is
     timeout_severity => error
   );
 
+  function init (
+    prefix  : string := "apb: bfm: ";
+    timeout : time   := 100 ns;
+    timeout_severity : severity_level := error
+  ) return config_t;
+
   -- The write procedure carries out write transaction with a single write transfer.
   procedure write (
     constant addr  : in unsigned(31 downto 0);
@@ -93,6 +99,16 @@ package bfm is
 end package;
 
 package body bfm is
+
+  function init (
+    prefix  : string := "apb: bfm: ";
+    timeout : time   := 100 ns;
+    timeout_severity : severity_level := error
+  ) return config_t is
+    constant cfg : config_t := (prefix, timeout, timeout_severity);
+  begin
+    return cfg;
+  end function;
 
   procedure write (
     constant addr  : in unsigned(31 downto 0);
