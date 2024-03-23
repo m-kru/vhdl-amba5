@@ -142,7 +142,7 @@ namespace eval vhdl::amba5::apb {
       hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
       hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
       hbs::SetTop $top
-      src
+      hbs::AddDep $hbs::ThisCore\::src
       hbs::SetLib ""
     }
 
