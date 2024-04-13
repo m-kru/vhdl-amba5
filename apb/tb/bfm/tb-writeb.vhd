@@ -17,7 +17,8 @@ architecture test of tb_writeb is
   signal clk : std_logic := '1';
 
   signal ck : checker_t := init;
-  signal iface : interface_t := init;
+  signal req : requester_out_t := init;
+  signal com : completer_out_t := init;
 
   constant ADDR : unsigned(31 downto 0) := x"00000000";
   constant DATA : data_array_t := (
@@ -36,7 +37,7 @@ begin
   interface_checker : process (clk) is
   begin
     if rising_edge(clk) then
-      ck <= clock(ck, iface);
+      ck <= clock(ck, req, com);
     end if;
   end process;
 
@@ -44,9 +45,9 @@ begin
   mock_completer : process (clk) is
   begin
     if rising_edge(clk) then
-      iface.ready <= '1';
-      if iface.selx = '1' and iface.enable = '1' and iface.ready = '1' then
-        written_data(to_integer(iface.addr)/4) <= iface.wdata;
+      com.ready <= '1';
+      if req.selx = '1' and req.enable = '1' and com.ready = '1' then
+        written_data(to_integer(req.addr)/4) <= req.wdata;
       end if;
     end if;
   end process;
@@ -55,7 +56,7 @@ begin
   main : process is
   begin
     wait for 2 ns;
-    bfm.writeb(ADDR, DATA, clk, iface, msg => ", user msg");
+    bfm.writeb(ADDR, DATA, clk, req, com, msg => ", user msg");
     write_done <= true;
     wait;
   end process;

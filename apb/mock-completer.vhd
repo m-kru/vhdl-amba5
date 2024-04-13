@@ -11,7 +11,7 @@ library work;
 
 -- The mock_completer package contains all types and subprograms related to the mock Completer.
 -- The mock Completer is used for internal tests. However, it might be useful, for example,
--- if you  design your own crossbar.
+-- if you design your own crossbar.
 package mock_completer is
 
   -- The mock_completer_t is a mock Completer that is always ready and accepts all transactions.
@@ -33,7 +33,11 @@ package mock_completer is
   function reset (mc: mock_completer_t) return mock_completer_t;
 
   -- The clock procedure clocks mock completer state.
-  procedure clock (signal mc: inout mock_completer_t; signal iface: view completer_view);
+  procedure clock (
+    signal mc  : inout mock_completer_t;
+    signal req : in  requester_out_t;
+    signal com : out completer_out_t
+  );
 
   -- The stats_string function returns mock_completer statistics in a nicely formatted string.
   function stats_string (mc: mock_completer_t) return string;
@@ -57,25 +61,29 @@ package body mock_completer is
     end loop;
   end function;
 
-  procedure clock (signal mc: inout mock_completer_t; signal iface: view completer_view) is
+  procedure clock (
+    signal mc  : inout mock_completer_t;
+    signal req : in  requester_out_t;
+    signal com : out completer_out_t
+  ) is
   begin
-    iface.ready <= '0';
+    com.ready <= '0';
 
-    if iface.selx = '1' then
-      iface.ready <= '1';
+    if req.selx = '1' then
+      com.ready <= '1';
       -- Write
-      if iface.write = '1' then
-        mc.memory(to_integer(iface.addr)/4) <= iface.wdata;
-        if iface.enable = '1' then
+      if req.write = '1' then
+        mc.memory(to_integer(req.addr)/4) <= req.wdata;
+        if req.enable = '1' then
           mc.write_count <= mc.write_count + 1;
-          report mc.prefix & "write: addr => x""" & to_hstring(iface.addr) & """, data => x""" & to_hstring(iface.wdata) & """";
+          report mc.prefix & "write: addr => x""" & to_hstring(req.addr) & """, data => x""" & to_hstring(req.wdata) & """";
         end if;
       -- Read
       else
-        iface.rdata <= mc.memory(to_integer(iface.addr)/4);
-        if iface.enable = '1' then
+        com.rdata <= mc.memory(to_integer(req.addr)/4);
+        if req.enable = '1' then
           mc.read_count <= mc.read_count + 1;
-          report mc.prefix & "read: addr => x""" & to_hstring(iface.addr) & """";
+          report mc.prefix & "read: addr => x""" & to_hstring(req.addr) & """";
         end if;
       end if;
     end if;

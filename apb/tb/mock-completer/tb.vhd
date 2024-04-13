@@ -16,7 +16,8 @@ architecture test of tb is
   signal clk : std_logic := '1';
 
   signal ck : checker_t := init;
-  signal iface : interface_t := init;
+  signal req : requester_out_t := init;
+  signal com : completer_out_t := init;
   signal mc : mock_completer_t := init(memory_size => 8);
 
   constant ADDR : unsigned(31 downto 0) := x"00000000";
@@ -34,7 +35,7 @@ begin
   interface_checker : process (clk) is
   begin
     if rising_edge(clk) then
-      ck <= clock(ck, iface);
+      ck <= clock(ck, req, com);
     end if;
   end process;
 
@@ -42,7 +43,7 @@ begin
   DUT : process (clk) is
   begin
     if rising_edge(clk) then
-      clock(mc, iface);
+      clock(mc, req, com);
     end if;
   end process;
 
@@ -52,14 +53,14 @@ begin
     wait for 2 ns;
 
     -- Single write read test
-    bfm.write(ADDR, x"204080A0", clk, iface);
+    bfm.write(ADDR, x"204080A0", clk, req, com);
     wait for 1 ns;
-    bfm.read(ADDR, clk, iface);
+    bfm.read(ADDR, clk, req, com);
     wait for 1 ns;
-    assert iface.rdata = x"204080A0";
+    assert com.rdata = x"204080A0";
 
     -- Block write test
-    bfm.writeb(ADDR, DATA, clk, iface);
+    bfm.writeb(ADDR, DATA, clk, req, com);
     wait for 1 ns;
     for i in DATA'range loop
       assert mc.memory(i) = DATA(i)
@@ -67,7 +68,7 @@ begin
     end loop;
 
     -- Block read test
-    bfm.readb(ADDR, read_data, clk, iface);
+    bfm.readb(ADDR, read_data, clk, req, com);
     wait for 1 ns;
     for i in read_data'range loop
       assert read_data(i) = mc.memory(i)

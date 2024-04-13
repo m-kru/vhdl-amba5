@@ -15,7 +15,8 @@ begin
 
   main : process is
     variable ck : checker_t := init;
-    variable iface : interface_t := init;
+    variable req : requester_out_t := init;
+    variable com : completer_out_t := init;
   begin
     ck := reset(ck);
     assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
@@ -23,23 +24,24 @@ begin
     --
     -- slverr_selx warning test
     --
-    iface.slverr := '1';
-    iface.enable := '1';
-    iface.ready  := '1';
-    ck := clock(ck, iface);
+    com.slverr := '1';
+    com.ready  := '1';
+    req.enable := '1';
+    ck := clock(ck, req, com);
 
     assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
     assert ck.warnings_o = init(slverr_selx => '1') report to_debug(ck.warnings_o) severity failure;
 
-    iface := init;
+    req := init;
+    com := init;
     wait for 1 ns;
-    ck := clock(ck, iface);
+    ck := clock(ck, req, com);
 
     assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
     assert ck.warnings_o = init(slverr_selx => '1') report to_debug(ck.warnings_o) severity failure;
 
     wait for 1 ns;
-    ck := clock(ck, iface, clear => '1');
+    ck := clock(ck, req, com, clear => '1');
 
     assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
     assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
@@ -47,23 +49,25 @@ begin
     --
     -- slverr_enable warning test
     --
-    iface := init;
+    req := init;
+    com := init;
     wait for 1 us;
     ck := reset(ck);
 
-    iface.wakeup := '1';
-    ck := clock(ck, iface);
+    req.wakeup := '1';
+    ck := clock(ck, req, com);
 
-    iface.slverr := '1';
-    iface.ready := '1';
-    iface.selx := '1';
+    com.slverr := '1';
+    com.ready := '1';
+    req.selx := '1';
     wait for 1 ns;
-    ck := clock(ck, iface);
+    ck := clock(ck, req, com);
 
     assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
     assert ck.warnings_o = init(slverr_enable => '1') report to_debug(ck.warnings_o) severity failure;
 
-    iface := init;
+    req := init;
+    com := init;
     wait for 1 ns;
     ck := reset(ck);
 
@@ -73,20 +77,21 @@ begin
     --
     -- slverr_ready warning test
     --
-    iface := init;
+    req := init;
+    com := init;
     wait for 1 us;
     ck := reset(ck);
 
     ck := READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY;
-    iface := ck.prev_iface;
-    ck := clock(ck, iface);
+    req := ck.prev_req;
+    ck := clock(ck, req, com);
 
     assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
     assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
 
-    iface.slverr := '1';
+    com.slverr := '1';
     wait for 1 ns;
-    ck := clock(ck, iface);
+    ck := clock(ck, req, com);
 
     assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
     assert ck.warnings_o = init(slverr_ready => '1') report to_debug(ck.warnings_o) severity failure;
@@ -94,16 +99,17 @@ begin
     --
     -- wakeup_selx warning test
     --
-    iface := init(wakeup => '0');
+    req := init(wakeup => '0');
+    com := init;
     wait for 1 us;
     ck := reset(ck);
 
-    ck := clock(ck, iface);
+    ck := clock(ck, req, com);
 
-    iface.wakeup := '1';
-    iface.selx := '1';
+    req.wakeup := '1';
+    req.selx := '1';
     wait for 1 ns;
-    ck := clock(ck, iface);
+    ck := clock(ck, req, com);
 
     assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
     assert ck.warnings_o = init(wakeup_selx => '1') report to_debug(ck.warnings_o) severity failure;
@@ -111,22 +117,23 @@ begin
     --
     -- wakeup_no_transfer warning test
     --
-    iface := init(wakeup => '0');
+    req := init(wakeup => '0');
+    com := init;
     wait for 1 us;
     ck := reset(ck);
 
-    ck := clock(ck, iface);
+    ck := clock(ck, req, com);
 
-    iface.wakeup := '1';
+    req.wakeup := '1';
     wait for 1 ns;
-    ck := clock(ck, iface);
+    ck := clock(ck, req, com);
 
     assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
     assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
 
-    iface.wakeup := '0';
+    req.wakeup := '0';
     wait for 1 ns;
-    ck := clock(ck, iface);
+    ck := clock(ck, req, com);
 
     assert ck.errors_o = INTERFACE_ERRORS_NONE report to_debug(ck.errors_o) severity failure;
     assert ck.warnings_o = init(wakeup_no_transfer => '1') report to_debug(ck.warnings_o) severity failure;

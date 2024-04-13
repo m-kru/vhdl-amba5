@@ -6,7 +6,7 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
--- apb package contains types and subprograms useful for designs with Advanced Peripheral Bus (APB).
+-- The apb package contains types and subprograms useful for designs with Advanced Peripheral Bus (APB).
 package apb is
 
   -- The addr_array_t represents an array of APB addresses. It is useful, for example, for the Crossbar
@@ -130,15 +130,15 @@ package apb is
   function to_debug (prot : protection_t; indent_level : natural := 0) return string;
 
 
-  -- The interface_t record represents APB interface signals.
+  -- The requester_out_t record represents APB requester interface output signals.
   --
   -- The APB Specification defines some interface signals to be optional and have
-  -- user-defined widths. However, the interface_t record contains all possible
+  -- user-defined widths. However, the requester_out_t record contains all possible
   -- signals with a fixed maximum width. This is because such an approach is easier
   -- to maintain and work with. There is no need to use unconstrained or generic
   -- types everywhere. EDA tools are good at optimizing unused signals and
   -- logic, so this approach costs the user nothing in the final design.
-  type interface_t is record
+  type requester_out_t is record
     addr   : unsigned(31 downto 0);
     prot   : protection_t;
     nse    : std_logic;
@@ -147,25 +147,29 @@ package apb is
     write  : std_logic;
     wdata  : std_logic_vector(31 downto 0);
     strb   : std_logic_vector( 3 downto 0);
-    ready  : std_logic;
-    rdata  : std_logic_vector(31 downto 0);
-    slverr : std_logic;
     wakeup : std_logic;
     auser  : std_logic_vector(127 downto 0);
     wuser  : std_logic_vector( 15 downto 0);
-    ruser  : std_logic_vector( 15 downto 0);
-    buser  : std_logic_vector( 15 downto 0);
   end record;
 
-  -- The init function initializes interface_t with elements set to given values.
+  -- An array of requester_out_t interfaces. Useful, for example, for implementing crossbars.
+  type requester_out_array_t is array (natural range <>) of requester_out_t;
+
+  -- APB completer interface input signals.
+  subtype completer_in_t is requester_out_t;
+
+  -- An array of completer_in_t interfaces. Useful, for example, for implementing crossbars.
+  type completer_in_array_t  is array (natural range <>) of completer_in_t;
+
+  -- The init function initializes requester_out_t with elements set to given values.
   --
   -- All mandatory elements except wakeup are initialized with the '0' value.
   -- The wakeup element is initialized with the '1' value. This is because wakeup
   -- is an optional signal in APB. However, a case when wakeup signal is absent
   -- is exactly the same as the case when wakeup is tied to '1'.
-  -- 
+  --
   -- All other optional elements are initialized with the do not care value '-'.
-  function init(
+  function init (
     addr   : unsigned(31 downto 0) := (others => '0');
     prot   : protection_t := ('0', '0', '0');
     nse    : std_logic := '-';
@@ -174,62 +178,79 @@ package apb is
     write  : std_logic := '0';
     wdata  : std_logic_vector(31 downto 0) := (others => '0');
     strb   : std_logic_vector( 3 downto 0) := (others => '0');
+    wakeup : std_logic := '1';
+    auser  : std_logic_vector(127 downto 0) := (others => '-');
+    wuser  : std_logic_vector( 15 downto 0) := (others => '-')
+  ) return requester_out_t;
+
+  -- The is_data function returns true if transaction is data transaction.
+  function is_data (req_out : requester_out_t) return boolean;
+
+  -- The is_data function returns true if transaction is instruction transaction.
+  function is_instruction (req_out : requester_out_t) return boolean;
+
+  -- The is_secure function returns true if transaction is secure transaction.
+  function is_secure (req_out : requester_out_t) return boolean;
+
+  -- The is_non_secure function returns true if transaction is non-secure transaction.
+  function is_non_secure (req_out : requester_out_t) return boolean;
+
+  -- The is_normal function returns true if transaction is normal transaction.
+  function is_normal (req_out : requester_out_t) return boolean;
+
+  -- The is_privileged function returns true if transaction is privileged transaction.
+  function is_privileged (req_out : requester_out_t) return boolean;
+
+  -- The to_string function converts requester_out_t to string for printing.
+  function to_string (req_out : requester_out_t) return string;
+
+  -- The to_debug function converts requester_out_t to string for pretty printing.
+  function to_debug (req_out : requester_out_t; indent_level : natural := 0) return string;
+
+
+  -- The requester_in_t record represents APB requester interface input signals.
+  --
+  -- The APB Specification defines some interface signals to be optional and have
+  -- user-defined widths. However, the requester_in_t record contains all possible
+  -- signals with a fixed maximum width. This is because such an approach is easier
+  -- to maintain and work with. There is no need to use unconstrained or generic
+  -- types everywhere. EDA tools are good at optimizing unused signals and
+  -- logic, so this approach costs the user nothing in the final design.
+  type requester_in_t is record
+    ready  : std_logic;
+    rdata  : std_logic_vector(31 downto 0);
+    slverr : std_logic;
+    ruser  : std_logic_vector(15 downto 0);
+    buser  : std_logic_vector(15 downto 0);
+  end record;
+
+  -- An array of requester_in_t interfaces. Useful, for example, for implementing crossbars.
+  type requester_in_array_t is array (natural range <>) of requester_in_t;
+
+  -- APB completer interface output signals.
+  subtype completer_out_t is requester_in_t;
+
+  -- An array of completer_in_t interfaces. Useful, for example, for implementing crossbars.
+  type completer_out_array_t  is array (natural range <>) of completer_out_t;
+
+  -- The init function initializes requester_in_t with elements set to given values.
+  --
+  -- All mandatory elements are initialized with the '0' value.
+  -- All other optional elements are initialized with the do not care value '-'.
+  function init (
     ready  : std_logic := '0';
     rdata  : std_logic_vector(31 downto 0) := (others => '0');
     slverr : std_logic := '0';
-    wakeup : std_logic := '1';
-    auser  : std_logic_vector(127 downto 0) := (others => '-');
-    wuser  : std_logic_vector( 15 downto 0) := (others => '-');
-    ruser  : std_logic_vector( 15 downto 0) := (others => '-');
-    buser  : std_logic_vector( 15 downto 0) := (others => '-')
-  ) return interface_t;
+    ruser  : std_logic_vector(15 downto 0) := (others => '-');
+    buser  : std_logic_vector(15 downto 0) := (others => '-')
+  ) return requester_in_t;
 
-  type interface_array_t is array (natural range <>) of interface_t;
+  -- The to_string function converts requester_in_t to string for printing.
+  function to_string (req_in : requester_in_t) return string;
 
-  -- The is_data function returns true if transaction is data transaction.
-  function is_data (iface : interface_t) return boolean;
+  -- The to_debug function converts requester_in_t to string for pretty printing.
+  function to_debug (req_in : requester_in_t; indent_level : natural := 0) return string;
 
-  -- The is_data function returns true if transaction is instruction transaction.
-  function is_instruction (iface : interface_t) return boolean;
-
-  -- The is_secure function returns true if transaction is secure transaction.
-  function is_secure (iface : interface_t) return boolean;
-
-  -- The is_non_secure function returns true if transaction is non-secure transaction.
-  function is_non_secure (iface : interface_t) return boolean;
-
-  -- The is_normal function returns true if transaction is normal transaction.
-  function is_normal (iface : interface_t) return boolean;
-
-  -- The is_privileged function returns true if transaction is privileged transaction.
-  function is_privileged (iface : interface_t) return boolean;
-
-  -- The to_string function converts interface_t to string for printing.
-  function to_string (iface : interface_t) return string;
-
-  -- The to_debug function converts interface_t to string for pretty printing.
-  function to_debug (iface : interface_t; indent_level : natural := 0) return string;
-
-  view requester_view of interface_t is
-    addr   : out;
-    prot   : out;
-    nse    : out;
-    selx   : out;
-    enable : out;
-    write  : out;
-    wdata  : out;
-    strb   : out;
-    ready  : in;
-    rdata  : in;
-    slverr : in;
-    wakeup : out;
-    auser  : out;
-    wuser  : out;
-    ruser  : in;
-    buser  : in;
-  end view;
-
-  alias completer_view is requester_view'converse;
 
   --
   -- util functions
@@ -429,7 +450,7 @@ package body apb is
   end function;
 
   --
-  -- interface_t
+  -- requester_out_t
   --
 
   function init (
@@ -441,80 +462,103 @@ package body apb is
     write  : std_logic := '0';
     wdata  : std_logic_vector(31 downto 0) := (others => '0');
     strb   : std_logic_vector( 3 downto 0) := (others => '0');
+    wakeup : std_logic := '1';
+    auser  : std_logic_vector(127 downto 0) := (others => '-');
+    wuser  : std_logic_vector( 15 downto 0) := (others => '-')
+  ) return requester_out_t is
+    constant req_out : requester_out_t :=
+      (addr, prot, nse, selx, enable, write, wdata, strb, wakeup, auser, wuser);
+  begin
+    return req_out;
+  end function;
+
+  function is_data (req_out : requester_out_t) return boolean is
+    begin return is_data(req_out.prot); end function;
+
+  function is_instruction (req_out : requester_out_t) return boolean is
+    begin return is_instruction(req_out.prot); end function;
+
+  function is_secure (req_out : requester_out_t) return boolean is
+    begin return is_secure(req_out.prot); end function;
+
+  function is_non_secure (req_out : requester_out_t) return boolean is
+    begin return is_non_secure(req_out.prot); end function;
+
+  function is_normal (req_out : requester_out_t) return boolean is
+    begin return is_normal(req_out.prot); end function;
+
+  function is_privileged (req_out : requester_out_t) return boolean is
+    begin return is_privileged(req_out.prot); end function;
+
+  function to_string (req_out : requester_out_t) return string is
+  begin
+    return "(" &
+      "addr => x"""  & to_hstring(req_out.addr)  & """, " &
+      "prot => "     & to_string(req_out.prot)   & ", "   &
+      "nse => '"     & to_string(req_out.nse)    & "', "  &
+      "selx => '"    & to_string(req_out.selx)   & "', "  &
+      "enable => '"  & to_string(req_out.enable) & "', "  &
+      "write => '"   & to_string(req_out.write)  & "', "  &
+      "wdata => x""" & to_hstring(req_out.wdata) & """, " &
+      "strb => """   & to_string(req_out.strb)   & """, " &
+      "wakeup => '"  & to_string(req_out.wakeup) & "', "  &
+      "auser => x""" & to_hstring(req_out.auser) & """, " &
+      "wuser => x""" & to_hstring(req_out.wuser) & """)";
+  end function;
+
+  function to_debug (req_out : requester_out_t; indent_level : natural := 0) return string is
+    constant indent : string(0 to 2 * indent_level - 1) := (others => ' ');
+  begin
+    return "(" & LF &
+      indent & "  addr => """   & to_string(req_out.addr)   & """, " & LF &
+      indent & "  prot => "     & to_debug(req_out.prot, indent_level + 1) & ", " & LF &
+      indent & "  nse    => '"  & to_string(req_out.nse)    & "',"  & LF &
+      indent & "  selx   => '"  & to_string(req_out.selx)   & "',"  & LF &
+      indent & "  enable => '"  & to_string(req_out.enable) & "',"  & LF &
+      indent & "  write  => '"  & to_string(req_out.write)  & "',"  & LF &
+      indent & "  wdata  => """ & to_string(req_out.wdata)  & """," & LF &
+      indent & "  strb   => """ & to_string(req_out.strb)   & """," & LF &
+      indent & "  wakeup => '"  & to_string(req_out.wakeup) & "',"  & LF &
+      indent & "  auser  => """ & to_string(req_out.auser)  & """," & LF &
+      indent & "  wuser  => """ & to_string(req_out.wuser)  & """"  & LF &
+      indent & ")";
+  end function;
+
+  --
+  -- requester_in_t
+  --
+
+  function init (
     ready  : std_logic := '0';
     rdata  : std_logic_vector(31 downto 0) := (others => '0');
     slverr : std_logic := '0';
-    wakeup : std_logic := '1';
-    auser  : std_logic_vector(127 downto 0) := (others => '-');
-    wuser  : std_logic_vector( 15 downto 0) := (others => '-');
-    ruser  : std_logic_vector( 15 downto 0) := (others => '-');
-    buser  : std_logic_vector( 15 downto 0) := (others => '-')
-  ) return interface_t is
-    constant iface : interface_t :=
-      (addr, prot, nse, selx, enable, write, wdata, strb, ready, rdata, slverr, wakeup, auser, wuser, ruser, buser);
+    ruser  : std_logic_vector(15 downto 0) := (others => '-');
+    buser  : std_logic_vector(15 downto 0) := (others => '-')
+  ) return requester_in_t is
+    constant req_in : requester_in_t := (ready, rdata, slverr, ruser, buser);
   begin
-    return iface;
+    return req_in;
   end function;
 
-  function is_data (iface : interface_t) return boolean is
-    begin return is_data(iface.prot); end function;
-
-  function is_instruction (iface : interface_t) return boolean is
-    begin return is_instruction(iface.prot); end function;
-
-  function is_secure (iface : interface_t) return boolean is
-    begin return is_secure(iface.prot); end function;
-
-  function is_non_secure (iface : interface_t) return boolean is
-    begin return is_non_secure(iface.prot); end function;
-
-  function is_normal (iface : interface_t) return boolean is
-    begin return is_normal(iface.prot); end function;
-
-  function is_privileged (iface : interface_t) return boolean is
-    begin return is_privileged(iface.prot); end function;
-
-  function to_string (iface : interface_t) return string is
+  function to_string (req_in : requester_in_t) return string is
   begin
     return "(" &
-      "addr => x"""  & to_hstring(iface.addr)  & """, " &
-      "prot => "     & to_string(iface.prot)   & ", "   &
-      "nse => '"     & to_string(iface.nse)    & "', "  &
-      "selx => '"    & to_string(iface.selx)   & "', "  &
-      "enable => '"  & to_string(iface.enable) & "', "  &
-      "write => '"   & to_string(iface.write)  & "', "  &
-      "wdata => x""" & to_hstring(iface.wdata) & """, " &
-      "strb => """   & to_string(iface.strb)   & """, " &
-      "ready => '"   & to_string(iface.ready)  & "', "  &
-      "rdata => x""" & to_hstring(iface.rdata) & """, " &
-      "slverr => '"  & to_string(iface.slverr) & "', "  &
-      "wakeup => '"  & to_string(iface.wakeup) & "', "  &
-      "auser => x""" & to_hstring(iface.auser) & """, " &
-      "wuser => x""" & to_hstring(iface.wuser) & """, " &
-      "ruser => x""" & to_hstring(iface.ruser) & """, " &
-      "buser => x""" & to_hstring(iface.buser) & """)";
+      "ready => '"   & to_string(req_in.ready)   & "', "  &
+      "rdata => x""" & to_hstring(req_in.rdata)  & """, " &
+      "slverr => '"  & to_string(req_in.slverr)  & "', "  &
+      "ruser => x""" & to_hstring(req_in.ruser) & """, " &
+      "buser => x""" & to_hstring(req_in.buser) & """)";
   end function;
 
-  function to_debug (iface : interface_t; indent_level : natural := 0) return string is
-    variable indent : string(0 to 2 * indent_level - 1) := (others => ' ');
+  function to_debug (req_in : requester_in_t; indent_level : natural := 0) return string is
+    constant indent : string(0 to 2 * indent_level - 1) := (others => ' ');
   begin
     return "(" & LF &
-      indent & "  addr => """   & to_string(iface.addr)   & """, " & LF &
-      indent & "  prot => "     & to_debug(iface.prot, indent_level + 1) & ", " & LF &
-      indent & "  nse    => '"  & to_string(iface.nse)    & "', "  & LF &
-      indent & "  selx   => '"  & to_string(iface.selx)   & "', "  & LF &
-      indent & "  enable => '"  & to_string(iface.enable) & "', "  & LF &
-      indent & "  write  => '"  & to_string(iface.write)  & "', "  & LF &
-      indent & "  wdata  => """ & to_string(iface.wdata)  & """, " & LF &
-      indent & "  strb   => """ & to_string(iface.strb)   & """, " & LF &
-      indent & "  ready  => '"  & to_string(iface.ready)  & "', "  & LF &
-      indent & "  rdata  => """ & to_string(iface.rdata)  & """, " & LF &
-      indent & "  slverr => '"  & to_string(iface.slverr) & "', "  & LF &
-      indent & "  wakeup => '"  & to_string(iface.wakeup) & "', "  & LF &
-      indent & "  auser  => """ & to_string(iface.auser)  & """, " & LF &
-      indent & "  wuser  => """ & to_string(iface.wuser)  & """, " & LF &
-      indent & "  ruser  => """ & to_string(iface.ruser)  & """, " & LF &
-      indent & "  buser  => """ & to_string(iface.buser)  & """"   & LF &
+      indent & "  ready  => '"  & to_string(req_in.ready)  & "',"  & LF &
+      indent & "  rdata  => """ & to_string(req_in.rdata)  & """," & LF &
+      indent & "  slverr => '"  & to_string(req_in.slverr) & "',"  & LF &
+      indent & "  ruser  => """ & to_string(req_in.ruser)  & """," & LF &
+      indent & "  buser  => """ & to_string(req_in.buser)  & """"  & LF &
       indent & ")";
   end function;
 
