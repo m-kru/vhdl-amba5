@@ -12,7 +12,7 @@ library work;
 
 package checker is
 
-  -- A checker capable of reporting bus errors and warnings.
+  -- A checker capable of detecting bus errors and warnings.
   type checker_t is record
     -- Configuration elements
     prefix : string; -- Optional prefix used in report messages.
