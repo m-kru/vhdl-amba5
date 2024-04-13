@@ -12,6 +12,7 @@ library work;
 
 package checker is
 
+  -- A checker capable of reporting bus errors and warnings.
   type checker_t is record
     -- Configuration elements
     prefix : string; -- Optional prefix used in report messages.
@@ -24,7 +25,7 @@ package checker is
     awaiting_transfer : boolean;
   end record;
 
-  -- READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY checker constant is useful for internal tests.
+  -- Useful for internal tests.
   -- It puts checker into the ACCESS state waiting for the ready signal assertion during read transfer.
   constant READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY : checker_t := (
     prefix     => "apb: checker: ",
@@ -35,7 +36,7 @@ package checker is
     awaiting_transfer => true
   );
 
-  -- WRITE_TRANSFER_ACCESS_STATE_WAITING_FOR_READY checker constant is useful for internal tests.
+  -- Useful for internal tests.
   -- It puts checker into the ACCESS state waiting for the ready signal assertion during write transfer.
   constant WRITE_TRANSFER_ACCESS_STATE_WAITING_FOR_READY : checker_t := (
     prefix     => "apb: checker: ",
@@ -46,18 +47,19 @@ package checker is
     awaiting_transfer => true
   );
 
-  -- The init function initializes checker_t with prefix set to given value.
+  -- Initializes checker_t with prefix set to given value.
   function init (prefix : string := "apb: checker: ") return checker_t;
 
-  -- The reset function resets the checker. It enforces clear of errors and warnings and resets the checker state.
+  -- Resets the checker. It enforces clear of errors and warnings and resets the checker state.
   function reset (checker : checker_t) return checker_t;
 
-  -- The clock function clocks checker state.
+  -- Clocks checker state.
   --
   -- The clear input can be used to clear detected errors and warnings.
-  -- Clearing has lower priority than detection so when error/warning is detected while clear is asserted
-  -- the errors_o/warnings_o will not be zeroed.
-  -- Clearing does not modify the checker state.
+  -- Clearing has lower priority than detection so when an error/warning is detected
+  -- while clear is asserted the errors_o/warnings_o will not be zeroed.
+  --
+  -- Clearing does not impact the checker state.
   function clock (checker : checker_t; req : requester_out_t; com : completer_out_t; clear : std_logic := '0') return checker_t;
 
 end package;

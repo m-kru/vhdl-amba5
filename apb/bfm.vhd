@@ -34,7 +34,7 @@ package bfm is
     timeout_severity : severity_level := error
   ) return config_t;
 
-  -- The write procedure carries out write transaction with a single write transfer.
+  -- Carries out write transaction with a single write transfer.
   procedure write (
     constant addr  : in unsigned(31 downto 0);
     constant data  : in std_logic_vector(31 downto 0);
@@ -51,7 +51,7 @@ package bfm is
     constant msg   : in string := "" -- An optional user message added at the end of the report message.
   );
 
-  -- The read procedure carries out read transaction with a single read transfer.
+  -- Carries out read transaction with a single read transfer.
   -- There is no data out parameter as the data is available in the com.rdata element.
   procedure read (
     constant addr  : in unsigned(31 downto 0);
@@ -66,7 +66,7 @@ package bfm is
     constant msg   : in string := "" -- An optional user message added at the end of the report message.
   );
 
-  -- The writeb procedure carries out block write transaction with multiple write transfer.
+  -- Carries out block write transaction with multiple write transfer.
   procedure writeb (
     constant addr  : in unsigned(31 downto 0); -- Start address
     constant data  : in data_array_t;
@@ -84,7 +84,7 @@ package bfm is
     constant msg   : in string := "" -- An optional user message added at the end of the report message.
   );
 
-  -- The readb procedure carries out block read transaction with multiple read transfers.
+  -- Carries out block read transaction with multiple read transfers.
   procedure readb (
     constant addr  : in unsigned(31 downto 0); -- Start address
     signal   data  : out data_array_t;
@@ -446,7 +446,7 @@ package body bfm is
       if i = data'right then
         exit;
       end if;
-      
+
       -- Reenter SETUP state
       req.addr <= req.addr + 4;
       req.enable <= '0';
