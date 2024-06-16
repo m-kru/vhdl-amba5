@@ -95,7 +95,7 @@ package apb is
   end record;
 
   -- Initializes protection_t with elements set to given values.
-  function init (data_instruction, secure_non_secure, normal_privileged : std_logic := '0') return protection_t;
+  function init (data_instruction, secure_non_secure, normal_privileged : std_logic := '-') return protection_t;
 
   -- Converts 3-bit std_logic_vector to protection_t.
   function to_protection (slv : std_logic_vector(2 downto 0)) return protection_t;
@@ -169,7 +169,7 @@ package apb is
   -- All other optional elements are initialized with the do not care value '-'.
   function init (
     addr   : unsigned(31 downto 0) := (others => '0');
-    prot   : protection_t := ('0', '0', '0');
+    prot   : protection_t := ('-', '-', '-');
     nse    : std_logic := '-';
     selx   : std_logic := '0';
     enable : std_logic := '0';
@@ -394,7 +394,7 @@ package body apb is
   -- protection_t
   --
 
-  function init (data_instruction, secure_non_secure, normal_privileged : std_logic := '0') return protection_t is
+  function init (data_instruction, secure_non_secure, normal_privileged : std_logic := '-') return protection_t is
     constant prot : protection_t := (data_instruction, secure_non_secure, normal_privileged);
   begin
     return prot;
@@ -460,7 +460,7 @@ package body apb is
 
   function init (
     addr   : unsigned(31 downto 0) := (others => '0');
-    prot   : protection_t := ('0', '0', '0');
+    prot   : protection_t := ('-', '-', '-');
     nse    : std_logic := '-';
     selx   : std_logic := '0';
     enable : std_logic := '0';
