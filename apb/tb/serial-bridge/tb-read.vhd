@@ -73,7 +73,7 @@ begin
     if rising_edge(clk) then
       cnt := cnt + 1;
       if cnt = 100 then
-        std.env.finish;
+        report "bridge stall" severity failure;
       end if;
     end if;
   end process;
