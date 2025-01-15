@@ -27,7 +27,10 @@ architecture test of tb_read is
   signal ck : checker_t := init;
   signal com : completer_out_t := init;
 
-  signal mc : mock_completer_t := init(memory_size => 8);
+  signal completer_data : data_array_t(0 to 3) := (
+    x"00000000", x"12345678", x"DEADBEEF", x"ABCDEF01"
+  );
+  signal mc : mock_completer_t := init(memory_size => 4);
 
   signal rdata : std_logic_vector(31 downto 0);
 
@@ -52,11 +55,15 @@ begin
   end process;
 
 
-  Completer : process (clk) is
+  Completer : process is
   begin
-    if rising_edge(clk) then
+    -- Initialize memory content
+    mc.memory <= completer_data;
+
+    loop
+      wait until rising_edge(clk);
       clock(mc, sb.apb_req, com);
-    end if;
+    end loop;
   end process;
 
 
@@ -103,13 +110,30 @@ begin
       wait for delay * CLK_PERIOD;
 
       -- Read data
-      for i in 3 to 0 loop
-        byte_out_ready <= '1';
-        wait until rising_edge(clk) and byte_out_ready = '1' and sb.byte_out_valid = '1';
-        rdata(i * 8 + 7 downto i * 8) <= sb.byte_out;
-        byte_out_ready <= '0';
-        wait for delay * CLK_PERIOD;
-      end loop;
+      byte_out_ready <= '1';
+      wait until rising_edge(clk) and byte_out_ready = '1' and sb.byte_out_valid = '1';
+      rdata(31 downto 24) <= sb.byte_out;
+      byte_out_ready <= '0';
+      wait for delay * CLK_PERIOD;
+
+      byte_out_ready <= '1';
+      wait until rising_edge(clk) and byte_out_ready = '1' and sb.byte_out_valid = '1';
+      rdata(23 downto 16) <= sb.byte_out;
+      byte_out_ready <= '0';
+      wait for delay * CLK_PERIOD;
+
+      byte_out_ready <= '1';
+      wait until rising_edge(clk) and byte_out_ready = '1' and sb.byte_out_valid = '1';
+      rdata(15 downto 8) <= sb.byte_out;
+      byte_out_ready <= '0';
+      wait for delay * CLK_PERIOD;
+
+      byte_out_ready <= '1';
+      wait until rising_edge(clk) and byte_out_ready = '1' and sb.byte_out_valid = '1';
+      rdata(7 downto 0) <= sb.byte_out;
+      byte_out_ready <= '0';
+      wait for delay * CLK_PERIOD;
+
       assert rdata = want
         report "invalid rdata, got " & rdata'image & ", want " & want'image
         severity failure;
@@ -119,7 +143,9 @@ begin
   begin
     wait for 5 * CLK_PERIOD;
 
-    read(1, x"12345678");
+    read(0, completer_data(0));
+    read(4, completer_data(1));
+    read(8, completer_data(2), 1);
 
     std.env.finish;
   end process;
