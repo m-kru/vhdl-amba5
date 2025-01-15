@@ -110,29 +110,13 @@ begin
       wait for delay * CLK_PERIOD;
 
       -- Read data
-      byte_out_ready <= '1';
-      wait until rising_edge(clk) and byte_out_ready = '1' and sb.byte_out_valid = '1';
-      rdata(31 downto 24) <= sb.byte_out;
-      byte_out_ready <= '0';
-      wait for delay * CLK_PERIOD;
-
-      byte_out_ready <= '1';
-      wait until rising_edge(clk) and byte_out_ready = '1' and sb.byte_out_valid = '1';
-      rdata(23 downto 16) <= sb.byte_out;
-      byte_out_ready <= '0';
-      wait for delay * CLK_PERIOD;
-
-      byte_out_ready <= '1';
-      wait until rising_edge(clk) and byte_out_ready = '1' and sb.byte_out_valid = '1';
-      rdata(15 downto 8) <= sb.byte_out;
-      byte_out_ready <= '0';
-      wait for delay * CLK_PERIOD;
-
-      byte_out_ready <= '1';
-      wait until rising_edge(clk) and byte_out_ready = '1' and sb.byte_out_valid = '1';
-      rdata(7 downto 0) <= sb.byte_out;
-      byte_out_ready <= '0';
-      wait for delay * CLK_PERIOD;
+      for i in 3 downto 0 loop
+        byte_out_ready <= '1';
+        wait until rising_edge(clk) and byte_out_ready = '1' and sb.byte_out_valid = '1';
+        rdata(i * 8 + 7 downto i * 8) <= sb.byte_out;
+        byte_out_ready <= '0';
+        wait for delay * CLK_PERIOD;
+      end loop;
 
       assert rdata = want
         report "invalid rdata, got " & rdata'image & ", want " & want'image
