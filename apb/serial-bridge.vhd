@@ -174,7 +174,7 @@ package serial_bridge is
   --
   -- *_PULL - fetching data from serial input.
   -- *_PUSH - writing data to serial output.
-  type state_t is (IDLE, ADDR_PULL, DATA_PULL, STATUS_PUSH, DATA_PUSH, READ, WRITE, FLUSH);
+  type state_t is (IDLE, ADDR_PULL, DATA_PULL, STATUS_PUSH, DATA_PUSH, TRANSFER, FLUSH);
 
   -- Serial bridge signals.
   --
@@ -321,21 +321,32 @@ package body serial_bridge is
   ) return serial_bridge_t is
     variable sb : serial_bridge_t := serial_bridge;
   begin
+    -- Drive correct APB signals according to the first transfer in transaction.
+    case sb.typ is
+    when READ | BLOCK_READ | CYCLIC_READ | RMW =>
+      sb.apb_req.write := '0';
+      sb.apb_req.strb := b"0000";
+    when others =>
+      sb.apb_req.write := '1';
+      sb.apb_req.strb := b"1111";
+    end case;
+
     if sb.byte_in_ready and byte_in_valid then
       sb.apb_req.addr(sb.byte_cnt * 8 + 7 downto sb.byte_cnt * 8) := unsigned(byte_in);
+
       if sb.byte_cnt = 0 then
         report sb.PREFIX & "addr x""" & to_hstring(sb.apb_req.addr) & """";
 
         sb.byte_cnt := 3;
-        sb.apb_req.selx := '1';
-        sb.apb_req.strb := b"0000";
 
-        if is_write(sb.typ) then
+        case sb.typ is
+        when WRITE | BLOCK_WRITE | CYCLIC_WRITE | RMW =>
           sb.state := DATA_PULL;
-        else
+        when others =>
           sb.byte_in_ready := '0';
-          sb.state := READ;
-        end if;
+          sb.apb_req.selx := '1';
+          sb.state := TRANSFER;
+        end case;
       else
         sb.byte_cnt := sb.byte_cnt - 1;
       end if;
@@ -356,8 +367,15 @@ package body serial_bridge is
   begin
     if sb.byte_in_ready and byte_in_valid then
       sb.apb_req.wdata(sb.byte_cnt * 8 + 7 downto sb.byte_cnt * 8) := byte_in;
-      if sb.byte_cnt = 0 then
 
+      if sb.byte_cnt = 0 then
+        if sb.typ = RMW then
+          report "unimplemented" severity failure;
+        else
+          sb.byte_in_ready := '0';
+          sb.apb_req.selx := '1';
+          sb.state := TRANSFER;
+        end if;
       else
         sb.byte_cnt := sb.byte_cnt -1;
       end if;
@@ -367,7 +385,7 @@ package body serial_bridge is
   end function;
 
 
-  function clock_read (
+  function clock_transfer (
     serial_bridge  : serial_bridge_t;
     byte_in        : std_logic_vector(7 downto 0);
     byte_in_valid  : std_logic;
@@ -376,7 +394,7 @@ package body serial_bridge is
   ) return serial_bridge_t is
     variable sb : serial_bridge_t := serial_bridge;
   begin
-    if sb.apb_req.enable = '1'  and apb_com.ready = '1' then
+    if sb.apb_req.enable = '1' and apb_com.ready = '1' then
       sb.data := apb_com.rdata;
       sb.byte_out(7) := apb_com.slverr;
       sb.byte_out(6 downto 0) := b"0000000"; -- Unused bits
@@ -384,9 +402,12 @@ package body serial_bridge is
 
       if sb.size = 0 then
         sb.apb_req.selx := '0';
-      elsif sb.typ = BLOCK_READ then
-        sb.apb_req.addr(31 downto 2) := unsigned(sb.apb_req.addr(31 downto 2)) + 1;
-        sb.apb_req.addr(1 downto 0) := b"00";
+      else
+        sb.size := sb.size - 1;
+        if sb.typ = BLOCK_READ or sb.typ = BLOCK_WRITE then
+          sb.apb_req.addr(31 downto 2) := unsigned(sb.apb_req.addr(31 downto 2)) + 1;
+          sb.apb_req.addr(1 downto 0) := b"00";
+        end if;
       end if;
 
       sb.apb_req.enable := '0';
@@ -415,14 +436,17 @@ package body serial_bridge is
       if sb.byte_out(7) = '1' then
         sb.STATE := FLUSH;
       else
-        if is_write(sb.typ) then
-          -- TODO: Implement
-        else
+        case sb.typ is
+        when WRITE | BLOCK_WRITE | CYCLIC_WRITE | RMW =>
+          if sb.size = 0 then
+            sb.state := IDLE;
+          end if;
+        when others =>
           sb.byte_out := sb.data(31 downto 24);
           sb.byte_out_valid := '1';
           sb.byte_cnt := 3;
           sb.state := DATA_PUSH;
-        end if;
+        end case;
       end if;
     end if;
 
@@ -468,7 +492,7 @@ package body serial_bridge is
       when IDLE        => sb := clock_idle        (sb, byte_in, byte_in_valid, byte_out_ready, apb_com);
       when ADDR_PULL   => sb := clock_addr_pull   (sb, byte_in, byte_in_valid, byte_out_ready, apb_com);
       when DATA_PULL   => sb := clock_data_pull   (sb, byte_in, byte_in_valid, byte_out_ready, apb_com);
-      when READ        => sb := clock_read        (sb, byte_in, byte_in_valid, byte_out_ready, apb_com);
+      when TRANSFER    => sb := clock_transfer    (sb, byte_in, byte_in_valid, byte_out_ready, apb_com);
       when STATUS_PUSH => sb := clock_status_push (sb, byte_in, byte_in_valid, byte_out_ready, apb_com);
       when DATA_PUSH   => sb := clock_data_push   (sb, byte_in, byte_in_valid, byte_out_ready, apb_com);
       when others => report "unimplemented state " & state_t'image(sb.state) severity failure;
