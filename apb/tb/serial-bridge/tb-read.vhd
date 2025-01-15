@@ -72,7 +72,7 @@ begin
   begin
     if rising_edge(clk) then
       cnt := cnt + 1;
-      if cnt = 50 then
+      if cnt = 100 then
         std.env.finish;
       end if;
     end if;
@@ -146,6 +146,7 @@ begin
     read(0, completer_data(0));
     read(4, completer_data(1));
     read(8, completer_data(2), 1);
+    read(12, completer_data(3), 2);
 
     std.env.finish;
   end process;

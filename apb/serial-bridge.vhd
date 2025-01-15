@@ -295,6 +295,10 @@ package body serial_bridge is
   ) return serial_bridge_t is
     variable sb : serial_bridge_t := serial_bridge;
   begin
+    sb.byte_out_valid := '0';
+    sb.apb_req := init;
+    sb.size := 0;
+
     if sb.byte_in_ready and byte_in_valid then
       sb.typ := to_transaction_type(byte_in(7 downto 5));
       sb.byte_cnt := sb.ADDR_BYTE_COUNT - 1;
@@ -302,9 +306,6 @@ package body serial_bridge is
       report sb.PREFIX & "starting " & transaction_type_t'image(sb.typ) & " transaction" severity note;
     else
       sb.byte_in_ready := '1';
-      sb.byte_out_valid := '0';
-      sb.apb_req := init;
-      sb.size := 0;
     end if;
 
     return sb;
@@ -323,6 +324,8 @@ package body serial_bridge is
     if sb.byte_in_ready and byte_in_valid then
       sb.apb_req.addr(sb.byte_cnt * 8 + 7 downto sb.byte_cnt * 8) := unsigned(byte_in);
       if sb.byte_cnt = 0 then
+        report sb.PREFIX & "addr x""" & to_hstring(sb.apb_req.addr) & """";
+
         sb.byte_cnt := 3;
         sb.apb_req.selx := '1';
         sb.apb_req.strb := b"0000";
