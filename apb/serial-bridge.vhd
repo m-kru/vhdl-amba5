@@ -434,7 +434,12 @@ package body serial_bridge is
 
       -- If slverr
       if sb.byte_out(7) = '1' then
-        sb.STATE := FLUSH;
+        if sb.size = 0 then
+          sb.STATE := IDLE;
+        else
+          sb.byte_cnt := 3;
+          sb.STATE := FLUSH;
+        end if;
       else
         case sb.typ is
         when WRITE | BLOCK_WRITE | CYCLIC_WRITE | RMW =>
@@ -479,6 +484,34 @@ package body serial_bridge is
   end function;
 
 
+  function clock_flush (
+    serial_bridge  : serial_bridge_t;
+    byte_in        : std_logic_vector(7 downto 0);
+    byte_in_valid  : std_logic;
+    byte_out_ready : std_logic;
+    apb_com        : completer_out_t;
+  ) return serial_bridge_t is
+    variable sb : serial_bridge_t := serial_bridge;
+  begin
+    if sb.byte_in_ready and byte_in_valid then
+      if sb.byte_cnt = 0 then
+        if sb.size = 0 then
+          sb.state := IDLE;
+        else
+          sb.size := sb.size - 1;
+          sb.byte_cnt := 3;
+        end if;
+      else
+        sb.byte_cnt := sb.byte_cnt - 1;
+      end if;
+    else
+      sb.byte_in_ready := '1';
+    end if;
+
+    return sb;
+  end function;
+
+
   function clock (
     serial_bridge  : serial_bridge_t;
     byte_in        : std_logic_vector(7 downto 0);
@@ -495,6 +528,7 @@ package body serial_bridge is
       when TRANSFER    => sb := clock_transfer    (sb, byte_in, byte_in_valid, byte_out_ready, apb_com);
       when STATUS_PUSH => sb := clock_status_push (sb, byte_in, byte_in_valid, byte_out_ready, apb_com);
       when DATA_PUSH   => sb := clock_data_push   (sb, byte_in, byte_in_valid, byte_out_ready, apb_com);
+      when FLUSH       => sb := clock_flush       (sb, byte_in, byte_in_valid, byte_out_ready, apb_com);
       when others => report "unimplemented state " & state_t'image(sb.state) severity failure;
     end case;
 
