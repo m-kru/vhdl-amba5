@@ -363,7 +363,7 @@ package body apb is
   ) return interface_warnings_t is
     constant warnings : interface_warnings_t := (
       slverr_selx, slverr_enable, slverr_ready, wakeup_selx, wakeup_no_transfer
-    ); 
+    );
   begin
     return warnings;
   end function;
