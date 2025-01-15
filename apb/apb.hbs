@@ -3,7 +3,7 @@
 # Copyright (c) 2024 Michał Kruszewski
 
 namespace eval vhdl::amba5::apb {
-  # The pkg core contains the APB package with all primary types and functions.
+  # APB package with all primary types and functions.
   namespace eval pkg {
     proc src {} {
       hbs::SetLib "apb"
@@ -36,7 +36,7 @@ namespace eval vhdl::amba5::apb {
     hbs::Register
   }
 
-  # The checker core is the interface checker core.
+  # Interface checker core.
   # It detects erroneous and unrecommended scenarios on the interface.
   namespace eval checker {
     proc src {} {
@@ -80,7 +80,7 @@ namespace eval vhdl::amba5::apb {
     hbs::Register
   }
 
-  # The bfm is the Bus Function Model. It is useful only for simulation.
+  # Bus Function Model. It is useful only for simulation.
   namespace eval bfm {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
@@ -155,7 +155,7 @@ namespace eval vhdl::amba5::apb {
     hbs::Register
   }
 
-  # Mock Completer is a simple memory Completer that is always ready.
+  # Simple memory Completer that is always ready.
   namespace eval mock-completer {
     proc src {} {
       hbs::SetLib "apb"
@@ -174,6 +174,35 @@ namespace eval vhdl::amba5::apb {
       hbs::AddFile tb/mock-completer/tb.vhd
       hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
       hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=warning --dump-arrays"
+      hbs::Run
+    }
+
+    hbs::Register
+  }
+
+  # Bridge capable of converting stream of bytes into APB transactions.
+  namespace eval serial-bridge {
+    proc src {} {
+      hbs::AddDep vhdl::amba5::apb::pkg::src
+      hbs::SetLib "apb"
+      hbs::SetStd "2019"
+      hbs::AddFile serial-bridge.vhd
+    }
+
+    proc _tb {top} {
+      hbs::SetTool "nvc"
+      hbs::AddDep vhdl::amba5::apb::checker::src
+      hbs::AddDep vhdl::amba5::apb::mock-completer::src
+      hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      hbs::SetTop $top
+      hbs::AddDep $hbs::ThisCore\::src
+      hbs::SetLib ""
+    }
+
+    proc tb-read {} {
+      _tb "tb_read"
+      hbs::AddFile tb/serial-bridge/tb-read.vhd
       hbs::Run
     }
 
