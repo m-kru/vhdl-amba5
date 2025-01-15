@@ -89,11 +89,11 @@ package body checker is
   begin
     --
     -- error checks
-    --   
+    --
     if req.selx = '1' and req.write = '0' and req.strb /= "0000" then
       ck.errors_o.read_strb := '1';
       report
-        ck.prefix & "strb = """ & to_string(req.strb) & """ during read transfer, expecting ""0000""" & LF &
+        ck.prefix & "strb = """ & to_string(req.strb) & """ during read transfer, expected ""0000""" & LF &
         "requester := "& to_debug(req) & LF &
         "completer := "& to_debug(com)
         severity error;
@@ -101,7 +101,7 @@ package body checker is
 
     --
     -- warning checks
-    --   
+    --
     if com.slverr = '1' and req.selx = '0' then
       ck.warnings_o.slverr_selx := '1';
       report ck.prefix & "slverr high, but selx low" severity warning;
@@ -196,7 +196,7 @@ package body checker is
       ck.errors_o.setup_entry := '1';
       report
         ck.prefix &
-        "invalid SETUP state entry condition, selx high and enable high, expecting enable low" & LF &
+        "invalid SETUP state entry condition, selx high and enable high, expected enable low" & LF &
         "requester :=" & to_debug(req) & LF &
         "completer :=" & to_debug(com)
         severity error;
