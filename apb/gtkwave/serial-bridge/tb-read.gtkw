@@ -1,0 +1,91 @@
+[*]
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Wed Jan 15 11:10:48 2025
+[*]
+[dumpfile] "/home/mkru/workspace/vhdl/vhdl-amba5/apb/build/vhdl/amba5/apb/serial-bridge/tb-read/tb_read.fst"
+[dumpfile_mtime] "Wed Jan 15 11:10:05 2025"
+[dumpfile_size] 1394
+[savefile] "/home/mkru/workspace/vhdl/vhdl-amba5/apb/gtkwave/serial-bridge/tb-read.gtkw"
+[timestart] 0
+[size] 2121 1163
+[pos] 202 203
+*-20.186728 8500000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[markername] AA
+[markername] BB
+[markername] CC
+[markername] DD
+[markername] EE
+[markername] FF
+[markername] GG
+[markername] HH
+[markername] II
+[markername] JJ
+[markername] KK
+[markername] LL
+[markername] MM
+[markername] NN
+[markername] OO
+[markername] PP
+[markername] QQ
+[markername] RR
+[markername] SS
+[markername] TT
+[markername] UU
+[markername] VV
+[markername] WW
+[markername] XX
+[markername] YY
+[markername] ZZ
+[treeopen] tb_read.
+[treeopen] tb_read.sb.
+[treeopen] tb_read.sb.apb_req.
+[sst_width] 276
+[signals_width] 235
+[sst_expanded] 1
+[sst_vpaned_height] 348
+@28
+tb_read.clk
+@22
+tb_read.byte_in[7:0]
+@28
+tb_read.byte_in_valid
+tb_read.byte_out_ready
+@22
+tb_read.rdata[31:0]
+@200
+-APB Requester
+@22
+tb_read.sb.apb_req.addr[31:0]
+@28
+tb_read.sb.apb_req.selx
+tb_read.sb.apb_req.wakeup
+@29
+tb_read.sb.apb_req.enable
+@22
+tb_read.sb.apb_req.strb[3:0]
+@200
+-APB Completer
+@28
+tb_read.com.ready
+tb_read.com.slverr
+@22
+tb_read.com.rdata[31:0]
+@200
+-Serial Bridge
+@28
+[color] 2
+tb_read.sb.state
+tb_read.sb.typ
+@24
+tb_read.sb.size
+tb_read.sb.byte_cnt
+@28
+tb_read.sb.byte_in_ready
+@22
+tb_read.sb.byte_out[7:0]
+@28
+tb_read.sb.byte_out_valid
+@22
+tb_read.sb.data[31:0]
+[pattern_trace] 1
+[pattern_trace] 0

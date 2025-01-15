@@ -35,7 +35,7 @@ library work;
 -- The address and data bytes are always transferred starting from the most significant byte and most significant bit.
 --
 -- The bridge does not support transactions with unaligned addresses.
--- That is, the bridge does not control byte strobes (PSTRB signal).
+-- That is, the bridge sets byte strobes (PSTRB signal) all high or all low.
 -- However:
 --   1. Unaligned address is forwared to the completer.
 --   2. The byte access is still possible using the RMW transaction.
@@ -325,6 +325,7 @@ package body serial_bridge is
       if sb.byte_cnt = 0 then
         sb.byte_cnt := 3;
         sb.apb_req.selx := '1';
+        sb.apb_req.strb := b"0000";
 
         if is_write(sb.typ) then
           sb.state := DATA_PULL;
@@ -375,6 +376,7 @@ package body serial_bridge is
     if sb.apb_req.enable = '1'  and apb_com.ready = '1' then
       sb.data := apb_com.rdata;
       sb.byte_out(7) := apb_com.slverr;
+      sb.byte_out(6 downto 0) := b"0000000"; -- Unused bits
       sb.byte_out_valid := '1';
 
       if sb.size = 0 then
