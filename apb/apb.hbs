@@ -206,6 +206,12 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
+    proc tb-write {} {
+      _tb "tb_write"
+      hbs::AddFile tb/serial-bridge/tb-write.vhd
+      hbs::Run
+    }
+
     hbs::Register
   }
 }

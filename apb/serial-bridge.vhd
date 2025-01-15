@@ -298,10 +298,10 @@ package body serial_bridge is
     sb.byte_out_valid := '0';
     sb.apb_req := init;
     sb.size := 0;
+    sb.byte_cnt := sb.ADDR_BYTE_COUNT - 1;
 
     if sb.byte_in_ready and byte_in_valid then
       sb.typ := to_transaction_type(byte_in(7 downto 5));
-      sb.byte_cnt := sb.ADDR_BYTE_COUNT - 1;
       sb.state := ADDR_PULL;
       report sb.PREFIX & "starting " & transaction_type_t'image(sb.typ) & " transaction" severity note;
     else
