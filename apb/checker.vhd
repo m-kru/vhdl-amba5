@@ -15,7 +15,7 @@ package checker is
   -- A checker capable of detecting bus errors and warnings.
   type checker_t is record
     -- Configuration elements
-    prefix : string; -- Optional prefix used in report messages.
+    REPORT_PREFIX : string; -- Optional REPORT_PREFIX used in report messages.
     -- Output elements
     errors_o   : interface_errors_t;
     warnings_o : interface_warnings_t;
@@ -28,27 +28,27 @@ package checker is
   -- Useful for internal tests.
   -- It puts checker into the ACCESS state waiting for the ready signal assertion during read transfer.
   constant READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY : checker_t := (
-    prefix     => "apb: checker: ",
+    REPORT_PREFIX => "apb: checker: ",
     errors_o   => INTERFACE_ERRORS_NONE,
     warnings_o => INTERFACE_WARNINGS_NONE,
     state      => ACCSS,
-    prev_req => init(selx => '1', enable => '1'),
+    prev_req   => init(selx => '1', enable => '1'),
     awaiting_transfer => true
   );
 
   -- Useful for internal tests.
   -- It puts checker into the ACCESS state waiting for the ready signal assertion during write transfer.
   constant WRITE_TRANSFER_ACCESS_STATE_WAITING_FOR_READY : checker_t := (
-    prefix     => "apb: checker: ",
+    REPORT_PREFIX => "apb: checker: ",
     errors_o   => INTERFACE_ERRORS_NONE,
     warnings_o => INTERFACE_WARNINGS_NONE,
     state      => ACCSS,
-    prev_req => init(selx => '1', enable => '1', write => '1', strb => "1111"),
+    prev_req   => init(selx => '1', enable => '1', write => '1', strb => "1111"),
     awaiting_transfer => true
   );
 
-  -- Initializes checker_t with prefix set to given value.
-  function init (prefix : string := "apb: checker: ") return checker_t;
+  -- Initializes checker_t with the REPORT_PREFIX set to given value.
+  function init (REPORT_PREFIX : string := "apb: checker: ") return checker_t;
 
   -- Resets the checker. It enforces clear of errors and warnings and resets the checker state.
   function reset (checker : checker_t) return checker_t;
@@ -66,10 +66,10 @@ end package;
 
 package body checker is
 
-  function init (prefix : string := "apb: checker: ") return checker_t is
-    variable ck : checker_t(prefix(prefix'range));
+  function init (REPORT_PREFIX : string := "apb: checker: ") return checker_t is
+    variable ck : checker_t(REPORT_PREFIX(REPORT_PREFIX'range));
   begin
-    ck.prefix := prefix;
+    ck.REPORT_PREFIX := REPORT_PREFIX;
     return ck;
   end function;
 
@@ -93,7 +93,7 @@ package body checker is
     if req.selx = '1' and req.write = '0' and req.strb /= "0000" then
       ck.errors_o.read_strb := '1';
       report
-        ck.prefix & "strb = """ & to_string(req.strb) & """ during read transfer, expected ""0000""" & LF &
+        ck.REPORT_PREFIX & "strb = """ & to_string(req.strb) & """ during read transfer, expected ""0000""" & LF &
         "requester := "& to_debug(req) & LF &
         "completer := "& to_debug(com)
         severity error;
@@ -104,22 +104,22 @@ package body checker is
     --
     if com.slverr = '1' and req.selx = '0' then
       ck.warnings_o.slverr_selx := '1';
-      report ck.prefix & "slverr high, but selx low" severity warning;
+      report ck.REPORT_PREFIX & "slverr high, but selx low" severity warning;
     end if;
 
     if com.slverr = '1' and req.enable = '0' then
       ck.warnings_o.slverr_enable := '1';
-      report ck.prefix & "slverr high, but enable low" severity warning;
+      report ck.REPORT_PREFIX & "slverr high, but enable low" severity warning;
     end if;
 
     if com.slverr = '1' and com.ready = '0' then
       ck.warnings_o.slverr_ready := '1';
-      report ck.prefix & "slverr high, but ready low" severity warning;
+      report ck.REPORT_PREFIX & "slverr high, but ready low" severity warning;
     end if;
 
     if req.selx = '1' and ck.prev_req.wakeup = '0' then
       ck.warnings_o.wakeup_selx := '1';
-      report ck.prefix & "selx asserted, but wakeup was low in previous clock cycle" severity warning;
+      report ck.REPORT_PREFIX & "selx asserted, but wakeup was low in previous clock cycle" severity warning;
     end if;
 
     return ck;
@@ -131,7 +131,7 @@ package body checker is
     if req.addr /= ck.prev_req.addr then
       ck.errors_o.addr_change := '1';
       report
-        ck.prefix & "addr change in " & whenn & ", """ & to_string(ck.prev_req.addr) & """ -> """ & to_string(req.addr) & """" & LF &
+        ck.REPORT_PREFIX & "addr change in " & whenn & ", """ & to_string(ck.prev_req.addr) & """ -> """ & to_string(req.addr) & """" & LF &
         "requester := " & to_debug(req) & LF &
         "completer := " & to_debug(com)
         severity error;
@@ -139,7 +139,7 @@ package body checker is
     if req.prot /= ck.prev_req.prot then
       ck.errors_o.prot_change := '1';
       report
-        ck.prefix & "prot change in " & whenn & ", " & to_string(ck.prev_req.prot) & " -> " & to_string(req.prot) & LF &
+        ck.REPORT_PREFIX & "prot change in " & whenn & ", " & to_string(ck.prev_req.prot) & " -> " & to_string(req.prot) & LF &
         "requester := " & to_debug(req) & LF &
         "completer := " & to_debug(com)
         severity error;
@@ -147,7 +147,7 @@ package body checker is
     if req.write /= ck.prev_req.write then
       ck.errors_o.write_change := '1';
       report
-        ck.prefix & "write change in " & whenn & ", '" & to_string(ck.prev_req.write) & "' -> '" & to_string(req.write) & "'" & LF &
+        ck.REPORT_PREFIX & "write change in " & whenn & ", '" & to_string(ck.prev_req.write) & "' -> '" & to_string(req.write) & "'" & LF &
         "requester := " & to_debug(req) & LF &
         "completer := " & to_debug(com)
         severity error;
@@ -155,7 +155,7 @@ package body checker is
     if req.wdata /= ck.prev_req.wdata then
       ck.errors_o.wdata_change := '1';
       report
-        ck.prefix & "wdata change in " & whenn & ", " & to_string(ck.prev_req.wdata) & " -> " & to_string(req.wdata) & LF &
+        ck.REPORT_PREFIX & "wdata change in " & whenn & ", " & to_string(ck.prev_req.wdata) & " -> " & to_string(req.wdata) & LF &
         "req := " & to_debug(req) & LF &
         "com := " & to_debug(com)
         severity error;
@@ -163,7 +163,7 @@ package body checker is
     if req.strb /= ck.prev_req.strb then
       ck.errors_o.strb_change := '1';
       report
-        ck.prefix & "strb change in " & whenn & ", """ & to_string(ck.prev_req.strb) & """ -> """ & to_string(req.strb) & """" & LF &
+        ck.REPORT_PREFIX & "strb change in " & whenn & ", """ & to_string(ck.prev_req.strb) & """ -> """ & to_string(req.strb) & """" & LF &
         "requester := " & to_debug(req) & LF &
         "completer := " & to_debug(com)
         severity error;
@@ -171,7 +171,7 @@ package body checker is
     if req.auser /= ck.prev_req.auser then
       ck.errors_o.auser_change := '1';
       report
-        ck.prefix & "auser change in " & whenn & ", """ & to_string(ck.prev_req.auser) & """ -> """ & to_string(req.auser) & """" & LF &
+        ck.REPORT_PREFIX & "auser change in " & whenn & ", """ & to_string(ck.prev_req.auser) & """ -> """ & to_string(req.auser) & """" & LF &
         "requester := " & to_debug(req) & LF &
         "completer := " & to_debug(com)
         severity error;
@@ -179,7 +179,7 @@ package body checker is
     if req.wuser /= ck.prev_req.wuser then
       ck.errors_o.wuser_change := '1';
       report
-        ck.prefix & "wuser change in " & whenn & ", """ & to_string(ck.prev_req.wuser) & """ -> """ & to_string(req.wuser) & """" & LF &
+        ck.REPORT_PREFIX & "wuser change in " & whenn & ", """ & to_string(ck.prev_req.wuser) & """ -> """ & to_string(req.wuser) & """" & LF &
         "requester := " & to_debug(req) & LF &
         "completer := " & to_debug(com)
         severity error;
@@ -195,7 +195,7 @@ package body checker is
     if req.selx = '1' and req.enable = '1' then
       ck.errors_o.setup_entry := '1';
       report
-        ck.prefix &
+        ck.REPORT_PREFIX &
         "invalid SETUP state entry condition, selx high and enable high, expected enable low" & LF &
         "requester :=" & to_debug(req) & LF &
         "completer :=" & to_debug(com)
@@ -223,7 +223,7 @@ package body checker is
       end if;
     else
       ck.errors_o.setup_stall := '1';
-      report ck.prefix & "SETUP state stall" & LF &
+      report ck.REPORT_PREFIX & "SETUP state stall" & LF &
         "requester := " & to_debug(req) & LF &
         "completer := " & to_debug(com)
         severity error;
@@ -243,7 +243,7 @@ package body checker is
       ck.state := IDLE;
     elsif req.wakeup = '0' then
       ck.errors_o.wakeup_ready := '1';
-      report ck.prefix & "wakeup deasserted before ready assertion" & LF &
+      report ck.REPORT_PREFIX & "wakeup deasserted before ready assertion" & LF &
       "requester := " & to_debug(req) & LF &
       "completer := " & to_debug(com)
       severity error;
@@ -273,7 +273,7 @@ package body checker is
     end if;
     if req.wakeup = '0' and ck.prev_req.wakeup = '1' and ck.awaiting_transfer then
       ck.warnings_o.wakeup_no_transfer := '1';
-      report ck.prefix & "assert and deassert of wakeup without transfer" severity warning;
+      report ck.REPORT_PREFIX & "assert and deassert of wakeup without transfer" severity warning;
     end if;
 
     ck.prev_req := req;
