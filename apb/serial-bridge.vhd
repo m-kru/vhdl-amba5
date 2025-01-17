@@ -181,7 +181,7 @@ package serial_bridge is
   -- APB build time configuration elements are set via the req_o initial value.
   type serial_bridge_t is record
     -- Configuration elements
-    PREFIX : string; -- Optional prefix used in report messages
+    REPORT_PREFIX   : string; -- Optional prefix used in report messages
     ADDR_BYTE_COUNT : positive range 1 to 4; -- Number of used address bytes
 
     -- Output elements
@@ -202,7 +202,7 @@ package serial_bridge is
 
   -- Initializes serial bridge with elements set to given values.
   function init (
-    PREFIX           : string := "apb: serial bridge: ";
+    REPORT_PREFIX    : string := "apb: serial bridge: ";
     ADDR_BYTE_COUNT  : positive range 1 to 4 := 1;
     byte_in_ready    : std_logic := '0';
     byte_out_valid   : std_logic := '0';
@@ -256,7 +256,7 @@ package body serial_bridge is
 
 
   function init (
-    PREFIX           : string := "apb: serial bridge: ";
+    REPORT_PREFIX    : string := "apb: serial bridge: ";
     ADDR_BYTE_COUNT  : positive range 1 to 4 := 1;
     byte_in_ready    : std_logic := '0';
     byte_out_valid   : std_logic := '0';
@@ -269,7 +269,7 @@ package body serial_bridge is
     data             : std_logic_vector(31 downto 0) := (others => '-')
   ) return serial_bridge_t is
     constant sb : serial_bridge_t := (
-      PREFIX           => PREFIX,
+      REPORT_PREFIX    => REPORT_PREFIX,
       ADDR_BYTE_COUNT  => ADDR_BYTE_COUNT,
       byte_in_ready    => byte_in_ready,
       byte_out_valid   => byte_out_valid,
@@ -303,7 +303,7 @@ package body serial_bridge is
     if sb.byte_in_ready and byte_in_valid then
       sb.typ := to_transaction_type(byte_in(7 downto 5));
       sb.state := ADDR_PULL;
-      report sb.PREFIX & "starting " & transaction_type_t'image(sb.typ) & " transaction" severity note;
+      report sb.REPORT_PREFIX & "starting " & transaction_type_t'image(sb.typ) & " transaction" severity note;
     else
       sb.byte_in_ready := '1';
     end if;
@@ -335,7 +335,7 @@ package body serial_bridge is
       sb.apb_req.addr(sb.byte_cnt * 8 + 7 downto sb.byte_cnt * 8) := unsigned(byte_in);
 
       if sb.byte_cnt = 0 then
-        report sb.PREFIX & "addr x""" & to_hstring(sb.apb_req.addr) & """";
+        report sb.REPORT_PREFIX & "addr x""" & to_hstring(sb.apb_req.addr) & """";
 
         sb.byte_cnt := 3;
 
