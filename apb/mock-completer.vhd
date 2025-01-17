@@ -18,7 +18,7 @@ package mock_completer is
   -- It is a simple memory with configurable size.
   type mock_completer_t is record
     -- Configuration elements
-    prefix : string; -- Optional prefix used in report messages.
+    REPORT_PREFIX : string; -- Optional REPORT_PREFIX used in report messages.
     -- Internal elements
     memory : data_array_t;
     -- Statistics elements
@@ -27,7 +27,7 @@ package mock_completer is
   end record;
 
   -- The init function initializes mock_completer_t.
-  function init (memory_size: natural; prefix: string := "apb: mock completer: ") return mock_completer_t;
+  function init (memory_size: natural; REPORT_PREFIX: string := "apb: mock completer: ") return mock_completer_t;
 
   -- The reset function resets the mock Completer.
   function reset (mc: mock_completer_t) return mock_completer_t;
@@ -46,10 +46,10 @@ end package;
 
 package body mock_completer is
 
-  function init (memory_size: natural; prefix: string := "apb: mock completer: ") return mock_completer_t is
-    variable mc : mock_completer_t(prefix(0 to prefix'length-1), memory(0 to memory_size - 1));
+  function init (memory_size: natural; REPORT_PREFIX: string := "apb: mock completer: ") return mock_completer_t is
+    variable mc : mock_completer_t(REPORT_PREFIX(0 to REPORT_PREFIX'length-1), memory(0 to memory_size - 1));
   begin
-    mc.prefix := prefix;
+    mc.REPORT_PREFIX := REPORT_PREFIX;
     return mc;
   end function;
 
@@ -76,14 +76,14 @@ package body mock_completer is
         mc.memory(to_integer(req.addr)/4) <= req.wdata;
         if req.enable = '1' then
           mc.write_count <= mc.write_count + 1;
-          report mc.prefix & "write: addr => x""" & to_hstring(req.addr) & """, data => x""" & to_hstring(req.wdata) & """";
+          report mc.REPORT_PREFIX & "write: addr => x""" & to_hstring(req.addr) & """, data => x""" & to_hstring(req.wdata) & """";
         end if;
       -- Read
       else
         com.rdata <= mc.memory(to_integer(req.addr)/4);
         if req.enable = '1' then
           mc.read_count <= mc.read_count + 1;
-          report mc.prefix & "read: addr => x""" & to_hstring(req.addr) & """";
+          report mc.REPORT_PREFIX & "read: addr => x""" & to_hstring(req.addr) & """";
         end if;
       end if;
     end if;
@@ -91,7 +91,7 @@ package body mock_completer is
 
   function stats_string (mc: mock_completer_t) return string is
   begin
-    return mc.prefix & "read count: " & to_string(mc.read_count) & ", write count: " & to_string(mc.write_count);
+    return mc.REPORT_PREFIX & "read count: " & to_string(mc.read_count) & ", write count: " & to_string(mc.write_count);
   end function;
 
 end package body;
