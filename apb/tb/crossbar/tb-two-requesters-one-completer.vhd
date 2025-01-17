@@ -16,8 +16,8 @@ architecture test of tb_two_requesters_one_completer is
   signal arstn : std_logic := '0';
   signal clk : std_logic := '1';
 
-  signal bfm0_cfg : bfm.config_t := bfm.init(prefix => "apb: bfm0: ");
-  signal bfm1_cfg : bfm.config_t := bfm.init(prefix => "apb: bfm1: ");
+  signal bfm0_cfg : bfm.config_t := bfm.init(REPORT_PREFIX => "apb: bfm0: ");
+  signal bfm1_cfg : bfm.config_t := bfm.init(REPORT_PREFIX => "apb: bfm1: ");
 
   signal req0_iface, req1_iface, com_iface : interface_t := init;
 

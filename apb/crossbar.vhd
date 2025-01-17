@@ -12,11 +12,11 @@ library work;
 
 entity Crossbar is
   generic (
+    REPORT_PREFIX   : string := "apb: crossbar: " -- Prefix used in report messages
     REQUESTER_COUNT : positive := 1;
     COMPLETER_COUNT : positive := 1;
-    ADDRS  : addr_array_t(0 to COMPLETER_COUNT - 1); -- Completer addresses 
-    MASKS  : mask_array_t(0 to COMPLETER_COUNT - 1); -- Completer address masks
-    PREFIX : string := "apb: crossbar: " -- Prefix used in report messages
+    ADDRS : addr_array_t(0 to COMPLETER_COUNT - 1); -- Completer addresses
+    MASKS : mask_array_t(0 to COMPLETER_COUNT - 1); -- Completer address masks
   );
   port (
     arstn_i : in std_logic := '1';
@@ -57,11 +57,11 @@ architecture rtl of Crossbar is
 begin
 
   -- Sanity checks
-  assert zero_mask_fail          = "" report PREFIX & zero_mask_fail          severity failure;
-  assert addr_has_meta_fail      = "" report PREFIX & addr_has_meta_fail      severity failure;
-  assert unaligned_addr_fail     = "" report PREFIX & unaligned_addr_fail     severity failure;
-  assert addr_not_in_mask_fail   = "" report PREFIX & addr_not_in_mask_fail   severity failure;
-  assert addr_space_overlap_fail = "" report PREFIX & addr_space_overlap_fail severity failure;
+  assert zero_mask_fail          = "" report REPORT_PREFIX & zero_mask_fail          severity failure;
+  assert addr_has_meta_fail      = "" report REPORT_PREFIX & addr_has_meta_fail      severity failure;
+  assert unaligned_addr_fail     = "" report REPORT_PREFIX & unaligned_addr_fail     severity failure;
+  assert addr_not_in_mask_fail   = "" report REPORT_PREFIX & addr_not_in_mask_fail   severity failure;
+  assert addr_space_overlap_fail = "" report REPORT_PREFIX & addr_space_overlap_fail severity failure;
 
 
   -- Wakeup to or wszystkich wakeup Reqesterów, które aktualnie adresują danego Completera.
@@ -110,11 +110,11 @@ begin
       for i in slv'range loop
         if slv(i) = '1' then return i; end if;
       end loop;
-      report PREFIX & "hot bit not found in vector """ & to_string(slv) & """" severity failure;
+      report REPORT_PREFIX & "hot bit not found in vector """ & to_string(slv) & """" severity failure;
     end function;
 
     -- Requester index
-    variable r : requester_range; 
+    variable r : requester_range;
 
   begin
     if arstn_i = '0' then
@@ -126,7 +126,7 @@ begin
         -- Sanity check that at most one bit is asserted in the completer connection vector
         if hot_bit_count(conn_matrix(c)) > 1 then
           report
-            PREFIX & "completer " & to_string(c) & " has " & to_string(hot_bit_count(conn_matrix(c))) &
+            REPORT_PREFIX & "completer " & to_string(c) & " has " & to_string(hot_bit_count(conn_matrix(c))) &
             " connected requesters, conn_matrix(" & to_string(c) & ") => """ & to_string(conn_matrix(c)) & """"
             severity failure;
         end if;
@@ -157,7 +157,7 @@ begin
           r := hot_bit_idx(conn_matrix(c));
 
           -- End of connection
-          if requesters(r).selx = '0' then 
+          if requesters(r).selx = '0' then
             conn_matrix(c) <= (others => '0'); -- TODO: Is it better to clear whole vector or single bit?
           else -- Route interfaces
             completers(c).addr   <= requesters(r).addr;
