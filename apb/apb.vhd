@@ -18,21 +18,12 @@ package apb is
   -- An array of data with the width equal to the APB maximum data width.
   type data_array_t is array (natural range <>) of std_logic_vector(31 downto 0);
 
-
-  -- Operating states as defined in the specification.
-  -- The ACCESS state is named ACCSS as "access" is VHDL keyword.
-  --
-  -- NOTE: The specification provides the state diagram. However, the diagram presents state
-  -- changes for a requester. Completers or checkers might use the same states, but they
-  -- might have different transitions. Mainly when a single transaction contains multiple transfers.
-  type state_t is (IDLE, SETUP, ACCSS);
-
-
   -- Scenarios defined as erroneous by the specification.
   type interface_errors_t is record
     -- PSLVERR related
-    setup_entry : std_logic; -- Invalid SETUP state entry condition, PSELx = 1, but PENABLE = 1 instead of 0.
-    setup_stall : std_logic; -- Interface spent in SETUP state more than one clock cycle.
+    setup_entry  : std_logic; -- Invalid SETUP state entry condition, PSELx = 1, but PENABLE = 1 instead of 0.
+    setup_stall  : std_logic; -- Requester spent in SETUP state more than one clock cycle.
+    access_stall : std_logic; -- Requester stayed in the ACCESS state after valid handshake.
     -- PWAKEUP related
     wakeup_ready : std_logic; -- PWAKEUP was deasserted before PREADY assertion, when PWAKEUP and PSELx were high.
     -- Errors related to value change in the transition between SETUP and ACCESS state or between cycles in the ACCESS state.
@@ -47,11 +38,11 @@ package apb is
     read_strb : std_logic; -- strb signal during read transfer is different than "0000".
   end record;
 
-  constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+  constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
   -- Initializes interface_errors_t with elements set to given values.
   function init (
-    setup_entry, setup_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
+    setup_entry, setup_stall, access_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
     strb_change, auser_change, wuser_change, read_strb : std_logic := '0'
   ) return interface_errors_t;
 
@@ -309,11 +300,11 @@ package body apb is
   --
 
   function init(
-    setup_entry, setup_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
+    setup_entry, setup_stall, access_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
     strb_change, auser_change, wuser_change, read_strb : std_logic := '0'
   ) return interface_errors_t is
     constant errors : interface_errors_t := (
-      setup_entry, setup_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
+      setup_entry, setup_stall, access_stall, wakeup_ready, addr_change, prot_change, write_change, wdata_change,
       strb_change, auser_change, wuser_change, read_strb
     );
   begin
@@ -325,6 +316,7 @@ package body apb is
     return "(" &
       "setup_entry => '"  & to_string(errors.setup_entry)  & "', " &
       "setup_stall => '"  & to_string(errors.setup_stall)  & "', " &
+      "access_stall => '" & to_string(errors.access_stall)  & "', " &
       "wakeup_ready => '" & to_string(errors.wakeup_ready) & "', " &
       "addr_change => '"  & to_string(errors.addr_change)  & "', " &
       "prot_change => '"  & to_string(errors.prot_change)  & "', " &
@@ -342,6 +334,7 @@ package body apb is
     return "(" & LF &
       indent & "  setup_entry  => '" & to_string(errors.setup_entry)  & "'," & LF &
       indent & "  setup_stall  => '" & to_string(errors.setup_stall)  & "'," & LF &
+      indent & "  access_stall => '" & to_string(errors.access_stall) & "'," & LF &
       indent & "  wakeup_ready => '" & to_string(errors.wakeup_ready) & "'," & LF &
       indent & "  addr_change  => '" & to_string(errors.addr_change)  & "'," & LF &
       indent & "  prot_change  => '" & to_string(errors.prot_change)  & "'," & LF &

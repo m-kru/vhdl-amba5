@@ -12,6 +12,15 @@ library work;
 
 package checker is
 
+  -- The ACCESS state is named ACCSS as "access" is VHDL keyword.
+  --
+  -- NOTE: The specification provides the state diagram.
+  -- However, the diagram presents state changes for a requester.
+  -- Checkers might use the same states, but they might have different transitions.
+  -- Moreover, checkers might have additional states.
+  -- This is because it is impossible to know beforehand the number of transfers within a transaction.
+  type state_t is (IDLE, SETUP, ACCSS, AFTER_TRANSFER);
+
   -- A checker capable of detecting bus errors and warnings.
   type checker_t is record
     -- Configuration elements
@@ -60,7 +69,12 @@ package checker is
   -- while clear is asserted the errors_o/warnings_o will not be zeroed.
   --
   -- Clearing does not impact the checker state.
-  function clock (checker : checker_t; req : requester_out_t; com : completer_out_t; clear : std_logic := '0') return checker_t;
+  function clock (
+    checker : checker_t;
+    req     : requester_out_t;
+    com     : completer_out_t;
+    clear   : std_logic := '0'
+  ) return checker_t;
 
 end package;
 
@@ -189,7 +203,12 @@ package body checker is
   end function;
 
   -- clock_idle clocks checker in IDLE state.
-  function clock_idle (checker : checker_t; req : requester_out_t; com : completer_out_t; clear : std_logic) return checker_t is
+  function clock_idle (
+    checker : checker_t;
+    req     : requester_out_t;
+    com     : completer_out_t;
+    clear   : std_logic
+  ) return checker_t is
     variable ck : checker_t := checker;
   begin
     if req.selx = '1' and req.enable = '1' then
@@ -210,7 +229,12 @@ package body checker is
   end function;
 
   -- clock_setup clocks checker in SETUP state.
-  function clock_setup (checker : checker_t; req : requester_out_t; com : completer_out_t; clear : std_logic) return checker_t is
+  function clock_setup (
+    checker : checker_t;
+    req     : requester_out_t;
+    com     : completer_out_t;
+    clear   : std_logic
+  ) return checker_t is
     variable ck : checker_t := checker;
   begin
     if req.selx = '1' and req.enable = '1' then
@@ -233,7 +257,12 @@ package body checker is
   end function;
 
   -- clock_access clocks checker in ACCESS state.
-  function clock_access (checker : checker_t; req : requester_out_t; com : completer_out_t; clear : std_logic) return checker_t is
+  function clock_access (
+    checker : checker_t;
+    req     : requester_out_t;
+    com     : completer_out_t;
+    clear   : std_logic
+  ) return checker_t is
     variable ck : checker_t := checker;
   begin
     ck := stable_checks(ck, req, com, "ACCESS state");
@@ -244,15 +273,47 @@ package body checker is
     elsif req.wakeup = '0' then
       ck.errors_o.wakeup_ready := '1';
       report ck.REPORT_PREFIX & "wakeup deasserted before ready assertion" & LF &
-      "requester := " & to_debug(req) & LF &
-      "completer := " & to_debug(com)
-      severity error;
+        "requester := " & to_debug(req) & LF &
+        "completer := " & to_debug(com)
+        severity error;
     end if;
 
     return ck;
   end function;
 
-  function clock (checker : checker_t; req : requester_out_t; com : completer_out_t; clear : std_logic := '0') return checker_t is
+
+  function clock_after_transfer (
+    checker : checker_t;
+    req : requester_out_t;
+    com : completer_out_t;
+    clear : std_logic
+  ) return checker_t is
+    variable ck : checker_t := checker;
+  begin
+    if clear = '1' then
+      ck.errors_o  := INTERFACE_ERRORS_NONE;
+      ck.warnings_o := INTERFACE_WARNINGS_NONE;
+    end if;
+
+    if req.selx = '0' then
+      ck.state := IDLE;
+    elsif req.enable = '0' then
+      ck.state := SETUP;
+    else
+      ck.errors_o.access_stall := '1';
+      report ck.REPORT_PREFIX & "ACCESS state stall" severity failure;
+    end if;
+
+    return ck;
+  end function;
+
+
+  function clock (
+    checker : checker_t;
+    req     : requester_out_t;
+    com     : completer_out_t;
+    clear   : std_logic := '0'
+  ) return checker_t is
     variable ck : checker_t := checker;
   begin
     if clear = '1' then
@@ -261,9 +322,10 @@ package body checker is
     end if;
 
     case ck.state is
-    when IDLE  => ck := clock_idle(ck, req, com, clear);
-    when SETUP => ck := clock_setup(ck, req, com, clear);
-    when ACCSS => ck := clock_access(ck, req, com, clear);
+      when IDLE  => ck := clock_idle   (ck, req, com, clear);
+      when SETUP => ck := clock_setup  (ck, req, com, clear);
+      when ACCSS => ck := clock_access (ck, req, com, clear);
+      when AFTER_TRANSFER => ck := clock_after_transfer(ck, req, com, clear);
     end case;
 
     ck := stateless_checks(ck, req, com);
