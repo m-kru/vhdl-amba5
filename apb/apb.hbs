@@ -7,7 +7,6 @@ namespace eval vhdl::amba5::apb {
   namespace eval pkg {
     proc src {} {
       hbs::SetLib "apb"
-      hbs::SetStd "2019"
       hbs::AddFile apb.vhd
     }
 
@@ -42,7 +41,6 @@ namespace eval vhdl::amba5::apb {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "apb"
-      hbs::SetStd "2019"
       hbs::AddFile checker.vhd
     }
 
@@ -85,7 +83,6 @@ namespace eval vhdl::amba5::apb {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "apb"
-      hbs::SetStd "2019"
       hbs::AddFile bfm.vhd
     }
 
@@ -130,7 +127,6 @@ namespace eval vhdl::amba5::apb {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "apb"
-      hbs::SetStd "2019"
       hbs::AddFile crossbar.vhd
     }
 
@@ -159,7 +155,6 @@ namespace eval vhdl::amba5::apb {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "apb"
-      hbs::SetStd "2019"
       hbs::AddFile shared-bus.vhd
     }
 
@@ -188,7 +183,6 @@ namespace eval vhdl::amba5::apb {
   namespace eval mock-completer {
     proc src {} {
       hbs::SetLib "apb"
-      hbs::SetStd "2019"
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::AddFile mock-completer.vhd
     }
@@ -214,7 +208,6 @@ namespace eval vhdl::amba5::apb {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "apb"
-      hbs::SetStd "2019"
       hbs::AddFile serial-bridge.vhd
     }
 
