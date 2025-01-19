@@ -170,7 +170,7 @@ package body bfm is
 
     -- Wait until ready
     if com.ready /= '1' then
-      wait until rising_edge(com.ready) for cfg.timeout;
+      wait until rising_edge(clk) and com.ready = '1' for cfg.timeout;
       if com.ready /= '1' then
         report cfg.REPORT_PREFIX & "timeout while waiting for Completer to assert ready" severity cfg.timeout_severity;
       end if;
