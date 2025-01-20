@@ -6,7 +6,7 @@ namespace eval vhdl::amba5::apb {
   # APB package with all primary types and functions.
   namespace eval pkg {
     proc src {} {
-      hbs::SetLib "apb"
+      hbs::SetLib "lapb"
       hbs::AddFile apb.vhd
     }
 
@@ -40,7 +40,7 @@ namespace eval vhdl::amba5::apb {
   namespace eval checker {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
-      hbs::SetLib "apb"
+      hbs::SetLib "lapb"
       hbs::AddFile checker.vhd
     }
 
@@ -82,7 +82,7 @@ namespace eval vhdl::amba5::apb {
   namespace eval bfm {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
-      hbs::SetLib "apb"
+      hbs::SetLib "lapb"
       hbs::AddFile bfm.vhd
     }
 
@@ -126,7 +126,7 @@ namespace eval vhdl::amba5::apb {
   namespace eval crossbar {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
-      hbs::SetLib "apb"
+      hbs::SetLib "lapb"
       hbs::AddFile crossbar.vhd
     }
 
@@ -154,7 +154,7 @@ namespace eval vhdl::amba5::apb {
   namespace eval shared-bus {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
-      hbs::SetLib "apb"
+      hbs::SetLib "lapb"
       hbs::AddFile shared-bus.vhd
     }
 
@@ -182,7 +182,7 @@ namespace eval vhdl::amba5::apb {
   # Simple memory Completer that is always ready.
   namespace eval mock-completer {
     proc src {} {
-      hbs::SetLib "apb"
+      hbs::SetLib "lapb"
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::AddFile mock-completer.vhd
     }
@@ -207,7 +207,7 @@ namespace eval vhdl::amba5::apb {
   namespace eval serial-bridge {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
-      hbs::SetLib "apb"
+      hbs::SetLib "lapb"
       hbs::AddFile serial-bridge.vhd
     }
 

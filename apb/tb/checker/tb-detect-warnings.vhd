@@ -1,9 +1,9 @@
 library ieee;
   use ieee.std_logic_1164.all;
 
-library apb;
-  use apb.apb.all;
-  use apb.checker.all;
+library lapb;
+  use lapb.apb.all;
+  use lapb.checker.all;
 
 
 entity tb_detect_warnings is

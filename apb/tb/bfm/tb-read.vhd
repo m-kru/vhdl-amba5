@@ -2,10 +2,10 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
-library apb;
-  use apb.apb.all;
-  use apb.bfm;
-  use apb.checker.all;
+library lapb;
+  use lapb.apb.all;
+  use lapb.bfm;
+  use lapb.checker.all;
 
 
 entity tb_read is

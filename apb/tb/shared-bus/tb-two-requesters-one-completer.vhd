@@ -2,11 +2,11 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
-library apb;
-  use apb.apb.all;
-  use apb.bfm;
-  use apb.checker.all;
-  use apb.mock_completer.all;
+library lapb;
+  use lapb.apb.all;
+  use lapb.bfm;
+  use lapb.checker.all;
+  use lapb.mock_completer.all;
 
 entity tb_two_requesters_one_completer is
 end entity;
@@ -92,7 +92,7 @@ begin
   end process;
 
 
-  DUT : entity apb.Shared_Bus
+  DUT : entity lapb.Shared_Bus
   generic map (
     REQUESTER_COUNT => 2,
     ADDRS => (0 => "00000000000000000000000000000000"),

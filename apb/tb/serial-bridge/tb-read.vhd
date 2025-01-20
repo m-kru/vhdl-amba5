@@ -2,11 +2,11 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
-library apb;
-  use apb.apb.all;
-  use apb.checker.all;
-  use apb.mock_completer.all;
-  use apb.serial_bridge.all;
+library lapb;
+  use lapb.apb.all;
+  use lapb.checker.all;
+  use lapb.mock_completer.all;
+  use lapb.serial_bridge.all;
 
 
 entity tb_read is
