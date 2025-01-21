@@ -129,7 +129,6 @@ package body bfm is
     constant cfg   : in config_t := DEFAULT_CONFIG;
     constant msg   : in string := ""
   ) is
-    constant initial_wakeup : std_logic := req.wakeup;
   begin
     report cfg.REPORT_PREFIX & "write: addr => x""" & to_hstring(addr) & """, data => x""" & to_hstring(data) & """" & msg;
 
@@ -143,13 +142,11 @@ package body bfm is
     wait for 0 ns;
     wait for 0 ns;
 
-    -- Assert wakeup signal if it is not yet asserted
-    if initial_wakeup /= '1' then
-      req.wakeup <= '1';
-      wait until rising_edge(clk) for cfg.timeout;
-      if clk /= '1' then
-        report cfg.REPORT_PREFIX & "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
-      end if;
+    -- Assert wakeup signal
+    req.wakeup <= '1';
+    wait until rising_edge(clk) for cfg.timeout;
+    if clk /= '1' then
+      report cfg.REPORT_PREFIX & "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
     end if;
 
     -- Enter SETUP state
@@ -185,10 +182,8 @@ package body bfm is
     req.selx <= '0';
     req.enable <= '0';
 
-    -- Restore initial wakeup signal value
-    if initial_wakeup /= '1' then
-      req.wakeup <= initial_wakeup;
-    end if;
+    -- Deassert wakeup signal value
+    req.wakeup <= '0';
 
     wait for 0 ns;
     wait for 0 ns;
@@ -206,7 +201,6 @@ package body bfm is
     constant cfg   : in config_t := DEFAULT_CONFIG;
     constant msg   : in string := ""
   ) is
-    constant initial_wakeup : std_logic := req.wakeup;
   begin
     report cfg.REPORT_PREFIX & "read: addr => x""" & to_hstring(addr)  & """" & msg;
 
@@ -219,13 +213,11 @@ package body bfm is
     wait for 0 ns;
     wait for 0 ns;
 
-    -- Assert wakeup signal if it is not yet asserted
-    if initial_wakeup /= '1' then
-      req.wakeup <= '1';
-      wait until rising_edge(clk) for cfg.timeout;
-      if clk /= '1' then
-        report cfg.REPORT_PREFIX & "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
-      end if;
+    -- Assert wakeup signal
+    req.wakeup <= '1';
+    wait until rising_edge(clk) for cfg.timeout;
+    if clk /= '1' then
+      report cfg.REPORT_PREFIX & "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
     end if;
 
     -- Enter SETUP state
@@ -260,10 +252,8 @@ package body bfm is
     req.selx <= '0';
     req.enable <= '0';
 
-    -- Restore initial wakeup signal value
-    if initial_wakeup /= '1' then
-      req.wakeup <= initial_wakeup;
-    end if;
+    -- Deassert wakeup signal value
+    req.wakeup <= '0';
 
     wait for 0 ns;
     wait for 0 ns;
@@ -285,7 +275,6 @@ package body bfm is
     constant cfg   : in config_t := DEFAULT_CONFIG;
     constant msg   : in string := ""
   ) is
-    constant initial_wakeup : std_logic := req.wakeup;
   begin
     report cfg.REPORT_PREFIX & "writeb: addr => x""" & to_hstring(addr) & """, data length => " & to_string(data'length) & msg;
 
@@ -299,13 +288,11 @@ package body bfm is
     wait for 0 ns;
     wait for 0 ns;
 
-    -- Assert wakeup signal if it is not yet asserted
-    if initial_wakeup /= '1' then
-      req.wakeup <= '1';
-      wait until rising_edge(clk) for cfg.timeout;
-      if clk /= '1' then
-        report cfg.REPORT_PREFIX & "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
-      end if;
+    -- Assert wakeup signal
+    req.wakeup <= '1';
+    wait until rising_edge(clk) for cfg.timeout;
+    if clk /= '1' then
+      report cfg.REPORT_PREFIX & "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
     end if;
 
     -- Enter SETUP state
@@ -365,10 +352,8 @@ package body bfm is
     req.selx <= '0';
     req.enable <= '0';
 
-    -- Restore initial wakeup signal value
-    if initial_wakeup /= '1' then
-      req.wakeup <= initial_wakeup;
-    end if;
+    -- Deassert wakeup signal value
+    req.wakeup <= '0';
 
     wait for 0 ns;
     wait for 0 ns;
@@ -388,7 +373,6 @@ package body bfm is
     constant cfg   : in config_t := DEFAULT_CONFIG;
     constant msg   : in string := ""
   ) is
-    constant initial_wakeup : std_logic := req.wakeup;
   begin
     report cfg.REPORT_PREFIX & "readb: addr => x""" & to_hstring(addr) & """, data length => " & to_string(data'length) & msg;
 
@@ -401,13 +385,11 @@ package body bfm is
     wait for 0 ns;
     wait for 0 ns;
 
-    -- Assert wakeup signal if it is not yet asserted
-    if initial_wakeup /= '1' then
-      req.wakeup <= '1';
-      wait until rising_edge(clk) for cfg.timeout;
-      if clk /= '1' then
-        report cfg.REPORT_PREFIX & "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
-      end if;
+    -- Assert wakeup signal
+    req.wakeup <= '1';
+    wait until rising_edge(clk) for cfg.timeout;
+    if clk /= '1' then
+      report cfg.REPORT_PREFIX & "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
     end if;
 
     -- Enter SETUP state
@@ -467,10 +449,8 @@ package body bfm is
     req.selx <= '0';
     req.enable <= '0';
 
-    -- Restore initial wakeup signal value
-    if initial_wakeup /= '1' then
-      req.wakeup <= initial_wakeup;
-    end if;
+    -- Deassert wakeup signal
+    req.wakeup <= '0';
 
     wait for 0 ns;
     wait for 0 ns;
