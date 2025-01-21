@@ -71,7 +71,7 @@ package bfm is
     constant addr  : in unsigned(31 downto 0); -- Start address
     constant data  : in data_array_t;
     signal   clk   : in std_logic;
-    signal   req   : out requester_out_t;
+    signal   req   : inout requester_out_t;
     signal   com   : in  completer_out_t;
     constant prot  : in protection_t := (data_instruction => '0', secure_non_secure => '0', normal_privileged => '0');
     constant nse   : in std_logic := '-';
@@ -89,7 +89,7 @@ package bfm is
     constant addr  : in unsigned(31 downto 0); -- Start address
     signal   data  : out data_array_t;
     signal   clk   : in std_logic;
-    signal   req   : out requester_out_t;
+    signal   req   : inout requester_out_t;
     signal   com   : in  completer_out_t;
     constant prot  : in protection_t := (data_instruction => '0', secure_non_secure => '0', normal_privileged => '0');
     constant nse   : in std_logic := '-';
@@ -263,7 +263,7 @@ package body bfm is
     constant addr  : in unsigned(31 downto 0);
     constant data  : in data_array_t;
     signal   clk   : in std_logic;
-    signal   req   : out requester_out_t;
+    signal   req   : inout requester_out_t;
     signal   com   : in  completer_out_t;
     constant prot  : in protection_t := (data_instruction => '0', secure_non_secure => '0', normal_privileged => '0');
     constant nse   : in std_logic := '-';
