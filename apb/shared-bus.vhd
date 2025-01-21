@@ -54,7 +54,9 @@ architecture rtl of Shared_Bus is
 begin
 
   -- Sanity checks
-  assert zero_mask_fail          = "" report REPORT_PREFIX & zero_mask_fail          severity failure;
+  mask_zero_check : if COMPLETER_COUNT > 1 generate
+    assert zero_mask_fail = "" report REPORT_PREFIX & zero_mask_fail severity failure;
+  end generate;
   assert addr_has_meta_fail      = "" report REPORT_PREFIX & addr_has_meta_fail      severity failure;
   assert unaligned_addr_fail     = "" report REPORT_PREFIX & unaligned_addr_fail     severity failure;
   assert addr_not_in_mask_fail   = "" report REPORT_PREFIX & addr_not_in_mask_fail   severity failure;
