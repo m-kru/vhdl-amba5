@@ -62,7 +62,7 @@ begin
   assert addr_not_in_mask_fail   = "" report REPORT_PREFIX & addr_not_in_mask_fail   severity failure;
   assert addr_space_overlap_fail = "" report REPORT_PREFIX & addr_space_overlap_fail severity failure;
 
-  router : process (clk_i) is
+  router : process (arstn_i, clk_i) is
     variable transaction_found : boolean;
     variable transfer_cnt : natural;
   begin

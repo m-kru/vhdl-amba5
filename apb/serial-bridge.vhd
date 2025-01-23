@@ -291,7 +291,7 @@ package body serial_bridge is
     ibyte         : std_logic_vector(7 downto 0);
     ibyte_valid   : std_logic;
     obyte_ready   : std_logic;
-    apb_com       : completer_out_t;
+    apb_com       : completer_out_t
   ) return serial_bridge_t is
     variable sb : serial_bridge_t := serial_bridge;
   begin
@@ -321,7 +321,7 @@ package body serial_bridge is
     ibyte         : std_logic_vector(7 downto 0);
     ibyte_valid   : std_logic;
     obyte_ready   : std_logic;
-    apb_com       : completer_out_t;
+    apb_com       : completer_out_t
   ) return serial_bridge_t is
     variable sb : serial_bridge_t := serial_bridge;
   begin
@@ -365,7 +365,7 @@ package body serial_bridge is
     ibyte         : std_logic_vector(7 downto 0);
     ibyte_valid   : std_logic;
     obyte_ready   : std_logic;
-    apb_com       : completer_out_t;
+    apb_com       : completer_out_t
   ) return serial_bridge_t is
     variable sb : serial_bridge_t := serial_bridge;
   begin
@@ -394,7 +394,7 @@ package body serial_bridge is
     ibyte         : std_logic_vector(7 downto 0);
     ibyte_valid   : std_logic;
     obyte_ready   : std_logic;
-    apb_com       : completer_out_t;
+    apb_com       : completer_out_t
   ) return serial_bridge_t is
     variable sb : serial_bridge_t := serial_bridge;
   begin
@@ -468,7 +468,7 @@ package body serial_bridge is
     ibyte         : std_logic_vector(7 downto 0);
     ibyte_valid   : std_logic;
     obyte_ready   : std_logic;
-    apb_com       : completer_out_t;
+    apb_com       : completer_out_t
   ) return serial_bridge_t is
     variable sb : serial_bridge_t := serial_bridge;
   begin
@@ -493,7 +493,7 @@ package body serial_bridge is
     ibyte         : std_logic_vector(7 downto 0);
     ibyte_valid   : std_logic;
     obyte_ready   : std_logic;
-    apb_com       : completer_out_t;
+    apb_com       : completer_out_t
   ) return serial_bridge_t is
     variable sb : serial_bridge_t := serial_bridge;
   begin
@@ -521,7 +521,7 @@ package body serial_bridge is
     ibyte         : std_logic_vector(7 downto 0);
     ibyte_valid   : std_logic;
     obyte_ready   : std_logic;
-    apb_com       : completer_out_t;
+    apb_com       : completer_out_t
   ) return serial_bridge_t is
     variable sb : serial_bridge_t := serial_bridge;
   begin
