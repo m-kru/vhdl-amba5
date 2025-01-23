@@ -176,6 +176,12 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
+    proc tb-one-requester-two-completers {} {
+      _tb "tb_one_requester_two_completers"
+      hbs::AddFile tb/shared-bus/tb-one-requester-two-completers.vhd
+      hbs::Run
+    }
+
     hbs::Register
   }
 
