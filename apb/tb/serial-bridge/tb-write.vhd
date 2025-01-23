@@ -21,8 +21,8 @@ architecture test of tb_write is
 
   signal sb : serial_bridge_t := init(ADDR_BYTE_COUNT => 2);
 
-  signal byte_in : std_logic_vector(7 downto 0);
-  signal byte_in_valid, byte_out_ready : std_logic := '0';
+  signal ibyte : std_logic_vector(7 downto 0);
+  signal ibyte_valid, obyte_ready : std_logic := '0';
 
   signal ck : checker_t := init;
   signal com : completer_out_t := init;
@@ -50,7 +50,7 @@ begin
   DUT : process (clk) is
   begin
     if rising_edge(clk) then
-      sb <= clock(sb, byte_in, byte_in_valid, byte_out_ready, com);
+      sb <= clock(sb, ibyte, ibyte_valid, obyte_ready, com);
     end if;
   end process;
 
@@ -85,42 +85,42 @@ begin
       constant addr : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(address, 16));
     begin
       -- Request byte
-      byte_in <= b"00100000";
-      byte_in_valid <= '1';
-      wait until rising_edge(clk) and byte_in_valid = '1' and sb.byte_in_ready = '1';
-      byte_in_valid <= '0';
+      ibyte <= b"00100000";
+      ibyte_valid <= '1';
+      wait until rising_edge(clk) and ibyte_valid = '1' and sb.ibyte_ready = '1';
+      ibyte_valid <= '0';
       wait for delay * CLK_PERIOD;
 
       -- First addr byte
-      byte_in <= addr(15 downto 8);
-      byte_in_valid <= '1';
-      wait until rising_edge(clk) and byte_in_valid = '1' and sb.byte_in_ready = '1';
-      byte_in_valid <= '0';
+      ibyte <= addr(15 downto 8);
+      ibyte_valid <= '1';
+      wait until rising_edge(clk) and ibyte_valid = '1' and sb.ibyte_ready = '1';
+      ibyte_valid <= '0';
       wait for delay * CLK_PERIOD;
 
       -- Second addr byte
-      byte_in <= addr(7 downto 0);
-      byte_in_valid <= '1';
-      wait until rising_edge(clk) and byte_in_valid = '1' and sb.byte_in_ready = '1';
-      byte_in_valid <= '0';
+      ibyte <= addr(7 downto 0);
+      ibyte_valid <= '1';
+      wait until rising_edge(clk) and ibyte_valid = '1' and sb.ibyte_ready = '1';
+      ibyte_valid <= '0';
       wait for delay * CLK_PERIOD;
 
       -- Data
       for i in 3 downto 0 loop
-        byte_in <= data(i * 8 + 7 downto i * 8);
-        byte_in_valid <= '1';
-        wait until rising_edge(clk) and byte_in_valid = '1' and sb.byte_in_ready = '1';
-        byte_in_valid <= '0';
+        ibyte <= data(i * 8 + 7 downto i * 8);
+        ibyte_valid <= '1';
+        wait until rising_edge(clk) and ibyte_valid = '1' and sb.ibyte_ready = '1';
+        ibyte_valid <= '0';
         wait for delay * CLK_PERIOD;
       end loop;
 
       -- Status byte
-      byte_out_ready <= '1';
-      wait until rising_edge(clk) and byte_out_ready = '1' and sb.byte_out_valid = '1';
-      assert sb.byte_out = b"00000000"
-        report "invalid status byte, got " & sb.byte_out'image & ", want ""00000000"""
+      obyte_ready <= '1';
+      wait until rising_edge(clk) and obyte_ready = '1' and sb.obyte_valid = '1';
+      assert sb.obyte = b"00000000"
+        report "invalid status byte, got " & sb.obyte'image & ", want ""00000000"""
         severity failure;
-      byte_out_ready <= '0';
+      obyte_ready <= '0';
       wait for delay * CLK_PERIOD;
 
     end procedure write;
