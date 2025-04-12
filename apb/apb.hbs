@@ -138,7 +138,7 @@ namespace eval vhdl::amba5::apb {
       hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
       hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
       hbs::SetTop $top
-      hbs::AddDep $hbs::ThisCore\::src
+      hbs::AddDep $hbs::ThisCorePath\::src
       hbs::SetLib ""
     }
 
@@ -166,7 +166,7 @@ namespace eval vhdl::amba5::apb {
       hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
       hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
       hbs::SetTop $top
-      hbs::AddDep $hbs::ThisCore\::src
+      hbs::AddDep $hbs::ThisCorePath\::src
       hbs::SetLib ""
     }
 
@@ -224,7 +224,7 @@ namespace eval vhdl::amba5::apb {
       hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
       hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
       hbs::SetTop $top
-      hbs::AddDep $hbs::ThisCore\::src
+      hbs::AddDep $hbs::ThisCorePath\::src
       hbs::SetLib ""
     }
 
