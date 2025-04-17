@@ -12,7 +12,7 @@ namespace eval vhdl::amba5::apb {
 
     proc _tb {top} {
       hbs::SetTool "nvc"
-      hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
       hbs::SetTop $top
       src
       hbs::SetLib ""
@@ -46,7 +46,7 @@ namespace eval vhdl::amba5::apb {
 
     proc _tb {top} {
       hbs::SetTool "nvc"
-      hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
       hbs::SetTop $top
       src
       hbs::SetLib ""
@@ -63,7 +63,7 @@ namespace eval vhdl::amba5::apb {
     proc tb-detect-errors {} {
       _tb "tb_detect_errors"
       hbs::AddFile tb/checker/tb-detect-errors.vhd
-      hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=failure"
+      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=failure"
       hbs::Run
     }
 
@@ -71,7 +71,7 @@ namespace eval vhdl::amba5::apb {
     proc tb-correct-transaction {} {
       _tb "tb_correct_transaction"
       hbs::AddFile tb/checker/tb-correct-transaction.vhd
-      hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=warning"
+      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=warning"
       hbs::Run
     }
 
@@ -89,8 +89,8 @@ namespace eval vhdl::amba5::apb {
     proc _tb {top} {
       hbs::SetTool "nvc"
       hbs::AddDep vhdl::amba5::apb::checker::src
-      hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
-      hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=warning"
+      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=warning"
       hbs::SetTop $top
       src
       hbs::SetLib ""
@@ -135,8 +135,8 @@ namespace eval vhdl::amba5::apb {
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::AddDep vhdl::amba5::apb::bfm::src
       hbs::AddDep vhdl::amba5::apb::mock-completer::src
-      hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
-      hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
       hbs::SetTop $top
       hbs::AddDep $hbs::ThisCorePath\::src
       hbs::SetLib ""
@@ -163,8 +163,8 @@ namespace eval vhdl::amba5::apb {
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::AddDep vhdl::amba5::apb::bfm::src
       hbs::AddDep vhdl::amba5::apb::mock-completer::src
-      hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
-      hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
       hbs::SetTop $top
       hbs::AddDep $hbs::ThisCorePath\::src
       hbs::SetLib ""
@@ -201,8 +201,8 @@ namespace eval vhdl::amba5::apb {
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::SetLib ""
       hbs::AddFile tb/mock-completer/tb.vhd
-      hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
-      hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=warning --dump-arrays"
+      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=warning --dump-arrays"
       hbs::Run
     }
 
@@ -221,8 +221,8 @@ namespace eval vhdl::amba5::apb {
       hbs::SetTool "nvc"
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::AddDep vhdl::amba5::apb::mock-completer::src
-      hbs::AddPostElabCb hbs::SetArgsPrefix "--messages=compact"
-      hbs::AddPostElabCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
       hbs::SetTop $top
       hbs::AddDep $hbs::ThisCorePath\::src
       hbs::SetLib ""
