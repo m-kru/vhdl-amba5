@@ -100,12 +100,12 @@ begin
   ) port map (
     arstn_i => arstn,
     clk_i   => clk,
-    reqs_i(0) => req0_out,
-    reqs_i(1) => req1_out,
-    reqs_o(0) => req0_in,
-    reqs_o(1) => req1_in,
-    coms_i(0) => com_out,
-    coms_o(0) => com_in
+    coms_i(0) => req0_out,
+    coms_i(1) => req1_out,
+    coms_o(0) => req0_in,
+    coms_o(1) => req1_in,
+    reqs_i(0) => com_out,
+    reqs_o(0) => com_in
   );
 
 

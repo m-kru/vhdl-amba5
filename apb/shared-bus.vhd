@@ -25,12 +25,12 @@ entity Shared_Bus is
   port (
     arstn_i : in std_logic := '1';
     clk_i   : in std_logic;
-    -- Requesters connections - shared bus is a completer
-    reqs_i : in  requester_out_array_t(0 to REQUESTER_COUNT - 1);
-    reqs_o : out requester_in_array_t (0 to REQUESTER_COUNT - 1);
-    -- Completers connections - shared bus is a requester
-    coms_i : in  completer_out_array_t(0 to COMPLETER_COUNT - 1);
-    coms_o : out completer_in_array_t (0 to COMPLETER_COUNT - 1)
+    -- Ports to requesters - shared bus is a completer
+    coms_i : in  completer_in_array_t (0 to REQUESTER_COUNT - 1);
+    coms_o : out completer_out_array_t(0 to REQUESTER_COUNT - 1);
+    -- Ports to completers - shared bus is a requester
+    reqs_i : in  requester_in_array_t (0 to COMPLETER_COUNT - 1);
+    reqs_o : out requester_out_array_t(0 to COMPLETER_COUNT - 1)
   );
 end entity;
 
@@ -68,14 +68,14 @@ begin
   begin
     if arstn_i = '0' then
       for r in 0 to REQUESTER_COUNT-1 loop
-        reqs_o(r).ready <= '0';
-        reqs_o(r).slverr <= '0';
+        coms_o(r).ready <= '0';
+        coms_o(r).slverr <= '0';
       end loop;
 
       for c in 0 to COMPLETER_COUNT-1 loop
-        coms_o(c).selx <= '0';
-        coms_o(c).enable <= '0';
-        coms_o(c).wakeup <= '0';
+        reqs_o(c).selx <= '0';
+        reqs_o(c).enable <= '0';
+        reqs_o(c).wakeup <= '0';
       end loop;
 
       state <= IDLE;
@@ -86,9 +86,9 @@ begin
         transfer_cnt := 0;
 
         for r in 0 to REQUESTER_COUNT-1 loop
-          if reqs_i(r).selx = '1' then
+          if coms_i(r).selx = '1' then
             for c in 0 to COMPLETER_COUNT-1 loop
-              if (reqs_i(r).addr and unsigned(to_std_logic_vector(MASKS(c)))) = ADDRS(c) then
+              if (coms_i(r).addr and unsigned(to_std_logic_vector(MASKS(c)))) = ADDRS(c) then
                 req_idx <= r;
                 com_idx <= c;
                 transaction_found := true;
@@ -105,34 +105,34 @@ begin
           end if;
         end loop;
       when COMPLETER_SETUP =>
-        coms_o(com_idx) <= reqs_i(req_idx);
-        coms_o(com_idx).enable <= '0';
+        reqs_o(com_idx) <= coms_i(req_idx);
+        reqs_o(com_idx).enable <= '0';
         state <= COMPLETER_ACCESS;
       when COMPLETER_ACCESS =>
-        coms_o(com_idx) <= reqs_i(req_idx);
+        reqs_o(com_idx) <= coms_i(req_idx);
         state <= COMPLETER_TRANSFER;
       when COMPLETER_TRANSFER =>
-        coms_o(com_idx) <= reqs_i(req_idx);
-        if coms_i(com_idx).ready = '1' then
+        reqs_o(com_idx) <= coms_i(req_idx);
+        if reqs_i(com_idx).ready = '1' then
           transfer_cnt := transfer_cnt + 1;
-          reqs_o(req_idx) <= coms_i(com_idx);
+          coms_o(req_idx) <= reqs_i(com_idx);
           state <= REQUESTER_ACCESS;
-        coms_o(com_idx).selx <= '0';
-          coms_o(com_idx).enable <= '0';
+          reqs_o(com_idx).selx <= '0';
+          reqs_o(com_idx).enable <= '0';
         end if;
       when REQUESTER_ACCESS =>
-        coms_o(com_idx) <= reqs_i(req_idx);
-        coms_o(com_idx).selx <= '0';
-        coms_o(com_idx).enable <= '0';
+        reqs_o(com_idx) <= coms_i(req_idx);
+        reqs_o(com_idx).selx <= '0';
+        reqs_o(com_idx).enable <= '0';
 
-        reqs_o(req_idx).ready <= '0';
+        coms_o(req_idx).ready <= '0';
         state <= REQUESTER_AWAIT;
       when REQUESTER_AWAIT =>
-        coms_o(com_idx) <= reqs_i(req_idx);
-        coms_o(com_idx).selx <= '0';
-        coms_o(com_idx).enable <= '0';
+        reqs_o(com_idx) <= coms_i(req_idx);
+        reqs_o(com_idx).selx <= '0';
+        reqs_o(com_idx).enable <= '0';
 
-        if reqs_i(req_idx).selx = '0' then
+        if coms_i(req_idx).selx = '0' then
           state <= IDLE;
           report REPORT_PREFIX &
             "transaction between requester " & to_string(req_idx) & " completer " & to_string(com_idx) & " finished" &

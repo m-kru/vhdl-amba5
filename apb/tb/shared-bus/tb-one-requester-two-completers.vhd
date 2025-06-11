@@ -103,12 +103,12 @@ begin
   ) port map (
     arstn_i => arstn,
     clk_i   => clk,
-    reqs_i(0) => req_out,
-    reqs_o(0) => req_in,
-    coms_i(0) => com0_out,
-    coms_o(0) => com0_in,
-    coms_i(1) => com1_out,
-    coms_o(1) => com1_in
+    coms_i(0) => req_out,
+    coms_o(0) => req_in,
+    reqs_i(0) => com0_out,
+    reqs_o(0) => com0_in,
+    reqs_i(1) => com1_out,
+    reqs_o(1) => com1_in
   );
 
 
