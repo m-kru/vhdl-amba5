@@ -16,7 +16,7 @@ library work;
 -- In the case of multiple requesters asserting selx in the the same clokc cycle, requester with lower index has higher priority.
 entity Shared_Bus is
   generic (
-    REPORT_PREFIX   : string := "apb: shared bus: "; -- Prefix used in report messages
+    REPORT_PREFIX   : string := "apb: shared bus: ";
     REQUESTER_COUNT : positive := 1;
     COMPLETER_COUNT : positive := 1;
     ADDRS : addr_array_t(0 to COMPLETER_COUNT - 1); -- Completer addresses
@@ -81,6 +81,7 @@ begin
       state <= IDLE;
     elsif rising_edge(clk_i) then
       case state is
+
       when IDLE =>
         transaction_found := false;
         transfer_cnt := 0;
@@ -104,13 +105,16 @@ begin
             exit;
           end if;
         end loop;
+
       when COMPLETER_SETUP =>
         reqs_o(com_idx) <= coms_i(req_idx);
         reqs_o(com_idx).enable <= '0';
         state <= COMPLETER_ACCESS;
+
       when COMPLETER_ACCESS =>
         reqs_o(com_idx) <= coms_i(req_idx);
         state <= COMPLETER_TRANSFER;
+
       when COMPLETER_TRANSFER =>
         reqs_o(com_idx) <= coms_i(req_idx);
         if reqs_i(com_idx).ready = '1' then
@@ -120,6 +124,7 @@ begin
           reqs_o(com_idx).selx <= '0';
           reqs_o(com_idx).enable <= '0';
         end if;
+
       when REQUESTER_ACCESS =>
         reqs_o(com_idx) <= coms_i(req_idx);
         reqs_o(com_idx).selx <= '0';
@@ -127,6 +132,7 @@ begin
 
         coms_o(req_idx).ready <= '0';
         state <= REQUESTER_AWAIT;
+
       when REQUESTER_AWAIT =>
         reqs_o(com_idx) <= coms_i(req_idx);
         reqs_o(com_idx).selx <= '0';
@@ -141,7 +147,9 @@ begin
         else
           state <= COMPLETER_SETUP;
         end if;
+
       when others => report "unimplemented state " & state_t'image(state) severity failure;
+
       end case;
     end if;
   end process;
