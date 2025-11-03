@@ -242,4 +242,57 @@ namespace eval vhdl::amba5::apb {
 
     hbs::Register
   }
+
+  # A clock domain corssing bridge.
+  # The bridge is capable of connecting arbitrary clock domains.
+  namespace eval cdc-bridge {
+    proc src {} {
+      hbs::AddDep vhdl::amba5::apb::pkg::src
+      hbs::SetLib "lapb"
+      hbs::AddFile cdc-bridge.vhd
+    }
+
+    proc _tb {} {
+      hbs::SetTool "nvc"
+      hbs::AddDep vhdl::amba5::apb::bfm::src
+      hbs::AddDep vhdl::amba5::apb::checker::src
+      hbs::AddDep vhdl::amba5::apb::mock-completer::src
+      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      hbs::SetTop "tb"
+      hbs::AddDep $hbs::ThisCorePath\::src
+      hbs::SetLib ""
+      hbs::AddFile tb/cdc-bridge/tb-to-faster.vhd
+    }
+
+    proc tb-to-faster {} {
+      _tb
+      hbs::SetGeneric REQ_CLK_PERIOD 10
+      hbs::SetGeneric COM_CLK_PERIOD 3
+      hbs::Run
+    }
+
+    proc tb-to-slower {} {
+      _tb
+      hbs::SetGeneric REQ_CLK_PERIOD 5
+      hbs::SetGeneric COM_CLK_PERIOD 12
+      hbs::Run
+    }
+
+    proc tb-similar-faster {} {
+      _tb
+      hbs::SetGeneric REQ_CLK_PERIOD 23
+      hbs::SetGeneric COM_CLK_PERIOD 22
+      hbs::Run
+    }
+
+    proc tb-similar-slower {} {
+      _tb
+      hbs::SetGeneric REQ_CLK_PERIOD 22
+      hbs::SetGeneric COM_CLK_PERIOD 23
+      hbs::Run
+    }
+
+    hbs::Register
+  }
 }
