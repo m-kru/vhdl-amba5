@@ -13,7 +13,7 @@ library work;
 --
 -- At any point only one requester can be connected with one completer.
 -- Shared bus does not provide the best performance but has simple structure and is sufficient for most use cases.
--- In the case of multiple requesters asserting selx in the the same clokc cycle, requester with lower index has higher priority.
+-- In the case of multiple requesters asserting selx in the the same clock cycle, requester with lower index has higher priority.
 entity Shared_Bus is
   generic (
     REPORT_PREFIX   : string := "apb: shared bus: ";
