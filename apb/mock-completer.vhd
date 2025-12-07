@@ -46,7 +46,10 @@ end package;
 
 package body mock_completer is
 
-  function init (memory_size: natural; REPORT_PREFIX: string := "apb: mock completer: ") return mock_completer_t is
+  function init (
+    memory_size   : natural;
+    REPORT_PREFIX : string := "apb: mock completer: "
+  ) return mock_completer_t is
     variable mc : mock_completer_t(REPORT_PREFIX(0 to REPORT_PREFIX'length-1), memory(0 to memory_size - 1));
   begin
     mc.REPORT_PREFIX := REPORT_PREFIX;
@@ -76,7 +79,8 @@ package body mock_completer is
         mc.memory(to_integer(req.addr)/4) <= req.wdata;
         if req.enable = '1' then
           mc.write_count <= mc.write_count + 1;
-          report mc.REPORT_PREFIX & "write: addr => x""" & to_hstring(req.addr) & """, data => x""" & to_hstring(req.wdata) & """";
+          report mc.REPORT_PREFIX &
+            "write: addr => x""" & to_hstring(req.addr) & """, data => x""" & to_hstring(req.wdata) & """";
         end if;
       -- Read
       else
@@ -91,7 +95,8 @@ package body mock_completer is
 
   function stats_string (mc: mock_completer_t) return string is
   begin
-    return mc.REPORT_PREFIX & "read count: " & to_string(mc.read_count) & ", write count: " & to_string(mc.write_count);
+    return mc.REPORT_PREFIX &
+      "read count: " & to_string(mc.read_count) & ", write count: " & to_string(mc.write_count);
   end function;
 
 end package body;
