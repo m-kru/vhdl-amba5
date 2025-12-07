@@ -101,9 +101,7 @@ begin
             end loop;
           end if;
 
-          if transaction_found then
-            exit;
-          end if;
+          exit when transaction_found;
         end loop;
 
       when COMPLETER_SETUP =>
