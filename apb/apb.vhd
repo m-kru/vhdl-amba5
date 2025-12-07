@@ -316,7 +316,7 @@ package body apb is
     return "(" &
       "setup_entry => '"  & to_string(errors.setup_entry)  & "', " &
       "setup_stall => '"  & to_string(errors.setup_stall)  & "', " &
-      "access_stall => '" & to_string(errors.access_stall)  & "', " &
+      "access_stall => '" & to_string(errors.access_stall) & "', " &
       "wakeup_ready => '" & to_string(errors.wakeup_ready) & "', " &
       "addr_change => '"  & to_string(errors.addr_change)  & "', " &
       "prot_change => '"  & to_string(errors.prot_change)  & "', " &
