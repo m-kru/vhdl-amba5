@@ -135,8 +135,7 @@ begin
           state <= IDLE;
           report REPORT_PREFIX &
             "transaction between requester " & to_string(req_idx) & " completer " & to_string(com_idx) & " finished" &
-            ", transfer count " & to_string(transfer_cnt)
-            severity note;
+            ", transfer count " & to_string(transfer_cnt);
         else
           state <= COMPLETER_SETUP;
         end if;
