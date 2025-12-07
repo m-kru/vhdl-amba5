@@ -123,6 +123,7 @@ namespace eval vhdl::amba5::apb {
     hbs::Register
   }
 
+  # A classic NxM crossbar.
   namespace eval crossbar {
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
@@ -142,9 +143,9 @@ namespace eval vhdl::amba5::apb {
       hbs::SetLib ""
     }
 
-    proc tb-two-requesters-one-completer {} {
-      _tb "tb_two_requesters_one_completer"
-      hbs::AddFile tb/crossbar/tb-two-requesters-one-completer.vhd
+    proc tb-three-requesters-one-completer {} {
+      _tb "tb_three_requesters_one_completer"
+      hbs::AddFile tb/crossbar/tb-three-requesters-one-completer.vhd
       hbs::Run
     }
 
