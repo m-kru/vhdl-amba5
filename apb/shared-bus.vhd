@@ -63,7 +63,6 @@ begin
   assert addr_space_overlap_fail = "" report REPORT_PREFIX & addr_space_overlap_fail severity failure;
 
   router : process (arstn_i, clk_i) is
-    variable transaction_found : boolean;
     variable transfer_cnt : natural;
   begin
     if arstn_i = '0' then
@@ -83,25 +82,21 @@ begin
       case state is
 
       when IDLE =>
-        transaction_found := false;
         transfer_cnt := 0;
 
-        for r in 0 to REQUESTER_COUNT-1 loop
+        requester_loop : for r in 0 to REQUESTER_COUNT-1 loop
           if coms_i(r).selx = '1' then
             for c in 0 to COMPLETER_COUNT-1 loop
               if (coms_i(r).addr and unsigned(to_std_logic_vector(MASKS(c)))) = ADDRS(c) then
                 req_idx <= r;
                 com_idx <= c;
-                transaction_found := true;
                 state <= COMPLETER_SETUP;
-                report REPORT_PREFIX & "starting transaction between requester " & to_string(r) & " completer " & to_string(c)
-                  severity note;
-                exit;
+                report REPORT_PREFIX &
+                  "starting transaction between requester " & to_string(r) & " completer " & to_string(c);
+                exit requester_loop;
               end if;
             end loop;
           end if;
-
-          exit when transaction_found;
         end loop;
 
       when COMPLETER_SETUP =>
