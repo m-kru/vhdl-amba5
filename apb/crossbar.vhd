@@ -192,12 +192,6 @@ end generate;
       end loop;
 
     elsif rising_edge(clk_i) then
-
-      -- Wakeup is a logical or of all requesters addressing a given completer.
-      for c in completer_range loop
-        reqs_o(c).wakeup <= or_reduce(column(addr_matrix, c));
-      end loop;
-
       transaction_controllers : for req_idx in requester_range loop
         com_idx := com_idxs(req_idx);
 
@@ -267,6 +261,11 @@ end generate;
 
         end case controller_state_machine;
       end loop transaction_controllers;
+
+      -- Wakeup is a logical or of all requesters addressing a given completer.
+      for c in completer_range loop
+        reqs_o(c).wakeup <= or_reduce(column(addr_matrix, c));
+      end loop;
 
     end if;
   end process;
