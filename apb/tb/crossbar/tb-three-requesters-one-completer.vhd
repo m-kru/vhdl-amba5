@@ -47,7 +47,7 @@ architecture test of tb_three_requesters_one_completer is
     to_unsigned(8*4, 32)
   );
 
-  constant DATA : data_2d_vector_t(0 to 2)(0 to 3) := (
+  constant WRITE_DATA : data_2d_vector_t(0 to 2)(0 to 3) := (
     0 => (x"11111111", x"22222222", x"33333333", x"44444444"),
     1 => (x"66666666", x"77777777", x"88888888", x"99999999"),
     2 => (x"BBBBBBBB", x"CCCCCCCC", x"DDDDDDDD", x"EEEEEEEE")
@@ -88,8 +88,8 @@ requesters : for r in 0 to 2 generate
   requester_0 : process is
   begin
     wait until arstn = '1';
-    for i in DATA(r)'range loop
-      bfm.write(ADDRS(r) + to_unsigned(i * 4, 32), DATA(r)(i), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
+    for i in WRITE_DATA(r)'range loop
+      bfm.write(ADDRS(r) + to_unsigned(i * 4, 32), WRITE_DATA(r)(i), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
       wait for 2 ns;
     end loop;
     req_write_done(r) <= true;
@@ -122,14 +122,20 @@ end generate;
 
 
   -- At no point more than one requester can see asserted ready signal.
-  -- requesters_ready_checker : process (clk) is
-  --begin
-  --  if rising_edge(clk) then
-  --  end if;
-  --end process;
+  requesters_ready_checker : process (clk) is
+  begin
+    if rising_edge(clk) then
+      assert req_ins(0).ready /= '1' or req_ins(1).ready /= '1'
+        report "ready asserted for requester 0 and 1";
+      assert req_ins(0).ready /= '1' or req_ins(2).ready /= '1'
+        report "ready asserted for requester 0 and 2";
+      assert req_ins(1).ready /= '1' or req_ins(2).ready /= '1'
+        report "ready asserted for requester 1 and 2";
+    end if;
+  end process;
 
 
-  order_checker : process (clk) is
+  write_order_checker : process (clk) is
   begin
     if rising_edge(clk) then
       assert req_write_done(0) = true or req_write_done(1) = false
