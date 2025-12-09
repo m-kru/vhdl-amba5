@@ -34,6 +34,13 @@ package checker is
     awaiting_transfer : boolean;
   end record;
 
+  -- One-dimensional array of checkers.
+  -- Useful for testbenches with multiple requesters or completers.
+  type checker_array_t is array (natural range <>) of checker_t;
+
+  -- An alias to the checker_array_t.
+  alias checker_vector_t is checker_array_t;
+
   -- Useful for internal tests.
   -- It puts checker into the ACCESS state waiting for the ready signal assertion during read transfer.
   constant READ_TRANSFER_ACCESS_STATE_WAITING_FOR_READY : checker_t := (

@@ -12,11 +12,26 @@ package apb is
   -- An array of APB addresses. Useful for a crossbar implementation as it requires an address array generic.
   type addr_array_t is array (natural range <>) of unsigned(31 downto 0);
 
+  -- An alias to the addr_array_t.
+  alias addr_vector_t is addr_array_t;
+
   -- An array of APB masks. Useful for a crossbar implementation as it requires a mask array generic.
   type mask_array_t is array (natural range <>) of bit_vector(31 downto 0);
 
-  -- An array of data with the width equal to the APB maximum data width.
+  -- An alias to the mask_array_t.
+  alias mask_vector_t is mask_array_t;
+
+  -- A one-dimensional array of data with the width equal to the APB maximum data width.
   type data_array_t is array (natural range <>) of std_logic_vector(31 downto 0);
+
+  -- A two-dimensional array of data with the width equal to the APB maximum data width.
+  type data_2d_array_t is array (natural range <>, natural range <>) of std_logic_vector(31 downto 0);
+
+  -- An alias to the data_array_t.
+  alias data_vector_t is data_array_t;
+
+  -- A two-dimensional vector of APB data with maximum data width.
+  type data_2d_vector_t is array (natural range <>) of data_vector_t;
 
   -- Scenarios defined as erroneous by the specification.
   type interface_errors_t is record

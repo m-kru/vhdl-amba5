@@ -16,9 +16,10 @@ library work;
 -- The wakeup signal after transactions is left with the same value as before transactions.
 package bfm is
 
+  -- BFM configuration type.
   type config_t is record
     REPORT_PREFIX : string; -- Prefix used while printing report messages.
-    timeout : time;   -- Maximum time to wait before an alert is issued when waiting for ready signal from the Completer.
+    timeout : time; -- Maximum time to wait before an alert is issued when waiting for ready signal from the Completer.
     timeout_severity : severity_level; -- Timeout report severity.
   end record;
 
@@ -33,6 +34,13 @@ package bfm is
     timeout : time   := 100 ns;
     timeout_severity : severity_level := error
   ) return config_t;
+
+  -- One-dimensional array of BFM configurations.
+  -- Useful for testbenches with multiple requesters.
+  type config_array_t is array (natural range <>) of config_t;
+
+  -- An alias to the config_array_t.
+  alias config_vector_t is config_array_t;
 
   -- Carries out write transaction with a single write transfer.
   procedure write (
