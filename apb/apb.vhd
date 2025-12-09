@@ -163,7 +163,7 @@ package apb is
   subtype completer_in_t is requester_out_t;
 
   -- An array of completer_in_t interfaces. Useful for a crossbar implementation.
-  type completer_in_array_t  is array (natural range <>) of completer_in_t;
+  subtype completer_in_array_t is requester_out_array_t;
 
   -- Initializes requester_out_t with elements set to given values.
   --
@@ -235,7 +235,7 @@ package apb is
   subtype completer_out_t is requester_in_t;
 
   -- An array of completer_in_t interfaces. Useful for a crossbar implementation.
-  type completer_out_array_t  is array (natural range <>) of completer_out_t;
+  subtype completer_out_array_t is requester_in_array_t;
 
   -- Initializes requester_in_t with elements set to given values.
   --
