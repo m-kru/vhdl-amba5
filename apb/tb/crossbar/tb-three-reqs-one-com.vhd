@@ -8,10 +8,10 @@ library lapb;
   use lapb.checker.all;
   use lapb.mock_completer.all;
 
-entity tb_three_requesters_one_completer is
+entity tb_three_reqs_one_com is
 end entity;
 
-architecture test of tb_three_requesters_one_completer is
+architecture test of tb_three_reqs_one_com is
 
   signal arstn : std_logic := '0';
   signal clk : std_logic := '1';

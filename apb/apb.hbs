@@ -143,9 +143,9 @@ namespace eval vhdl::amba5::apb {
       hbs::SetLib ""
     }
 
-    proc tb-three-requesters-one-completer {} {
-      _tb "tb_three_requesters_one_completer"
-      hbs::AddFile tb/crossbar/tb-three-requesters-one-completer.vhd
+    proc tb-three-reqs-one-com {} {
+      _tb "tb_three_reqs_one_com"
+      hbs::AddFile tb/crossbar/tb-three-reqs-one-com.vhd
       hbs::Run
     }
 
@@ -171,15 +171,15 @@ namespace eval vhdl::amba5::apb {
       hbs::SetLib ""
     }
 
-    proc tb-two-requesters-one-completer {} {
-      _tb "tb_two_requesters_one_completer"
-      hbs::AddFile tb/shared-bus/tb-two-requesters-one-completer.vhd
+    proc tb-two-reqs-one-com {} {
+      _tb "tb_two_reqs_one_com"
+      hbs::AddFile tb/shared-bus/tb-two-reqs-one-com.vhd
       hbs::Run
     }
 
-    proc tb-one-requester-two-completers {} {
-      _tb "tb_one_requester_two_completers"
-      hbs::AddFile tb/shared-bus/tb-one-requester-two-completers.vhd
+    proc tb-one-req-two-coms {} {
+      _tb "tb_one_req_two_coms"
+      hbs::AddFile tb/shared-bus/tb-one-req-two-coms.vhd
       hbs::Run
     }
 
