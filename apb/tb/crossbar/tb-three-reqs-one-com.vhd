@@ -13,10 +13,14 @@ end entity;
 
 architecture test of tb_three_reqs_one_com is
 
+  -- Requester count
+  constant REQ_COUNT : natural := 3;
+  subtype req_range is natural range 0 to REQ_COUNT - 1;
+
   signal arstn : std_logic := '0';
   signal clk : std_logic := '1';
 
-  signal bfm_cfgs : bfm.config_array_t(0 to 2) := (
+  signal bfm_cfgs : bfm.config_array_t(req_range) := (
     bfm.init(REPORT_PREFIX => "apb: bfm 0: "),
     bfm.init(REPORT_PREFIX => "apb: bfm 1: "),
     bfm.init(REPORT_PREFIX => "apb: bfm 2: ")
@@ -37,17 +41,17 @@ architecture test of tb_three_reqs_one_com is
   );
   signal com_ck : checker_t := init(REPORT_PREFIX => "apb: checker: com: ");
 
-  signal req_write_done : boolean_vector(0 to 2) := (others => false);
+  signal req_write_done : boolean_vector(req_range) := (others => false);
 
   signal mc : mock_completer_t := init(memory_size => 12);
 
-  constant ADDRS : addr_array_t(0 to 2) := (
+  constant ADDRS : addr_array_t(req_range) := (
     to_unsigned(0*4, 32),
     to_unsigned(4*4, 32),
     to_unsigned(8*4, 32)
   );
 
-  constant WRITE_DATA : data_vector_2d_t(0 to 2)(0 to 3) := (
+  constant WRITE_DATA : data_vector_2d_t(req_range)(0 to 3) := (
     0 => (x"11111111", x"22222222", x"33333333", x"44444444"),
     1 => (x"66666666", x"77777777", x"88888888", x"99999999"),
     2 => (x"BBBBBBBB", x"CCCCCCCC", x"DDDDDDDD", x"EEEEEEEE")
@@ -66,7 +70,7 @@ begin
   end process;
 
 
-request_checkers : for i in 0 to 2 generate
+request_checkers : for i in req_range generate
   process (clk) is
   begin
     if rising_edge(clk) then
@@ -84,7 +88,7 @@ end generate;
   end process;
 
 
-requesters : for r in 0 to 2 generate
+requesters : for r in req_range generate
   requester_0 : process is
   begin
     wait until arstn = '1';
@@ -108,7 +112,7 @@ end generate;
 
   DUT : entity lapb.Crossbar
   generic map (
-    REQUESTER_COUNT => 3,
+    REQUESTER_COUNT => REQ_COUNT,
     ADDRS => (0 => "00000000000000000000000000000000"),
     MASKS => (0 => "11111111111111111111111111000000")
   ) port map (
