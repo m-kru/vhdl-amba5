@@ -48,7 +48,8 @@ architecture test of tb_three_reqs_one_com is
 
   signal req_write_done,
          req_read_done,
-         req_writeb_done : boolean_vector(req_range) := (others => false);
+         req_writeb_done,
+         req_readb_done : boolean_vector(req_range) := (others => false);
 
   signal mc : mock_completer_t := init(memory_size => 12);
 
@@ -72,9 +73,12 @@ architecture test of tb_three_reqs_one_com is
     2 => (x"AAAAAAAA", x"E2E2E2E2", x"47474747", x"69696969")
   );
 
+  signal READB_DATA : data_vector_2d_t(req_range)(0 to 3);
+
   signal write_checker_done,
          read_checker_done,
-         writeb_checker_done : boolean := false;
+         writeb_checker_done,
+         readb_checker_done : boolean := false;
 
 begin
 
@@ -134,10 +138,13 @@ requesters : for r in req_range generate
 
     -- Block write test
     bfm.writeb(ADDRS(r), WRITEB_DATA(r), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
-
     req_writeb_done(r) <= true;
 
-    wait until req_writeb_done = (true, true, true);
+    wait until writeb_checker_done;
+
+    -- Block read test
+    bfm.readb(ADDRS((r+1) mod REQ_COUNT), READB_DATA(r), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
+    req_readb_done(r) <= true;
 
     wait;
   end process;
@@ -216,6 +223,19 @@ end generate;
         report "requester 2 finished block write before requester 0";
       assert req_writeb_done(1) = true or req_writeb_done(2) = false
         report "requester 2 finished block write before requester 1";
+    end if;
+  end process;
+
+
+  block_read_order_checker : process (clk) is
+  begin
+    if rising_edge(clk) then
+      assert req_readb_done(0) = true or req_readb_done(1) = false
+        report "requester 1 finished block read before requester 0";
+      assert req_readb_done(0) = true or req_readb_done(2) = false
+        report "requester 2 finished block read before requester 0";
+      assert req_readb_done(1) = true or req_readb_done(2) = false
+        report "requester 2 finished block read before requester 1";
     end if;
   end process;
 
@@ -302,13 +322,42 @@ end generate;
   end process;
 
 
+  block_read_checker : process is
+    variable got, want : std_logic_vector(31 downto 0);
+  begin
+    -- Wait for block reads to finish.
+    wait for 4 * STAGE_TIMEOUT;
+
+    -- Block read final asserts
+    assert req_readb_done = (true, true, true)
+      report "not all requesters finished block read transactions, req_readb_done = " & to_string(req_readb_done);
+    assert mc.read_count = 24
+      report "invalid read count, got: " & to_string(mc.write_count) & ", want: 24";
+
+    -- Check read data
+    for r in req_range loop
+      for d in READB_DATA(r)'range loop
+        got  := READB_DATA(r)(d);
+        want := mc.memory(((r+1) mod REQ_COUNT)*4 + d);
+        assert got = want
+          report "requester " & to_string(r) & ": invalid block read data " & to_string(d) &
+            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want);
+      end loop;
+    end loop;
+
+    readb_checker_done <= true;
+    wait;
+  end process;
+
+
   main : process is
   begin
-    wait for 4 * STAGE_TIMEOUT;
+    wait for 4 * STAGE_TIMEOUT + 10 ns;
 
     assert write_checker_done  report "write checker hasn't finished";
     assert read_checker_done   report "read checker hasn't finished";
     assert writeb_checker_done report "block write checker hasn't finished";
+    assert readb_checker_done  report "block read checker hasn't finished";
 
     std.env.finish;
   end process;
