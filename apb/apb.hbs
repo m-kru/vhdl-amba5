@@ -149,6 +149,12 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
+    proc tb-two-reqs-two-coms {} {
+      _tb "tb_two_reqs_two_coms"
+      hbs::AddFile tb/crossbar/tb-two-reqs-two-coms.vhd
+      hbs::Run
+    }
+
     hbs::Register
   }
 
