@@ -47,7 +47,7 @@ architecture test of tb_three_requesters_one_completer is
     to_unsigned(8*4, 32)
   );
 
-  constant WRITE_DATA : data_2d_vector_t(0 to 2)(0 to 3) := (
+  constant WRITE_DATA : data_vector_2d_t(0 to 2)(0 to 3) := (
     0 => (x"11111111", x"22222222", x"33333333", x"44444444"),
     1 => (x"66666666", x"77777777", x"88888888", x"99999999"),
     2 => (x"BBBBBBBB", x"CCCCCCCC", x"DDDDDDDD", x"EEEEEEEE")

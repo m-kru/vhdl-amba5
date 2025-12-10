@@ -25,13 +25,13 @@ package apb is
   type data_array_t is array (natural range <>) of std_logic_vector(31 downto 0);
 
   -- A two-dimensional array of data with the width equal to the APB maximum data width.
-  type data_2d_array_t is array (natural range <>, natural range <>) of std_logic_vector(31 downto 0);
+  type data_array_2d_t is array (natural range <>, natural range <>) of std_logic_vector(31 downto 0);
 
   -- An alias to the data_array_t.
   alias data_vector_t is data_array_t;
 
   -- A two-dimensional vector of APB data with maximum data width.
-  type data_2d_vector_t is array (natural range <>) of data_vector_t;
+  type data_vector_2d_t is array (natural range <>) of data_vector_t;
 
   -- Scenarios defined as erroneous by the specification.
   type interface_errors_t is record
