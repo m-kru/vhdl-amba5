@@ -192,7 +192,7 @@ end generate;
     if rising_edge(clk) then
       assert req_ins(0).ready = req_ins(1).ready
         report
-          "different ready signals, req 0 :" & to_string(req_ins(0).ready) &
+          "different ready signals, req 0: " & to_string(req_ins(0).ready) &
           ", req 1: " & to_string(req_ins(1).ready);
     end if;
   end process;
