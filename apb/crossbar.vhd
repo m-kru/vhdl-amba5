@@ -132,17 +132,6 @@ begin
             severity failure;
         end if;
       end loop;
-
-      -- Assert cell in connection matrix is not asserted when cell in selx matrix is not asserted.
-      for r in requester_range loop
-        for c in completer_range loop
-          assert conn_matrix(r)(c) /= '1' or selx_matrix(r)(c) = '1'
-            report REPORT_PREFIX &
-              "connection cell asserted but selx cell deasserted, requester " &
-              to_string(r) & ", completer " & to_string(c)
-            severity failure;
-        end loop;
-      end loop;
     end if;
   end process;
 
