@@ -122,6 +122,7 @@ package body bfm is
     return cfg;
   end function;
 
+
   procedure write (
     constant addr  : in unsigned(31 downto 0);
     constant data  : in std_logic_vector(31 downto 0);
@@ -197,6 +198,7 @@ package body bfm is
     wait for 0 ns;
   end procedure write;
 
+
   procedure read (
     constant addr  : in unsigned(31 downto 0);
     signal   clk   : in std_logic;
@@ -266,6 +268,7 @@ package body bfm is
     wait for 0 ns;
     wait for 0 ns;
   end procedure read;
+
 
   procedure writeb (
     constant addr  : in unsigned(31 downto 0);
@@ -366,6 +369,7 @@ package body bfm is
     wait for 0 ns;
     wait for 0 ns;
   end procedure writeb;
+
 
   procedure readb (
     constant addr  : in unsigned(31 downto 0);
