@@ -108,12 +108,43 @@ architecture rtl of Crossbar is
 
 begin
 
-  -- Sanity checks
+  -- Static sanity checks
   assert zero_mask_fail          = "" report REPORT_PREFIX & zero_mask_fail          severity failure;
   assert addr_has_meta_fail      = "" report REPORT_PREFIX & addr_has_meta_fail      severity failure;
   assert unaligned_addr_fail     = "" report REPORT_PREFIX & unaligned_addr_fail     severity failure;
   assert addr_not_in_mask_fail   = "" report REPORT_PREFIX & addr_not_in_mask_fail   severity failure;
   assert addr_space_overlap_fail = "" report REPORT_PREFIX & addr_space_overlap_fail severity failure;
+
+
+  simulation_sanity_checker : process (clk_i) is
+    variable com_column  : std_logic_vector(requester_range); -- Completer column
+    variable hot_bit_cnt : natural;
+  begin
+    if rising_edge(clk_i) then
+      -- Check that at most one requester is connected to a given completer.
+      for c in completer_range loop
+        com_column := column(conn_matrix, c);
+        hot_bit_cnt := hot_bit_count(com_column);
+        if hot_bit_cnt > 1 then
+          report REPORT_PREFIX &
+            "completer " & to_string(c) & " has " & to_string(hot_bit_cnt) &
+            " connected requesters => """ & to_string(com_column) & """"
+            severity failure;
+        end if;
+      end loop;
+
+      -- Assert cell in connection matrix is not asserted when cell in selx matrix is not asserted.
+      for r in requester_range loop
+        for c in completer_range loop
+          assert conn_matrix(r)(c) /= '1' or selx_matrix(r)(c) = '1'
+            report REPORT_PREFIX &
+              "connection cell asserted but selx cell deasserted, requester " &
+              to_string(r) & ", completer " & to_string(c)
+            severity failure;
+        end loop;
+      end loop;
+    end if;
+  end process;
 
 
   addr_matrix_driver : process (all) is
@@ -150,24 +181,6 @@ end generate;
           selx_matrix(r)(c) <= '1';
         end if;
       end loop;
-    end loop;
-  end process;
-
-
-  sanity_checker : process (clk_i) is
-    variable com_column  : std_logic_vector(requester_range); -- Completer column
-    variable hot_bit_cnt : natural;
-  begin
-    -- Sanity check that at most one requester is connected to a given completer.
-    for c in completer_range loop
-      com_column := column(conn_matrix, c);
-      hot_bit_cnt := hot_bit_count(com_column);
-      if hot_bit_cnt > 1 then
-        report REPORT_PREFIX &
-          "completer " & to_string(c) & " has " & to_string(hot_bit_cnt) &
-          " connected requesters => """ & to_string(com_column) & """"
-          severity failure;
-      end if;
     end loop;
   end process;
 
