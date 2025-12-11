@@ -9,7 +9,10 @@ library ieee;
 library work;
   use work.apb.all;
 
-
+-- A classic NxM corssbar.
+--
+-- In the case of multiple requesters trying to access the same completer in the same time,
+-- requester with lower index has higher priority.
 entity Crossbar is
   generic (
     REPORT_PREFIX   : string := "apb: crossbar: "; -- Prefix used in report messages
