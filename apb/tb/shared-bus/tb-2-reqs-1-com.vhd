@@ -8,10 +8,10 @@ library lapb;
   use lapb.checker.all;
   use lapb.mock_completer.all;
 
-entity tb_two_reqs_one_com is
+entity tb_2_reqs_1_com is
 end entity;
 
-architecture test of tb_two_reqs_one_com is
+architecture test of tb_2_reqs_1_com is
 
   signal arstn : std_logic := '0';
   signal clk : std_logic := '1';

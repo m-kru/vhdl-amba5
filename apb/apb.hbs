@@ -184,15 +184,15 @@ namespace eval vhdl::amba5::apb {
       hbs::SetLib ""
     }
 
-    proc tb-two-reqs-one-com {} {
-      _tb "tb_two_reqs_one_com"
-      hbs::AddFile tb/shared-bus/tb-two-reqs-one-com.vhd
+    proc tb-2-reqs-1-com {} {
+      _tb "tb_2_reqs_1_com"
+      hbs::AddFile tb/shared-bus/tb-2-reqs-1-com.vhd
       hbs::Run
     }
 
-    proc tb-one-req-two-coms {} {
-      _tb "tb_one_req_two_coms"
-      hbs::AddFile tb/shared-bus/tb-one-req-two-coms.vhd
+    proc tb-1-req-2-coms {} {
+      _tb "tb_1_req_2_coms"
+      hbs::AddFile tb/shared-bus/tb-1-req-2-coms.vhd
       hbs::Run
     }
 
