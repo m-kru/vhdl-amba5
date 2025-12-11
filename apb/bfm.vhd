@@ -141,16 +141,6 @@ package body bfm is
   begin
     report cfg.REPORT_PREFIX & "write: addr => x""" & to_hstring(addr) & """, data => x""" & to_hstring(data) & """" & msg;
 
-    req.addr  <= addr;
-    req.wdata <= data;
-    req.prot  <= prot;
-    req.nse   <= nse;
-    req.strb  <= strb;
-    req.auser <= auser;
-    req.wuser <= wuser;
-    wait for 0 ns;
-    wait for 0 ns;
-
     -- Assert wakeup signal
     req.wakeup <= '1';
     wait until rising_edge(clk) for cfg.timeout;
@@ -159,9 +149,16 @@ package body bfm is
     end if;
 
     -- Enter SETUP state
-    req.selx <= '1';
+    req.addr   <= addr;
+    req.wdata  <= data;
+    req.prot   <= prot;
+    req.nse    <= nse;
+    req.strb   <= strb;
+    req.auser  <= auser;
+    req.wuser  <= wuser;
+    req.selx   <= '1';
     req.enable <= '0';
-    req.write <= '1';
+    req.write  <= '1';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
       report cfg.REPORT_PREFIX & "timeout while waiting for clk to enter SETUP state" severity cfg.timeout_severity;
@@ -214,15 +211,6 @@ package body bfm is
   begin
     report cfg.REPORT_PREFIX & "read: addr => x""" & to_hstring(addr)  & """" & msg;
 
-    req.addr  <= addr;
-    req.prot  <= prot;
-    req.nse   <= nse;
-    req.write <= '0';
-    req.strb  <= (others => '0');
-    req.auser <= auser;
-    wait for 0 ns;
-    wait for 0 ns;
-
     -- Assert wakeup signal
     req.wakeup <= '1';
     wait until rising_edge(clk) for cfg.timeout;
@@ -231,7 +219,13 @@ package body bfm is
     end if;
 
     -- Enter SETUP state
-    req.selx <= '1';
+    req.addr   <= addr;
+    req.prot   <= prot;
+    req.nse    <= nse;
+    req.write  <= '0';
+    req.strb   <= (others => '0');
+    req.auser  <= auser;
+    req.selx   <= '1';
     req.enable <= '0';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
@@ -289,16 +283,6 @@ package body bfm is
   begin
     report cfg.REPORT_PREFIX & "writeb: addr => x""" & to_hstring(addr) & """, data length => " & to_string(data'length) & msg;
 
-    req.addr  <= addr;
-    req.wdata <= data(data'left);
-    req.prot  <= prot;
-    req.nse   <= nse;
-    req.strb  <= strb;
-    req.auser <= auser;
-    req.wuser <= wuser;
-    wait for 0 ns;
-    wait for 0 ns;
-
     -- Assert wakeup signal
     req.wakeup <= '1';
     wait until rising_edge(clk) for cfg.timeout;
@@ -307,9 +291,16 @@ package body bfm is
     end if;
 
     -- Enter SETUP state
-    req.selx <= '1';
+    req.addr   <= addr;
+    req.wdata  <= data(data'left);
+    req.prot   <= prot;
+    req.nse    <= nse;
+    req.strb   <= strb;
+    req.auser  <= auser;
+    req.wuser  <= wuser;
+    req.selx   <= '1';
     req.enable <= '0';
-    req.write <= '1';
+    req.write  <= '1';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
       report cfg.REPORT_PREFIX & "timeout while waiting for clk to enter SETUP state" severity cfg.timeout_severity;
@@ -388,15 +379,6 @@ package body bfm is
   begin
     report cfg.REPORT_PREFIX & "readb: addr => x""" & to_hstring(addr) & """, data length => " & to_string(data'length) & msg;
 
-    req.addr  <= addr;
-    req.prot  <= prot;
-    req.nse   <= nse;
-    req.write <= '0';
-    req.strb  <= (others => '0');
-    req.auser <= auser;
-    wait for 0 ns;
-    wait for 0 ns;
-
     -- Assert wakeup signal
     req.wakeup <= '1';
     wait until rising_edge(clk) for cfg.timeout;
@@ -405,7 +387,13 @@ package body bfm is
     end if;
 
     -- Enter SETUP state
-    req.selx <= '1';
+    req.addr   <= addr;
+    req.prot   <= prot;
+    req.nse    <= nse;
+    req.write  <= '0';
+    req.strb   <= (others => '0');
+    req.auser  <= auser;
+    req.selx   <= '1';
     req.enable <= '0';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
