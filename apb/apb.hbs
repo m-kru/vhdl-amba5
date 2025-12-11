@@ -143,21 +143,21 @@ namespace eval vhdl::amba5::apb {
       hbs::SetLib ""
     }
 
-    proc tb-three-reqs-one-com {} {
-      _tb "tb_three_reqs_one_com"
-      hbs::AddFile tb/crossbar/tb-three-reqs-one-com.vhd
+    proc tb-3-reqs-1-com {} {
+      _tb "tb_3_reqs_1_com"
+      hbs::AddFile tb/crossbar/tb-3-reqs-1-com.vhd
       hbs::Run
     }
 
-    proc tb-two-reqs-two-coms-sync-addr-decoding {} {
-      _tb "tb_two_reqs_two_coms"
-      hbs::AddFile tb/crossbar/tb-two-reqs-two-coms.vhd
+    proc tb-2-reqs-2-coms-sync-addr-decoding {} {
+      _tb "tb_2_reqs_2_coms"
+      hbs::AddFile tb/crossbar/tb-2-reqs-2-coms.vhd
       hbs::Run
     }
 
-    proc tb-two-reqs-two-coms-async-addr-decoding {} {
-      _tb "tb_two_reqs_two_coms"
-      hbs::AddFile tb/crossbar/tb-two-reqs-two-coms.vhd
+    proc tb-2-reqs-2-coms-async-addr-decoding {} {
+      _tb "tb_2_reqs_2_coms"
+      hbs::AddFile tb/crossbar/tb-2-reqs-2-coms.vhd
       hbs::SetGeneric SYNC_ADDR_DECODING "false"
       hbs::Run
     }
