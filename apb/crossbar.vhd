@@ -90,11 +90,10 @@ architecture rtl of Crossbar is
   -- Contains information which Requesters currently address a given Completer.
   -- For example, if addr_matrix(1)(2) = '1', then it means that Requester with index 1
   -- addresses Completer with index 2.
-  signal addr_matrix : matrix_t;
-  signal addr_matrix_comb : matrix_t;
+  signal addr_matrix_comb, addr_matrix : matrix_t;
 
   -- Contains information which Requester wants to access a given Completer.
-  signal selx_matrix : matrix_t;
+  signal selx_matrix_comb, selx_matrix : matrix_t;
 
   -- Current connection matrix.
   signal conn_matrix : matrix_t;
@@ -152,29 +151,31 @@ begin
   end process;
 
 
+  selx_matrix_driver : process (all) is
+  begin
+    for r in requester_range loop
+      for c in completer_range loop
+        selx_matrix_comb(r)(c) <= '0';
+        if addr_matrix_comb(r)(c) = '1' and coms_i(r).selx = '1' then
+          selx_matrix_comb(r)(c) <= '1';
+        end if;
+      end loop;
+    end loop;
+  end process;
+
+
 addr_decoding_register : if REGISTER_ADDR_DECODING = true generate
   process (clk_i) is
   begin
     if rising_edge(clk_i) then
       addr_matrix <= addr_matrix_comb;
+      selx_matrix <= selx_matrix_comb;
     end if;
   end process;
 else generate
   addr_matrix <= addr_matrix_comb;
+  selx_matrix <= selx_matrix_comb;
 end generate;
-
-
-  selx_matrix_driver : process (all) is
-  begin
-    for r in requester_range loop
-      for c in completer_range loop
-        selx_matrix(r)(c) <= '0';
-        if addr_matrix(r)(c) = '1' and coms_i(r).selx = '1' then
-          selx_matrix(r)(c) <= '1';
-        end if;
-      end loop;
-    end loop;
-  end process;
 
 
   router : process (arstn_i, clk_i) is

@@ -149,9 +149,16 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
-    proc tb-two-reqs-two-coms {} {
+    proc tb-two-reqs-two-coms-sync-addr-decoding {} {
       _tb "tb_two_reqs_two_coms"
       hbs::AddFile tb/crossbar/tb-two-reqs-two-coms.vhd
+      hbs::Run
+    }
+
+    proc tb-two-reqs-two-coms-async-addr-decoding {} {
+      _tb "tb_two_reqs_two_coms"
+      hbs::AddFile tb/crossbar/tb-two-reqs-two-coms.vhd
+      hbs::SetGeneric SYNC_ADDR_DECODING "false"
       hbs::Run
     }
 
