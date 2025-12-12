@@ -13,6 +13,11 @@ library work;
 --
 -- In the case of multiple requesters trying to access the same completer in the same time,
 -- requester with lower index has higher priority.
+--
+-- The SYNC_ADDR_DECODING generic determines whether the address decoder should be synchronized
+-- to the clock edge. If not synchronized, the whole transaction is shorter by one clock
+-- cycle (lower latency). However, in case of multiple requesters and completers, there might
+-- be timing closure problems.
 entity Crossbar is
   generic (
     REPORT_PREFIX   : string := "apb: crossbar: "; -- Prefix used in report messages
@@ -25,10 +30,10 @@ entity Crossbar is
   port (
     arstn_i : in std_logic := '1';
     clk_i   : in std_logic;
-    -- Ports to requesters - shared bus is a completer
+    -- Ports to requesters - crossbar bus is a completer
     coms_i : in  completer_in_array_t (0 to REQUESTER_COUNT - 1);
     coms_o : out completer_out_array_t(0 to REQUESTER_COUNT - 1);
-    -- Ports to completers - shared bus is a requester
+    -- Ports to completers - crossbar bus is a requester
     reqs_i : in  requester_in_array_t (0 to COMPLETER_COUNT - 1);
     reqs_o : out requester_out_array_t(0 to COMPLETER_COUNT - 1)
   );

@@ -143,6 +143,8 @@ namespace eval vhdl::amba5::apb {
       hbs::SetLib ""
     }
 
+    # Making an equivalent testbench with asynchronous address decoding makes
+    # no sense as all requesters address the same completer all the time.
     proc tb-3-reqs-1-com {} {
       _tb "tb_3_reqs_1_com"
       hbs::AddFile tb/crossbar/tb-3-reqs-1-com.vhd
