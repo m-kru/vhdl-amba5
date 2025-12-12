@@ -20,7 +20,7 @@ entity Crossbar is
     COMPLETER_COUNT : positive := 1;
     ADDRS : addr_array_t(0 to COMPLETER_COUNT - 1); -- Completer addresses
     MASKS : mask_array_t(0 to COMPLETER_COUNT - 1); -- Completer address masks
-    REGISTER_ADDR_DECODING : boolean := true
+    SYNC_ADDR_DECODING : boolean := true
   );
   port (
     arstn_i : in std_logic := '1';
@@ -164,7 +164,7 @@ begin
   end process;
 
 
-addr_decoding_register : if REGISTER_ADDR_DECODING = true generate
+addr_decoding_register : if SYNC_ADDR_DECODING = true generate
   process (clk_i) is
   begin
     if rising_edge(clk_i) then
