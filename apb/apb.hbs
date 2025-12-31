@@ -12,7 +12,9 @@ namespace eval vhdl::amba5::apb {
 
     proc _tb {top} {
       hbs::SetTool "nvc"
-      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+      if {$hbs::Tool eq "nvc"} {
+        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+      }
       hbs::SetTop $top
       src
       hbs::SetLib ""
@@ -46,7 +48,9 @@ namespace eval vhdl::amba5::apb {
 
     proc _tb {top} {
       hbs::SetTool "nvc"
-      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+      if {$hbs::Tool eq "nvc"} {
+        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+      }
       hbs::SetTop $top
       src
       hbs::SetLib ""
@@ -89,8 +93,10 @@ namespace eval vhdl::amba5::apb {
     proc _tb {top} {
       hbs::SetTool "nvc"
       hbs::AddDep vhdl::amba5::apb::checker::src
-      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
-      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=warning"
+      if {$hbs::Tool eq "nvc"} {
+        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=warning"
+      }
       hbs::SetTop $top
       src
       hbs::SetLib ""
@@ -136,8 +142,10 @@ namespace eval vhdl::amba5::apb {
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::AddDep vhdl::amba5::apb::bfm::src
       hbs::AddDep vhdl::amba5::apb::mock-completer::src
-      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
-      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      if {$hbs::Tool eq "nvc"} {
+        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      }
       hbs::SetTop $top
       hbs::AddDep $hbs::ThisCorePath\::src
       hbs::SetLib ""
@@ -179,8 +187,10 @@ namespace eval vhdl::amba5::apb {
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::AddDep vhdl::amba5::apb::bfm::src
       hbs::AddDep vhdl::amba5::apb::mock-completer::src
-      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
-      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      if {$hbs::Tool eq "nvc"} {
+        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      }
       hbs::SetTop $top
       hbs::AddDep $hbs::ThisCorePath\::src
       hbs::SetLib ""
@@ -217,8 +227,10 @@ namespace eval vhdl::amba5::apb {
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::SetLib ""
       hbs::AddFile tb/mock-completer/tb.vhd
-      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
-      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=warning --dump-arrays"
+      if {$hbs::Tool eq "nvc"} {
+        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=warning --dump-arrays"
+      }
       hbs::Run
     }
 
@@ -237,8 +249,10 @@ namespace eval vhdl::amba5::apb {
       hbs::SetTool "nvc"
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::AddDep vhdl::amba5::apb::mock-completer::src
-      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
-      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      if {$hbs::Tool eq "nvc"} {
+        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      }
       hbs::SetTop $top
       hbs::AddDep $hbs::ThisCorePath\::src
       hbs::SetLib ""
@@ -273,8 +287,10 @@ namespace eval vhdl::amba5::apb {
       hbs::AddDep vhdl::amba5::apb::bfm::src
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::AddDep vhdl::amba5::apb::mock-completer::src
-      hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
-      hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      if {$hbs::Tool eq "nvc"} {
+        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgsSuffix "--exit-severity=error --dump-arrays"
+      }
       hbs::SetTop "tb"
       hbs::AddDep $hbs::ThisCorePath\::src
       hbs::SetLib ""
