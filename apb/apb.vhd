@@ -255,28 +255,40 @@ package apb is
   -- Converts requester_in_t to string for pretty printing.
   function to_debug (req_in : requester_in_t; indent_level : natural := 0) return string;
 
+  --
+  -- string_t
+  --
+
+  -- Fixed-size string for internal usage.
+  subtype string_t is string(1 to 256);
+
+  -- Represents empty string_t.
+  constant NULL_STRING : string_t := (others => character'val(0));
+
+  -- Converts string into string_t.
+  function make(str : string) return string_t;
 
   --
-  -- util functions
+  -- Util functions
   --
 
   -- Checks wheter mask array has at least one mask with all bits set to '0'.
   --
   -- The returned string is empty if masks has no zero masks.
   -- Otherwise, the string contains an error message.
-  function masks_has_zero (masks : mask_array_t) return string;
+  function masks_has_zero (masks : mask_array_t) return string_t;
 
   -- Checks whether an address contains a meta value.
   --
   -- The returned string is empty if addr has no meta values.
   -- Otherwise, the string contains an error message.
-  function addr_has_meta (addr : unsigned(31 downto 0)) return string;
+  function addr_has_meta (addr : unsigned(31 downto 0)) return string_t;
 
   -- Checks whether all addresses in array has no meta values.
   --
   -- The returned string is empty if no address has meta value.
   -- Otherwise, the string contains an error message.
-  function addrs_has_meta (addrs : addr_array_t) return string;
+  function addrs_has_meta (addrs : addr_array_t) return string_t;
 
   -- Checks whether address is aligned to 4 bytes.
   --
@@ -284,27 +296,27 @@ package apb is
   -- However, unaligned address does not make sense for Completer address space
   -- start address. The returned string is empty if addr is aligned.
   -- Otherwise, the returned string contains an error message.
-  function is_addr_aligned (addr : unsigned(31 downto 0)) return string;
+  function is_addr_aligned (addr : unsigned(31 downto 0)) return string_t;
 
   -- Checks whether all addresses in the array are aligned.
   --
   -- The returned string is empty if all addresses are aligned. Otherwise, the returned
   -- string contains an error message.
-  function are_addrs_aligned (addrs : addr_array_t) return string;
+  function are_addrs_aligned (addrs : addr_array_t) return string_t;
 
   -- Checks whether address is within the given mask range.
   --
   -- The returned string is empty if addr is within the given mask range.
   -- Otherwise, the returned string contains an error message.
-  function is_addr_in_mask (addr : unsigned(31 downto 0); mask : bit_vector(31 downto 0)) return string;
+  function is_addr_in_mask (addr : unsigned(31 downto 0); mask : bit_vector(31 downto 0)) return string_t;
 
   -- Checks whether all addresses are within the given mask ranges.
   --
   -- The returned string is empty if all addresses are within the given mask ranges.
   -- Otherwise, the returned string contains an error message.
-  function are_addrs_in_masks (addrs : addr_array_t; masks : mask_array_t) return string;
+  function are_addrs_in_masks (addrs : addr_array_t; masks : mask_array_t) return string_t;
 
-  function does_addr_space_overlap (addrs : addr_array_t; masks : mask_array_t) return string;
+  function does_addr_space_overlap (addrs : addr_array_t; masks : mask_array_t) return string_t;
 
 end package;
 
@@ -576,85 +588,103 @@ package body apb is
   end function;
 
   --
+  -- string_t
+  --
+
+  function make(str : string) return string_t is
+    variable s : string_t := NULL_STRING;
+  begin
+    for i in str'range loop
+      if str(i) = character'val(0) then
+        return s;
+      end if;
+      s(i) := str(i);
+    end loop;
+    return s;
+  end function;
+
+  --
   -- util functions
   --
 
-  function masks_has_zero (masks : mask_array_t) return string is
+  function masks_has_zero (masks : mask_array_t) return string_t is
     constant zero : bit_vector(31 downto 0) := (others => '0');
   begin
     for m in masks'range loop
       if masks(m) = zero then
-        return "masks(" & to_string(m) & ") has only zeros";
+        return make("masks(" & to_string(m) & ") has only zeros");
       end if;
     end loop;
-    return "";
+    return NULL_STRING;
   end function;
 
-  function addr_has_meta (addr : unsigned(31 downto 0)) return string is
+  function addr_has_meta (addr : unsigned(31 downto 0)) return string_t is
   begin
     for b in addr'range loop
       if addr(b) /= '0' and addr(b) /= '1' then
-        return "addr """ & to_string(addr) & """ has meta value at bit " & to_string(b);
+        return make("addr """ & to_string(addr) & """ has meta value at bit " & to_string(b));
       end if;
     end loop;
-    return "";
+    return NULL_STRING;
   end function;
 
-  function addrs_has_meta (addrs : addr_array_t) return string is
+  function addrs_has_meta (addrs : addr_array_t) return string_t is
   begin
     for a in addrs'range loop
-      if addr_has_meta(addrs(a)) /= "" then
-        return "addrs(" & to_string(a) & "): " & addr_has_meta(addrs(a));
+      if addr_has_meta(addrs(a)) /= NULL_STRING then
+        return make("addrs(" & to_string(a) & "): " & addr_has_meta(addrs(a)));
       end if;
     end loop;
-    return "";
+    return NULL_STRING;
   end function;
 
-  function is_addr_aligned (addr : unsigned(31 downto 0)) return string is
+  function is_addr_aligned (addr : unsigned(31 downto 0)) return string_t is
   begin
     for b in 0 to 1 loop
       if addr(b) /= '0' then
-        return "unaligned addr """ & to_string(addr) & """, bit " & to_string(b) & " equals '" & to_string(addr(b)) & "'";
+        return make(
+          "unaligned addr """ & to_string(addr) & """, bit " & to_string(b) & " equals '" & to_string(addr(b)) & "'"
+        );
       end if;
     end loop;
-    return "";
+    return NULL_STRING;
   end function;
 
-  function are_addrs_aligned (addrs : addr_array_t) return string is
+  function are_addrs_aligned (addrs : addr_array_t) return string_t is
   begin
     for a in addrs'range loop
-      if is_addr_aligned(addrs(a)) /= "" then
-        return "addrs(" & to_string(a) & "): " & is_addr_aligned(addrs(a));
+      if is_addr_aligned(addrs(a)) /= NULL_STRING then
+        return make("addrs(" & to_string(a) & "): " & is_addr_aligned(addrs(a)));
       end if;
     end loop;
-    return "";
+    return NULL_STRING;
   end function;
 
-  function is_addr_in_mask (addr : unsigned(31 downto 0); mask : bit_vector(31 downto 0)) return string is
+  function is_addr_in_mask (addr : unsigned(31 downto 0); mask : bit_vector(31 downto 0)) return string_t is
     constant zero : std_logic_vector(31 downto 0) := (others => '0');
   begin
     if (std_logic_vector(addr) and not to_std_logic_vector(mask)) /= zero then
-      return "addr """ & to_string(addr) & """ not in mask """ & to_string(mask) & """";
+      return make("addr """ & to_string(addr) & """ not in mask """ & to_string(mask) & """");
     end if;
-    return "";
+    return NULL_STRING;
   end function;
 
-  function are_addrs_in_masks (addrs : addr_array_t; masks : mask_array_t) return string is
+  function are_addrs_in_masks (addrs : addr_array_t; masks : mask_array_t) return string_t is
   begin
     assert addrs'length = masks'length
       report "addrs length (" & to_string(addrs'length) & ") /= masks length (" & to_string(addrs'length) & ")"
       severity failure;
 
       for i in addrs'range loop
-        if is_addr_in_mask(addrs(i), masks(i)) /= "" then
-          return "index " & to_string(i) & ": " & is_addr_in_mask(addrs(i), masks(i));
+        if is_addr_in_mask(addrs(i), masks(i)) /= NULL_STRING then
+          return make("index " & to_string(i) & ": " & is_addr_in_mask(addrs(i), masks(i)));
         end if;
       end loop;
 
-      return "";
+      return NULL_STRING;
   end function;
 
-  function does_addr_space_overlap (addrs : addr_array_t; masks : mask_array_t) return string is
+  function does_addr_space_overlap (addrs : addr_array_t; masks : mask_array_t) return string_t is
     constant zero : std_logic_vector(31 downto 0) := (others => '0');
   begin
     assert addrs'length = masks'length
@@ -666,14 +696,16 @@ package body apb is
         if
           (to_std_logic_vector(masks(i) and masks(j)) and std_logic_vector(addrs(i) xor addrs(j))) = zero
         then
-          return "addr space " & to_string(i) & " overlaps with addr space " & to_string(j) & LF &
+          return make(
+            "addr space " & to_string(i) & " overlaps with addr space " & to_string(j) & LF &
             "  " & to_string(i) & ": addr = """ & to_string(addrs(i)) & """, mask = """ & to_string(masks(i)) & """" & LF &
-            "  " & to_string(j) & ": addr = """ & to_string(addrs(j)) & """, mask = """ & to_string(masks(j)) & """";
+            "  " & to_string(j) & ": addr = """ & to_string(addrs(j)) & """, mask = """ & to_string(masks(j)) & """"
+          );
         end if;
       end loop;
     end loop;
 
-    return "";
+    return NULL_STRING;
   end function;
 
 end package body;

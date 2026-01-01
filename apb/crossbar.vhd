@@ -43,11 +43,11 @@ end entity;
 architecture rtl of Crossbar is
 
   -- Sanity checks
-  constant zero_mask_fail          : string := masks_has_zero(MASKS);
-  constant addr_has_meta_fail      : string := addrs_has_meta(ADDRS);
-  constant unaligned_addr_fail     : string := are_addrs_aligned(ADDRS);
-  constant addr_not_in_mask_fail   : string := are_addrs_in_masks(ADDRS, MASKS);
-  constant addr_space_overlap_fail : string := does_addr_space_overlap(ADDRS, MASKS);
+  constant zero_mask_fail          : string_t := masks_has_zero(MASKS);
+  constant addr_has_meta_fail      : string_t := addrs_has_meta(ADDRS);
+  constant unaligned_addr_fail     : string_t := are_addrs_aligned(ADDRS);
+  constant addr_not_in_mask_fail   : string_t := are_addrs_in_masks(ADDRS, MASKS);
+  constant addr_space_overlap_fail : string_t := does_addr_space_overlap(ADDRS, MASKS);
 
   subtype requester_range is natural range 0 to REQUESTER_COUNT - 1;
   subtype completer_range is natural range 0 to COMPLETER_COUNT - 1;
@@ -116,11 +116,11 @@ architecture rtl of Crossbar is
 begin
 
   -- Static sanity checks
-  assert zero_mask_fail          = "" report REPORT_PREFIX & zero_mask_fail          severity failure;
-  assert addr_has_meta_fail      = "" report REPORT_PREFIX & addr_has_meta_fail      severity failure;
-  assert unaligned_addr_fail     = "" report REPORT_PREFIX & unaligned_addr_fail     severity failure;
-  assert addr_not_in_mask_fail   = "" report REPORT_PREFIX & addr_not_in_mask_fail   severity failure;
-  assert addr_space_overlap_fail = "" report REPORT_PREFIX & addr_space_overlap_fail severity failure;
+  assert zero_mask_fail          = NULL_STRING report REPORT_PREFIX & zero_mask_fail          severity failure;
+  assert addr_has_meta_fail      = NULL_STRING report REPORT_PREFIX & addr_has_meta_fail      severity failure;
+  assert unaligned_addr_fail     = NULL_STRING report REPORT_PREFIX & unaligned_addr_fail     severity failure;
+  assert addr_not_in_mask_fail   = NULL_STRING report REPORT_PREFIX & addr_not_in_mask_fail   severity failure;
+  assert addr_space_overlap_fail = NULL_STRING report REPORT_PREFIX & addr_space_overlap_fail severity failure;
 
 
   simulation_sanity_checker : process (clk_i) is
