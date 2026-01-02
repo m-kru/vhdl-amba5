@@ -15,7 +15,7 @@ end entity;
 
 architecture test of tb_write is
 
-  constant CLK_PERIOD : time := 1 ns;
+  constant CLK_PERIOD : time := 10 ns;
 
   signal clk : std_logic := '0';
 
@@ -30,7 +30,7 @@ architecture test of tb_write is
   signal completer_data : data_array_t(0 to 3) := (
     x"FEDCBA98", x"12345678", x"DEADBEEF", x"ABCDEF01"
   );
-  signal mc : mock_completer_t := init(memory_size => 4);
+  signal mc : mock_completer_t(memory(0 to 3)) := init(memory_size => 4);
 
   signal rdata : std_logic_vector(31 downto 0);
 
@@ -118,7 +118,7 @@ begin
       obyte_ready <= '1';
       wait until rising_edge(clk) and obyte_ready = '1' and sb.obyte_valid = '1';
       assert sb.obyte = b"00000000"
-        report "invalid status byte, got " & sb.obyte'image & ", want ""00000000"""
+        report "invalid status byte, got " & to_string(sb.obyte) & ", want ""00000000"""
         severity failure;
       obyte_ready <= '0';
       wait for delay * CLK_PERIOD;
@@ -136,7 +136,7 @@ begin
     -- Verify written data
     for i in completer_data'range loop
       assert mc.memory(i) = completer_data(i)
-        report "invlaid data, got " & mc.memory(i)'image & ", want " & completer_data(i)'image
+        report "invlaid data, got " & to_string(mc.memory(i)) & ", want " & to_string(completer_data(i))
         severity failure;
     end loop;
 

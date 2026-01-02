@@ -181,7 +181,7 @@ package serial_bridge is
   -- APB build time configuration elements are set via the req_o initial value.
   type serial_bridge_t is record
     -- Configuration elements
-    REPORT_PREFIX   : string; -- Optional prefix used in report messages
+    REPORT_PREFIX   : string_t; -- Optional prefix used in report messages
     ADDR_BYTE_COUNT : positive range 1 to 4; -- Number of used address bytes
 
     -- Output elements
@@ -200,6 +200,10 @@ package serial_bridge is
     data     : std_logic_vector(31 downto 0);
   end record;
 
+  -- Some simulators, for example, questa, doesn't accept init function within other init function.
+  -- Core around this issue by defining constant.
+  constant REQUESTER_OUT_INIT : requester_out_t := init;
+
   -- Initializes serial bridge with elements set to given values.
   function init (
     REPORT_PREFIX   : string := "apb: serial bridge: ";
@@ -207,7 +211,7 @@ package serial_bridge is
     ibyte_ready     : std_logic := '0';
     obyte_valid     : std_logic := '0';
     obyte           : std_logic_vector(7 downto 0) := (others => '-');
-    apb_req         : requester_out_t := init;
+    apb_req         : requester_out_t := REQUESTER_OUT_INIT;
     state           : state_t := IDLE;
     byte_cnt        : natural range 0 to 3 := 0;
     size            : natural range 0 to 255 := 0;
@@ -261,7 +265,7 @@ package body serial_bridge is
     ibyte_ready     : std_logic := '0';
     obyte_valid     : std_logic := '0';
     obyte           : std_logic_vector(7 downto 0) := (others => '-');
-    apb_req         : requester_out_t := init;
+    apb_req         : requester_out_t := REQUESTER_OUT_INIT;
     state           : state_t := IDLE;
     byte_cnt        : natural range 0 to 3 := 0;
     size            : natural range 0 to 255 := 0;
@@ -269,7 +273,7 @@ package body serial_bridge is
     data            : std_logic_vector(31 downto 0) := (others => '-')
   ) return serial_bridge_t is
     constant sb : serial_bridge_t := (
-      REPORT_PREFIX   => REPORT_PREFIX,
+      REPORT_PREFIX   => make(REPORT_PREFIX),
       ADDR_BYTE_COUNT => ADDR_BYTE_COUNT,
       ibyte_ready     => ibyte_ready,
       obyte_valid     => obyte_valid,
@@ -307,7 +311,8 @@ package body serial_bridge is
       sb.typ := to_transaction_type(ibyte(7 downto 5));
       sb.apb_req.wakeup := '1';
       sb.state := ADDR_PULL;
-      report sb.REPORT_PREFIX & "starting " & transaction_type_t'image(sb.typ) & " transaction" severity note;
+      report to_string(sb.REPORT_PREFIX) &
+        "starting " & transaction_type_t'image(sb.typ) & " transaction" severity note;
     else
       sb.ibyte_ready := '1';
     end if;
@@ -339,7 +344,8 @@ package body serial_bridge is
       sb.apb_req.addr(sb.byte_cnt * 8 + 7 downto sb.byte_cnt * 8) := unsigned(ibyte);
 
       if sb.byte_cnt = 0 then
-        report sb.REPORT_PREFIX & "addr x""" & to_hstring(sb.apb_req.addr) & """";
+        report to_string(sb.REPORT_PREFIX) &
+          "addr x""" & to_hstring(sb.apb_req.addr) & """";
 
         sb.byte_cnt := 3;
 
@@ -429,7 +435,7 @@ package body serial_bridge is
     ibyte         : std_logic_vector(7 downto 0);
     ibyte_valid   : std_logic;
     obyte_ready   : std_logic;
-    apb_com       : completer_out_t;
+    apb_com       : completer_out_t
   ) return serial_bridge_t is
     variable sb : serial_bridge_t := serial_bridge;
   begin

@@ -13,31 +13,33 @@ end entity;
 
 architecture test of tb_3_reqs_1_com is
 
+  constant CLK_PERIOD : time := 10 ns;
+
   -- Requester count
   constant REQ_COUNT : natural := 3;
   subtype req_range is natural range 0 to REQ_COUNT - 1;
 
-  constant STAGE_TIMEOUT : time := 100 ns;
+  constant STAGE_TIMEOUT : time := 100 * CLK_PERIOD;
 
   signal arstn : std_logic := '0';
   signal clk : std_logic := '1';
 
   signal bfm_cfgs : bfm.config_array_t(req_range) := (
-    bfm.init(REPORT_PREFIX => "apb: bfm 0: "),
-    bfm.init(REPORT_PREFIX => "apb: bfm 1: "),
-    bfm.init(REPORT_PREFIX => "apb: bfm 2: ")
+    bfm.init(REPORT_PREFIX => "apb: bfm 0: ", timeout => 100 * CLK_PERIOD),
+    bfm.init(REPORT_PREFIX => "apb: bfm 1: ", timeout => 100 * CLK_PERIOD),
+    bfm.init(REPORT_PREFIX => "apb: bfm 2: ", timeout => 100 * CLK_PERIOD)
   );
 
   -- Requesters interfaces
-  signal req_outs : requester_out_array_t := (init, init, init);
-  signal req_ins  : requester_in_array_t  := (init, init, init);
+  signal req_outs : requester_out_array_t(0 to 2) := (init, init, init);
+  signal req_ins  : requester_in_array_t(0 to 2)  := (init, init, init);
 
   -- Completer interface
   signal com_in  : completer_in_t  := init;
   signal com_out : completer_out_t := init;
 
   -- Requesters checkers
-  signal req_cks : checker_array_t := (
+  signal req_cks : checker_array_t(0 to 2) := (
     init(REPORT_PREFIX => "apb: checker: req 0: "),
     init(REPORT_PREFIX => "apb: checker: req 1: "),
     init(REPORT_PREFIX => "apb: checker: req 2: ")
@@ -51,7 +53,7 @@ architecture test of tb_3_reqs_1_com is
          req_writeb_done,
          req_readb_done : boolean_vector(req_range) := (others => false);
 
-  signal mc : mock_completer_t := init(memory_size => 12);
+  signal mc : mock_completer_t(memory(0 to 11)) := init(memory_size => 12);
 
   constant ADDRS : addr_array_t(req_range) := (
     to_unsigned(0*4, 32),
@@ -82,12 +84,12 @@ architecture test of tb_3_reqs_1_com is
 
 begin
 
-  clk <= not clk after 0.5 ns;
+  clk <= not clk after CLK_PERIOD / 2;
 
 
   reset_driver : process is
   begin
-    wait for 2 ns;
+    wait for 2 * CLK_PERIOD;
     arstn <= '1';
     wait;
   end process;
@@ -119,7 +121,7 @@ requesters : for r in req_range generate
     -- Write test
     for i in WRITE_DATA(r)'range loop
       bfm.write(ADDRS(r) + to_unsigned(i * 4, 32), WRITE_DATA(r)(i), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
-      wait for 2 ns;
+      wait for 2 * CLK_PERIOD;
     end loop;
     req_write_done(r) <= true;
 
@@ -130,7 +132,7 @@ requesters : for r in req_range generate
     for i in READ_DATA(r)'range loop
       bfm.read(ADDRS((r+1) mod REQ_COUNT) + to_unsigned(i * 4, 32), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
       READ_DATA(r)(i) <= req_ins(r).rdata;
-      wait for 2 ns;
+      wait for 2 * CLK_PERIOD;
     end loop;
     req_read_done(r) <= true;
 
@@ -352,7 +354,7 @@ end generate;
 
   main : process is
   begin
-    wait for 4 * STAGE_TIMEOUT + 10 ns;
+    wait for 4 * STAGE_TIMEOUT + 10 * CLK_PERIOD;
 
     assert write_checker_done  report "write checker hasn't finished";
     assert read_checker_done   report "read checker hasn't finished";

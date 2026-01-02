@@ -14,6 +14,8 @@ end entity;
 
 architecture test of tb_2_reqs_2_coms is
 
+  constant CLK_PERIOD : time := 10 ns;
+
   -- Requester count
   constant REQ_COUNT : natural := 2;
   subtype req_range is natural range 0 to REQ_COUNT - 1;
@@ -22,32 +24,32 @@ architecture test of tb_2_reqs_2_coms is
   constant COM_COUNT : natural := 2;
   subtype com_range is natural range 0 to COM_COUNT - 1;
 
-  constant STAGE_TIMEOUT : time := 50 ns;
+  constant STAGE_TIMEOUT : time := 50 * CLK_PERIOD;
 
   signal arstn : std_logic := '0';
   signal clk : std_logic := '1';
 
-  signal bfm_cfgs : bfm.config_array_t := (
-    bfm.init(REPORT_PREFIX => "apb: bfm 0: "),
-    bfm.init(REPORT_PREFIX => "apb: bfm 1: ")
+  signal bfm_cfgs : bfm.config_array_t(0 to 1) := (
+    bfm.init(REPORT_PREFIX => "apb: bfm 0: ", timeout => 100 * CLK_PERIOD),
+    bfm.init(REPORT_PREFIX => "apb: bfm 1: ", timeout => 100 * CLK_PERIOD)
   );
 
   -- Requesters interfaces
-  signal req_outs : requester_out_array_t := (init, init);
-  signal req_ins  : requester_in_array_t  := (init, init);
+  signal req_outs : requester_out_array_t(0 to 1) := (init, init);
+  signal req_ins  : requester_in_array_t(0 to 1)  := (init, init);
 
   -- Completer interface
-  signal com_ins  : completer_in_array_t  := (init, init);
-  signal com_outs : completer_out_array_t := (init, init);
+  signal com_ins  : completer_in_array_t(0 to 1)  := (init, init);
+  signal com_outs : completer_out_array_t(0 to 1) := (init, init);
 
   -- Requesters checkers
-  signal req_cks : checker_array_t := (
+  signal req_cks : checker_array_t(0 to 1) := (
     init(REPORT_PREFIX => "apb: checker: req 0: "),
     init(REPORT_PREFIX => "apb: checker: req 1: ")
   );
 
   -- Completer checkers
-  signal com_cks : checker_array_t := (
+  signal com_cks : checker_array_t(0 to 1) := (
     init(REPORT_PREFIX => "apb: checker: com 0: "),
     init(REPORT_PREFIX => "apb: checker: com 1: ")
   );
@@ -57,7 +59,7 @@ architecture test of tb_2_reqs_2_coms is
          req_writeb_done,
          req_readb_done : boolean_vector(req_range) := (others => false);
 
-  signal mock_coms : mock_completer_array_t(com_range) := (
+  signal mock_coms : mock_completer_array_t(com_range)(memory(0 to 3)) := (
     0 => init(memory_size => 4, REPORT_PREFIX => "mock completer 0: "),
     1 => init(memory_size => 4, REPORT_PREFIX => "mock completer 1: ", ADDR => 16)
   );
@@ -85,12 +87,12 @@ architecture test of tb_2_reqs_2_coms is
 
 begin
 
-  clk <= not clk after 0.5 ns;
+  clk <= not clk after CLK_PERIOD / 2;
 
 
   reset_driver : process is
   begin
-    wait for 2 ns;
+    wait for 2 * CLK_PERIOD;
     arstn <= '1';
     wait;
   end process;
@@ -126,7 +128,7 @@ requesters : for r in req_range generate
       bfm.write(
         COM_ADDRS(r) + to_unsigned(i * 4, 32), WRITE_DATA(r)(i), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r)
       );
-      wait for 2 ns;
+      wait for 2 * CLK_PERIOD;
     end loop;
     req_write_done(r) <= true;
 
@@ -138,7 +140,7 @@ requesters : for r in req_range generate
         COM_ADDRS((r+1) mod COM_COUNT) + to_unsigned(i * 4, 32), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r)
       );
       READ_DATA(r)(i) <= req_ins(r).rdata;
-      wait for 2 ns;
+      wait for 2 * CLK_PERIOD;
     end loop;
     req_read_done(r) <= true;
 
@@ -366,7 +368,7 @@ end generate;
 
   main : process is
   begin
-    wait for 4 * STAGE_TIMEOUT + 10 ns;
+    wait for 4 * STAGE_TIMEOUT + 10 * CLK_PERIOD;
 
     assert write_checker_done  report "write checker hasn't finished";
     assert read_checker_done   report "read checker hasn't finished";

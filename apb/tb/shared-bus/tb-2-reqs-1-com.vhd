@@ -31,7 +31,7 @@ architecture test of tb_2_reqs_1_com is
   signal req1_ck : checker_t := init(REPORT_PREFIX => "apb: checker: req1: ");
   signal com_ck  : checker_t := init(REPORT_PREFIX => "apb: checker: com: ");
 
-  signal mc : mock_completer_t := init(memory_size => 8);
+  signal mc : mock_completer_t(memory(0 to 7)) := init(memory_size => 8);
 
   constant ADDR0 : natural := 0;
   constant DATA0 : data_array_t := (x"11111111", x"22222222", x"33333333", x"44444444");

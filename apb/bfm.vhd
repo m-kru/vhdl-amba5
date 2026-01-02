@@ -18,13 +18,13 @@ package bfm is
 
   -- BFM configuration type.
   type config_t is record
-    REPORT_PREFIX : string; -- Prefix used while printing report messages.
+    REPORT_PREFIX : string_t; -- Prefix used while printing report messages.
     timeout : time; -- Maximum time to wait before an alert is issued when waiting for ready signal from the Completer.
     timeout_severity : severity_level; -- Timeout report severity.
   end record;
 
   constant DEFAULT_CONFIG : config_t := (
-    REPORT_PREFIX  => "apb: bfm: ",
+    REPORT_PREFIX  => make("apb: bfm: "),
     timeout => 100 ns,
     timeout_severity => error
   );
@@ -117,7 +117,7 @@ package body bfm is
     timeout : time   := 100 ns;
     timeout_severity : severity_level := error
   ) return config_t is
-    constant cfg : config_t := (REPORT_PREFIX, timeout, timeout_severity);
+    constant cfg : config_t := (make(REPORT_PREFIX), timeout, timeout_severity);
   begin
     return cfg;
   end function;
@@ -139,13 +139,15 @@ package body bfm is
     constant msg   : in string := ""
   ) is
   begin
-    report cfg.REPORT_PREFIX & "write: addr => x""" & to_hstring(addr) & """, data => x""" & to_hstring(data) & """" & msg;
+    report to_string(cfg.REPORT_PREFIX) &
+      "write: addr => x""" & to_hstring(addr) & """, data => x""" & to_hstring(data) & """" & msg;
 
     -- Assert wakeup signal
     req.wakeup <= '1';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
-      report cfg.REPORT_PREFIX & "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
     end if;
 
     -- Enter SETUP state
@@ -161,27 +163,31 @@ package body bfm is
     req.write  <= '1';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
-      report cfg.REPORT_PREFIX & "timeout while waiting for clk to enter SETUP state" severity cfg.timeout_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while waiting for clk to enter SETUP state" severity cfg.timeout_severity;
     end if;
 
     -- Enter ACCESS state
     req.enable <= '1';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
-      report cfg.REPORT_PREFIX & "timeout while entering ACCESS state" severity cfg.timeout_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while entering ACCESS state" severity cfg.timeout_severity;
     end if;
 
     -- Wait until ready
     if com.ready /= '1' then
       wait until rising_edge(clk) and com.ready = '1' for cfg.timeout;
       if com.ready /= '1' then
-        report cfg.REPORT_PREFIX & "timeout while waiting for Completer to assert ready" severity cfg.timeout_severity;
+        report to_string(cfg.REPORT_PREFIX) &
+          "timeout while waiting for Completer to assert ready" severity cfg.timeout_severity;
       end if;
     end if;
 
     -- Report error if asserted
     if com.slverr = '1' then
-      report cfg.REPORT_PREFIX & "Completer indicates error" severity slverr_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "Completer indicates error" severity slverr_severity;
     end if;
 
     -- Cleanup
@@ -209,13 +215,15 @@ package body bfm is
     constant msg   : in string := ""
   ) is
   begin
-    report cfg.REPORT_PREFIX & "read: addr => x""" & to_hstring(addr)  & """" & msg;
+    report to_string(cfg.REPORT_PREFIX) &
+      "read: addr => x""" & to_hstring(addr)  & """" & msg;
 
     -- Assert wakeup signal
     req.wakeup <= '1';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
-      report cfg.REPORT_PREFIX & "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
     end if;
 
     -- Enter SETUP state
@@ -229,27 +237,31 @@ package body bfm is
     req.enable <= '0';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
-      report cfg.REPORT_PREFIX & "timeout while waiting for clk to enter SETUP state" severity cfg.timeout_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while waiting for clk to enter SETUP state" severity cfg.timeout_severity;
     end if;
 
     -- Enter ACCESS state
     req.enable <= '1';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
-      report cfg.REPORT_PREFIX & "timeout while entering ACCESS state" severity cfg.timeout_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while entering ACCESS state" severity cfg.timeout_severity;
     end if;
 
     -- Wait until ready
     if com.ready /= '1' then
       wait until rising_edge(clk) and com.ready = '1' for cfg.timeout;
       if com.ready /= '1' then
-        report cfg.REPORT_PREFIX & "timeout while waiting for Completer to assert ready" severity cfg.timeout_severity;
+        report to_string(cfg.REPORT_PREFIX) &
+          "timeout while waiting for Completer to assert ready" severity cfg.timeout_severity;
       end if;
     end if;
 
     -- Report error if asserted
     if com.slverr = '1' then
-      report cfg.REPORT_PREFIX & "Completer indicates error" severity slverr_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "Completer indicates error" severity slverr_severity;
     end if;
 
     -- Cleanup
@@ -281,13 +293,15 @@ package body bfm is
     constant msg   : in string := ""
   ) is
   begin
-    report cfg.REPORT_PREFIX & "writeb: addr => x""" & to_hstring(addr) & """, data length => " & to_string(data'length) & msg;
+    report to_string(cfg.REPORT_PREFIX) &
+      "writeb: addr => x""" & to_hstring(addr) & """, data length => " & to_string(data'length) & msg;
 
     -- Assert wakeup signal
     req.wakeup <= '1';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
-      report cfg.REPORT_PREFIX & "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
     end if;
 
     -- Enter SETUP state
@@ -303,14 +317,16 @@ package body bfm is
     req.write  <= '1';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
-      report cfg.REPORT_PREFIX & "timeout while waiting for clk to enter SETUP state" severity cfg.timeout_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while waiting for clk to enter SETUP state" severity cfg.timeout_severity;
     end if;
 
     -- Enter ACCESS state
     req.enable <= '1';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
-      report cfg.REPORT_PREFIX & "timeout while entering ACCESS state" severity cfg.timeout_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while entering ACCESS state" severity cfg.timeout_severity;
     end if;
 
     -- Data write loop
@@ -319,13 +335,15 @@ package body bfm is
       if com.ready /= '1' then
         wait until rising_edge(clk) and com.ready = '1' for cfg.timeout;
         if com.ready /= '1' then
-          report cfg.REPORT_PREFIX & "timeout while waiting for Completer to assert ready" severity cfg.timeout_severity;
+          report to_string(cfg.REPORT_PREFIX) &
+            "timeout while waiting for Completer to assert ready" severity cfg.timeout_severity;
         end if;
       end if;
 
       -- Report error if asserted
       if com.slverr = '1' then
-        report cfg.REPORT_PREFIX & "data("& to_string(i) & "): Completer indicates error" severity slverr_severity;
+        report to_string(cfg.REPORT_PREFIX) &
+          "data("& to_string(i) & "): Completer indicates error" severity slverr_severity;
         if exit_on_slverr then exit; end if;
       end if;
 
@@ -339,14 +357,16 @@ package body bfm is
       req.enable <= '0';
       wait until rising_edge(clk) for cfg.timeout;
       if clk /= '1' then
-        report cfg.REPORT_PREFIX & "data(" &  to_string(i+1) & "): " & "timeout while reentering SETUP state" severity cfg.timeout_severity;
+        report to_string(cfg.REPORT_PREFIX) &
+          "data(" &  to_string(i+1) & "): " & "timeout while reentering SETUP state" severity cfg.timeout_severity;
       end if;
 
       -- Reenter ACCESS state
       req.enable <= '1';
       wait until rising_edge(clk) for cfg.timeout;
       if clk /= '1' then
-        report cfg.REPORT_PREFIX & "data(" &  to_string(i+1) & "): " & "timeout while reentering ACCESS state" severity cfg.timeout_severity;
+        report to_string(cfg.REPORT_PREFIX) &
+          "data(" &  to_string(i+1) & "): " & "timeout while reentering ACCESS state" severity cfg.timeout_severity;
       end if;
     end loop;
 
@@ -377,13 +397,15 @@ package body bfm is
     constant msg   : in string := ""
   ) is
   begin
-    report cfg.REPORT_PREFIX & "readb: addr => x""" & to_hstring(addr) & """, data length => " & to_string(data'length) & msg;
+    report to_string(cfg.REPORT_PREFIX) &
+      "readb: addr => x""" & to_hstring(addr) & """, data length => " & to_string(data'length) & msg;
 
     -- Assert wakeup signal
     req.wakeup <= '1';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
-      report cfg.REPORT_PREFIX & "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
     end if;
 
     -- Enter SETUP state
@@ -397,14 +419,16 @@ package body bfm is
     req.enable <= '0';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
-      report cfg.REPORT_PREFIX & "timeout while waiting for clk to enter SETUP state" severity cfg.timeout_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while waiting for clk to enter SETUP state" severity cfg.timeout_severity;
     end if;
 
     -- Enter ACCESS state
     req.enable <= '1';
     wait until rising_edge(clk) for cfg.timeout;
     if clk /= '1' then
-      report cfg.REPORT_PREFIX & "timeout while entering ACCESS state" severity cfg.timeout_severity;
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while entering ACCESS state" severity cfg.timeout_severity;
     end if;
 
     -- Data read loop
@@ -413,13 +437,15 @@ package body bfm is
       if com.ready /= '1' then
         wait until rising_edge(clk) and com.ready = '1' for cfg.timeout;
         if com.ready /= '1' then
-          report cfg.REPORT_PREFIX & "timeout while waiting for Completer to assert ready" severity cfg.timeout_severity;
+          report to_string(cfg.REPORT_PREFIX) &
+            "timeout while waiting for Completer to assert ready" severity cfg.timeout_severity;
         end if;
       end if;
 
       -- Report error if asserted
       if com.slverr = '1' then
-        report cfg.REPORT_PREFIX & "Completer indicates error" severity slverr_severity;
+        report to_string(cfg.REPORT_PREFIX) &
+          "Completer indicates error" severity slverr_severity;
         if exit_on_slverr then exit; end if;
       end if;
 
@@ -434,14 +460,16 @@ package body bfm is
       req.enable <= '0';
       wait until rising_edge(clk) for cfg.timeout;
       if clk /= '1' then
-        report cfg.REPORT_PREFIX & "data(" &  to_string(i+1) & "): " & "timeout while reentering SETUP state" severity cfg.timeout_severity;
+        report to_string(cfg.REPORT_PREFIX) &
+          "data(" &  to_string(i+1) & "): " & "timeout while reentering SETUP state" severity cfg.timeout_severity;
       end if;
 
       -- Reenter ACCESS state
       req.enable <= '1';
       wait until rising_edge(clk) for cfg.timeout;
       if clk /= '1' then
-        report cfg.REPORT_PREFIX & "data(" &  to_string(i+1) & "): " & "timeout while reentering ACCESS state" severity cfg.timeout_severity;
+        report to_string(cfg.REPORT_PREFIX) &
+          "data(" &  to_string(i+1) & "): " & "timeout while reentering ACCESS state" severity cfg.timeout_severity;
       end if;
     end loop;
 

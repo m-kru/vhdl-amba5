@@ -263,10 +263,16 @@ package apb is
   subtype string_t is string(1 to 256);
 
   -- Represents empty string_t.
-  constant NULL_STRING : string_t := (others => character'val(0));
+  constant NULL_STRING : string_t := (others => NUL);
 
-  -- Converts string into string_t.
+  -- Converts string to string_t.
   function make(str : string) return string_t;
+
+  -- Returns length of string_t.
+  function len(str : string_t) return natural;
+
+  -- Converts string_t to string.
+  function to_string(str : string_t) return string;
 
   --
   -- Util functions
@@ -316,7 +322,13 @@ package apb is
   -- Otherwise, the returned string contains an error message.
   function are_addrs_in_masks (addrs : addr_array_t; masks : mask_array_t) return string_t;
 
+  -- Checks whether any pair of address spaces overlap.
   function does_addr_space_overlap (addrs : addr_array_t; masks : mask_array_t) return string_t;
+
+  -- Converts boolean vector to string.
+  -- Required for tests with VHDL 2008.
+  -- VHDL 2019 supports to_string for boolean_vector by default.
+  function to_string(bv : boolean_vector) return string;
 
 end package;
 
@@ -356,7 +368,7 @@ package body apb is
   end function;
 
   function to_debug (errors : interface_errors_t; indent_level : natural := 0) return string is
-    variable indent : string(0 to 2 * indent_level - 1) := (others => ' ');
+    variable indent : string(1 to 2 * indent_level) := (others => ' ');
   begin
     return "(" & LF &
       indent & "  setup_entry  => '" & to_string(errors.setup_entry)  & "'," & LF &
@@ -399,7 +411,7 @@ package body apb is
   end function;
 
   function to_debug (warnings : interface_warnings_t; indent_level : natural := 0) return string is
-    variable indent : string(0 to 2 * indent_level - 1) := (others => ' ');
+    variable indent : string(1 to 2 * indent_level) := (others => ' ');
   begin
     return "(" & LF &
       indent & "  slverr_selx   => '" & to_string(warnings.slverr_selx)   & "', " & LF &
@@ -465,7 +477,7 @@ package body apb is
   end function;
 
   function to_debug (prot : protection_t; indent_level : natural := 0) return string is
-    variable indent : string(0 to 2 * indent_level - 1) := (others => ' ');
+    variable indent : string(1 to 2 * indent_level) := (others => ' ');
   begin
     return "(" & LF &
       indent & "  data_instruction  => '" & to_string(prot.data_instruction)  & "'," & LF &
@@ -532,7 +544,7 @@ package body apb is
   end function;
 
   function to_debug (req_out : requester_out_t; indent_level : natural := 0) return string is
-    constant indent : string(0 to 2 * indent_level - 1) := (others => ' ');
+    constant indent : string(1 to 2 * indent_level) := (others => ' ');
   begin
     return "(" & LF &
       indent & "  addr => """   & to_string(req_out.addr)   & """, " & LF &
@@ -576,7 +588,7 @@ package body apb is
   end function;
 
   function to_debug (req_in : requester_in_t; indent_level : natural := 0) return string is
-    constant indent : string(0 to 2 * indent_level - 1) := (others => ' ');
+    constant indent : string(1 to 2 * indent_level) := (others => ' ');
   begin
     return "(" & LF &
       indent & "  ready  => '"  & to_string(req_in.ready)  & "',"  & LF &
@@ -598,6 +610,28 @@ package body apb is
       if str(i) = character'val(0) then
         return s;
       end if;
+      s(i) := str(i);
+    end loop;
+    return s;
+  end function;
+
+  function len(str : string_t) return natural is
+    variable l : natural := 0;
+  begin
+    for i in str'range loop
+      if str(i) = NUL then
+        return l;
+      end if;
+      l := l + 1;
+    end loop;
+    return l;
+  end function;
+
+  function to_string(str : string_t) return string is
+    constant l : natural := len(str);
+    variable s : string (1 to l);
+  begin
+    for i in 1 to l loop
       s(i) := str(i);
     end loop;
     return s;
@@ -707,5 +741,26 @@ package body apb is
 
     return NULL_STRING;
   end function;
+
+  function to_string(bv : boolean_vector) return string is
+    variable str : string(1 to bv'length * 7 + 2);
+    variable i : positive range 1 to bv'length * 7 + 2 := 2;
+  begin
+    str(1) := '(';
+    for b in bv'range loop
+      if bv(b) then
+        str(i to i+5) := "true, ";
+        i := i + 6;
+      else
+        str(i to i+6) := "false, ";
+        i := i + 7;
+      end if;
+    end loop;
+
+    str(i-2) := ')';
+
+    return str(1 to i-2);
+  end function;
+
 
 end package body;

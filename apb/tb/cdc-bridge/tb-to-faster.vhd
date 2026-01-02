@@ -32,7 +32,7 @@ architecture test of tb is
   signal ck_req : checker_t := init(REPORT_PREFIX => "checker requester: ");
   signal ck_com : checker_t := init(REPORT_PREFIX => "checker completer: ");
 
-  signal mc : mock_completer_t := init(memory_size => 8);
+  signal mc : mock_completer_t(memory(0 to 7)) := init(memory_size => 8);
 
   constant DATA : data_array_t(0 to 7) := (
     x"11111111", x"deadbeef", x"88888888", x"5555aaaa", x"aaaa5555", x"01010101", x"22222222", x"eeeeeeee"

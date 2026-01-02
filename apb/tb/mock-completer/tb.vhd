@@ -18,7 +18,7 @@ architecture test of tb is
   signal ck : checker_t := init;
   signal req : requester_out_t := init;
   signal com : completer_out_t := init;
-  signal mc : mock_completer_t := init(memory_size => 8);
+  signal mc : mock_completer_t(memory(0 to 7)) := init(memory_size => 8);
 
   constant ADDR : unsigned(31 downto 0) := x"00000000";
   constant DATA : data_array_t := (

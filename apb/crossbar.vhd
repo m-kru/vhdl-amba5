@@ -55,7 +55,9 @@ architecture rtl of Crossbar is
   function or_reduce (slv : std_logic_vector) return std_logic is
   begin
     for i in slv'range loop
-      return '1' when slv(i) = '1';
+      if slv(i) = '1' then
+        return '1';
+      end if;
     end loop;
     return '0';
   end function;
@@ -87,7 +89,9 @@ architecture rtl of Crossbar is
   function hot_bit_idx (slv : std_logic_vector) return natural is
   begin
     for i in slv'range loop
-      return i when slv(i) = '1';
+      if slv(i) = '1' then
+        return i;
+      end if;
     end loop;
     report REPORT_PREFIX & "hot bit not found in vector """ & to_string(slv) & """" severity failure;
   end function;

@@ -28,8 +28,8 @@ architecture test of tb_1_req_2_coms is
   signal com0_ck : checker_t := init(REPORT_PREFIX => "apb: checker: com0: ");
   signal com1_ck : checker_t := init(REPORT_PREFIX => "apb: checker: com1: ");
 
-  signal mc0 : mock_completer_t := init(memory_size => 4);
-  signal mc1 : mock_completer_t := init(memory_size => 8);
+  signal mc0 : mock_completer_t(memory(0 to 3)) := init(memory_size => 4);
+  signal mc1 : mock_completer_t(memory(0 to 7)) := init(memory_size => 8);
 
   constant ADDR0 : unsigned(31 downto 0)   := b"00000000000000000000000000000000";
   constant MASK0 : bit_vector(31 downto 0) := b"00000000000000000000000000010000";
@@ -73,12 +73,12 @@ begin
 
     data := mc0.memory(to_integer(ADDR0) / 4);
     assert data = DATA0
-      report "invalid data in completer 0, got " & data'image & ", want " & DATA0'image
+      report "invalid data in completer 0, got " & to_string(data) & ", want " & to_string(DATA0)
       severity failure;
 
     data := mc1.memory(to_integer(ADDR1) / 4);
     assert data = DATA1
-      report "invalid data in completer 0, got " & data'image & ", want " & DATA1'image
+      report "invalid data in completer 0, got " & to_string(data) & ", want " & to_string(DATA1)
       severity failure;
 
     wait for 2 ns;

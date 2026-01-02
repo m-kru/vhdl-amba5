@@ -52,5 +52,8 @@ begin
     assert is_privileged(prot);
 
     std.env.finish;
+    wait; -- Silence questa warning
+
   end process;
+
 end architecture;
