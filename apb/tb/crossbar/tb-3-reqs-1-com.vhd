@@ -181,11 +181,14 @@ end generate;
   begin
     if rising_edge(clk) then
       assert req_ins(0).ready /= '1' or req_ins(1).ready /= '1'
-        report "ready asserted for requester 0 and 1";
+        report "ready asserted for requester 0 and 1"
+        severity failure;
       assert req_ins(0).ready /= '1' or req_ins(2).ready /= '1'
-        report "ready asserted for requester 0 and 2";
+        report "ready asserted for requester 0 and 2"
+        severity failure;
       assert req_ins(1).ready /= '1' or req_ins(2).ready /= '1'
-        report "ready asserted for requester 1 and 2";
+        report "ready asserted for requester 1 and 2"
+        severity failure;
     end if;
   end process;
 
@@ -194,11 +197,14 @@ end generate;
   begin
     if rising_edge(clk) then
       assert req_write_done(0) = true or req_write_done(1) = false
-        report "requester 1 finished write before requester 0";
+        report "requester 1 finished write before requester 0"
+        severity failure;
       assert req_write_done(0) = true or req_write_done(2) = false
-        report "requester 2 finished write before requester 0";
+        report "requester 2 finished write before requester 0"
+        severity failure;
       assert req_write_done(1) = true or req_write_done(2) = false
-        report "requester 2 finished write before requester 1";
+        report "requester 2 finished write before requester 1"
+        severity failure;
     end if;
   end process;
 
@@ -207,11 +213,14 @@ end generate;
   begin
     if rising_edge(clk) then
       assert req_read_done(0) = true or req_read_done(1) = false
-        report "requester 1 finished read before requester 0";
+        report "requester 1 finished read before requester 0"
+        severity failure;
       assert req_read_done(0) = true or req_read_done(2) = false
-        report "requester 2 finished read before requester 0";
+        report "requester 2 finished read before requester 0"
+        severity failure;
       assert req_read_done(1) = true or req_read_done(2) = false
-        report "requester 2 finished read before requester 1";
+        report "requester 2 finished read before requester 1"
+        severity failure;
     end if;
   end process;
 
@@ -220,11 +229,14 @@ end generate;
   begin
     if rising_edge(clk) then
       assert req_writeb_done(0) = true or req_writeb_done(1) = false
-        report "requester 1 finished block write before requester 0";
+        report "requester 1 finished block write before requester 0"
+        severity failure;
       assert req_writeb_done(0) = true or req_writeb_done(2) = false
-        report "requester 2 finished block write before requester 0";
+        report "requester 2 finished block write before requester 0"
+        severity failure;
       assert req_writeb_done(1) = true or req_writeb_done(2) = false
-        report "requester 2 finished block write before requester 1";
+        report "requester 2 finished block write before requester 1"
+        severity failure;
     end if;
   end process;
 
@@ -250,9 +262,11 @@ end generate;
 
     -- Write final asserts
     assert req_write_done = (true, true, true)
-      report "not all requesters finished write transactions, req_write_done = " & to_string(req_write_done);
+      report "not all requesters finished write transactions, req_write_done = " & to_string(req_write_done)
+      severity failure;
     assert mc.write_count = 12
-      report "invalid write count, got: " & to_string(mc.write_count) & ", want: 12";
+      report "invalid write count, got: " & to_string(mc.write_count) & ", want: 12"
+      severity failure;
     -- Check written data
     for r in req_range loop
       for d in WRITE_DATA(r)'range loop
@@ -260,7 +274,8 @@ end generate;
         want := WRITE_DATA(r)(d);
         assert got = want
           report "requester " & to_string(r) & ": invalid write data " & to_string(d) &
-            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want);
+            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want)
+          severity failure;
       end loop;
     end loop;
 
@@ -277,9 +292,11 @@ end generate;
 
     -- Read final asserts
     assert req_read_done = (true, true, true)
-      report "not all requesters finished read transactions, req_read_done = " & to_string(req_read_done);
+      report "not all requesters finished read transactions, req_read_done = " & to_string(req_read_done)
+      severity failure;
     assert mc.read_count = 12
-      report "invalid read count, got: " & to_string(mc.write_count) & ", want: 12";
+      report "invalid read count, got: " & to_string(mc.write_count) & ", want: 12"
+      severity failure;
 
     -- Check read data
     for r in req_range loop
@@ -288,7 +305,8 @@ end generate;
         want := mc.memory(((r+1) mod REQ_COUNT)*4 + d);
         assert got = want
           report "requester " & to_string(r) & ": invalid read data " & to_string(d) &
-            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want);
+            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want)
+          severity failure;
       end loop;
     end loop;
 
@@ -305,9 +323,11 @@ end generate;
 
     -- Write final asserts
     assert req_writeb_done = (true, true, true)
-      report "not all requesters finished block write transactions, req_write_done = " & to_string(req_write_done);
+      report "not all requesters finished block write transactions, req_write_done = " & to_string(req_write_done)
+      severity failure;
     assert mc.write_count = 24
-      report "invalid write count, got: " & to_string(mc.write_count) & ", want: 24";
+      report "invalid write count, got: " & to_string(mc.write_count) & ", want: 24"
+      severity failure;
     -- Check written data
     for r in req_range loop
       for d in WRITEB_DATA(r)'range loop
@@ -315,7 +335,8 @@ end generate;
         want := WRITEB_DATA(r)(d);
         assert got = want
           report "requester " & to_string(r) & ": invalid block write data " & to_string(d) &
-            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want);
+            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want)
+        severity failure;
       end loop;
     end loop;
 
@@ -332,9 +353,11 @@ end generate;
 
     -- Block read final asserts
     assert req_readb_done = (true, true, true)
-      report "not all requesters finished block read transactions, req_readb_done = " & to_string(req_readb_done);
+      report "not all requesters finished block read transactions, req_readb_done = " & to_string(req_readb_done)
+      severity failure;
     assert mc.read_count = 24
-      report "invalid read count, got: " & to_string(mc.write_count) & ", want: 24";
+      report "invalid read count, got: " & to_string(mc.write_count) & ", want: 24"
+      severity failure;
 
     -- Check read data
     for r in req_range loop
@@ -343,7 +366,8 @@ end generate;
         want := mc.memory(((r+1) mod REQ_COUNT)*4 + d);
         assert got = want
           report "requester " & to_string(r) & ": invalid block read data " & to_string(d) &
-            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want);
+            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want)
+          severity failure;
       end loop;
     end loop;
 
@@ -356,10 +380,10 @@ end generate;
   begin
     wait for 4 * STAGE_TIMEOUT + 10 * CLK_PERIOD;
 
-    assert write_checker_done  report "write checker hasn't finished";
-    assert read_checker_done   report "read checker hasn't finished";
-    assert writeb_checker_done report "block write checker hasn't finished";
-    assert readb_checker_done  report "block read checker hasn't finished";
+    assert write_checker_done  report "write checker hasn't finished" severity failure;
+    assert read_checker_done   report "read checker hasn't finished" severity failure;
+    assert writeb_checker_done report "block write checker hasn't finished" severity failure;
+    assert readb_checker_done  report "block read checker hasn't finished" severity failure;
 
     std.env.finish;
   end process;

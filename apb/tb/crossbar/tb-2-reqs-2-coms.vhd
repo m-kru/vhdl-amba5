@@ -197,7 +197,8 @@ end generate;
       assert req_ins(0).ready = req_ins(1).ready
         report
           "different ready signals, req 0: " & to_string(req_ins(0).ready) &
-          ", req 1: " & to_string(req_ins(1).ready);
+          ", req 1: " & to_string(req_ins(1).ready)
+        severity failure;
     end if;
   end process;
 
@@ -207,7 +208,8 @@ end generate;
   begin
     if rising_edge(clk) then
       assert req_write_done(0) = req_write_done(1)
-        report "writes did't finish at the same time";
+        report "writes did't finish at the same time"
+        severity failure;
     end if;
   end process;
 
@@ -217,7 +219,8 @@ end generate;
   begin
     if rising_edge(clk) then
       assert req_read_done(0) = req_read_done(1)
-        report "reads did't finish at the same time";
+        report "reads did't finish at the same time"
+        severity failure;
     end if;
   end process;
 
@@ -227,7 +230,8 @@ end generate;
   begin
     if rising_edge(clk) then
       assert req_writeb_done(0) = req_writeb_done(1)
-        report "block writes did't finish at the same time";
+        report "block writes did't finish at the same time"
+        severity failure;
     end if;
   end process;
 
@@ -237,7 +241,8 @@ end generate;
   begin
     if rising_edge(clk) then
       assert req_readb_done(0) = req_readb_done(1)
-        report "block reads did't finish at the same time";
+        report "block reads did't finish at the same time"
+        severity failure;
     end if;
   end process;
 
@@ -250,11 +255,13 @@ end generate;
 
     -- Write final asserts
     assert req_write_done = (true, true)
-      report "not all requesters finished write transactions, req_write_done = " & to_string(req_write_done);
+      report "not all requesters finished write transactions, req_write_done = " & to_string(req_write_done)
+      severity failure;
     for c in com_range loop
       assert mock_coms(c).write_count = 4
         report "com " & to_string(c) & ": invalid write count, got: " &
-          to_string(mock_coms(c).write_count) & ", want: 4";
+          to_string(mock_coms(c).write_count) & ", want: 4"
+        severity failure;
     end loop;
 
     -- Check written data
@@ -264,7 +271,8 @@ end generate;
         want := WRITE_DATA(r)(d);
         assert got = want
           report "requester " & to_string(r) & ": invalid write data " & to_string(d) &
-            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want);
+            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want)
+          severity failure;
       end loop;
     end loop;
 
@@ -281,11 +289,13 @@ end generate;
 
     -- Read final asserts
     assert req_read_done = (true, true)
-      report "not all requesters finished read transactions, req_read_done = " & to_string(req_read_done);
+      report "not all requesters finished read transactions, req_read_done = " & to_string(req_read_done)
+      severity failure;
     for c in com_range loop
       assert mock_coms(c).read_count = 4
         report "com " & to_string(c) & ": invalid read count, got: " &
-          to_string(mock_coms(c).write_count) & ", want: 4";
+          to_string(mock_coms(c).write_count) & ", want: 4"
+        severity failure;
     end loop;
 
     -- Check read data
@@ -295,7 +305,8 @@ end generate;
         want := mock_coms((r+1) mod COM_COUNT).memory(d);
         assert got = want
           report "requester " & to_string(r) & ": invalid read data " & to_string(d) &
-            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want);
+            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want)
+          severity failure;
       end loop;
     end loop;
 
@@ -312,11 +323,13 @@ end generate;
 
     -- Write final asserts
     assert req_writeb_done = (true, true)
-      report "not all requesters finished block write transactions, req_write_done = " & to_string(req_write_done);
+      report "not all requesters finished block write transactions, req_write_done = " & to_string(req_write_done)
+      severity failure;
     for c in com_range loop
       assert mock_coms(c).write_count = 8
         report "com " & to_string(c) & ": invalid write count, got: " &
-          to_string(mock_coms(c).write_count) & ", want: 8";
+          to_string(mock_coms(c).write_count) & ", want: 8"
+        severity failure;
     end loop;
 
     -- Check written data
@@ -326,7 +339,8 @@ end generate;
         want := WRITEB_DATA(r)(d);
         assert got = want
           report "requester " & to_string(r) & ": invalid block write data " & to_string(d) &
-            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want);
+            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want)
+          severity failure;
       end loop;
     end loop;
 
@@ -343,11 +357,13 @@ end generate;
 
     -- Block read final asserts
     assert req_readb_done = (true, true)
-      report "not all requesters finished block read transactions, req_readb_done = " & to_string(req_readb_done);
+      report "not all requesters finished block read transactions, req_readb_done = " & to_string(req_readb_done)
+      severity failure;
     for c in com_range loop
       assert mock_coms(c).read_count = 8
         report "com " & to_string(c) & ": invalid read count, got: " &
-          to_string(mock_coms(c).write_count) & ", want: 8";
+          to_string(mock_coms(c).write_count) & ", want: 8"
+        severity failure;
     end loop;
 
     -- Check read data
@@ -357,7 +373,8 @@ end generate;
         want := mock_coms(r).memory(d);
         assert got = want
           report "requester " & to_string(r) & ": invalid block read data " & to_string(d) &
-            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want);
+            ": got 0x" & to_hstring(got) & ", want: 0x" & to_hstring(want)
+          severity failure;
       end loop;
     end loop;
 
@@ -370,10 +387,10 @@ end generate;
   begin
     wait for 4 * STAGE_TIMEOUT + 10 * CLK_PERIOD;
 
-    assert write_checker_done  report "write checker hasn't finished";
-    assert read_checker_done   report "read checker hasn't finished";
-    assert writeb_checker_done report "block write checker hasn't finished";
-    assert readb_checker_done  report "block read checker hasn't finished";
+    assert write_checker_done  report "write checker hasn't finished" severity failure;
+    assert read_checker_done   report "read checker hasn't finished" severity failure;
+    assert writeb_checker_done report "block write checker hasn't finished" severity failure;
+    assert readb_checker_done  report "block read checker hasn't finished" severity failure;
 
     std.env.finish;
   end process;
