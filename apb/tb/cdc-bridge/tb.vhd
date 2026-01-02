@@ -96,13 +96,15 @@ begin
     report "carrying out single transfer test";
     bfm.write(x"00000004", x"AAAA5555", clk_req, req_com_req, com_req_req, cfg => bfm_cfg);
     bfm.read(x"00000004", clk_req, req_com_req, com_req_req, cfg => bfm_cfg);
-    assert com_req_req.rdata = x"AAAA5555" report to_string(com_req_req.rdata);
+    assert com_req_req.rdata = x"AAAA5555"
+      report to_string(com_req_req.rdata)
+      severity failure;
 
     report "carrying out block transaction test";
     bfm.writeb(x"00000000", DATA, clk_req, req_com_req, com_req_req, cfg => bfm_cfg);
     bfm.readb(x"00000000", read_data, clk_req, req_com_req, com_req_req, cfg => bfm_cfg);
     for i in DATA'range loop
-      assert read_data(i) = DATA(i);
+      assert read_data(i) = DATA(i) severity failure;
     end loop;
 
     wait for 5 * CLK_SLOW_PERIOD;
