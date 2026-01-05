@@ -325,11 +325,6 @@ package apb is
   -- Checks whether any pair of address spaces overlap.
   function does_addr_space_overlap (addrs : addr_array_t; masks : mask_array_t) return string_t;
 
-  -- Converts boolean vector to string.
-  -- Required for tests with VHDL 2008.
-  -- VHDL 2019 supports to_string for boolean_vector by default.
-  function to_string(bv : boolean_vector) return string;
-
 end package;
 
 package body apb is
@@ -741,26 +736,5 @@ package body apb is
 
     return NULL_STRING;
   end function;
-
-  function to_string(bv : boolean_vector) return string is
-    variable str : string(1 to bv'length * 7 + 2);
-    variable i : positive range 1 to bv'length * 7 + 2 := 2;
-  begin
-    str(1) := '(';
-    for b in bv'range loop
-      if bv(b) then
-        str(i to i+5) := "true, ";
-        i := i + 6;
-      else
-        str(i to i+6) := "false, ";
-        i := i + 7;
-      end if;
-    end loop;
-
-    str(i-2) := ')';
-
-    return str(1 to i-2);
-  end function;
-
 
 end package body;

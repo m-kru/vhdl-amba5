@@ -51,7 +51,7 @@ architecture test of tb_3_reqs_1_com is
   signal req_write_done,
          req_read_done,
          req_writeb_done,
-         req_readb_done : boolean_vector(req_range) := (others => false);
+         req_readb_done : bit_vector(req_range) := (others => '0');
 
   signal mc : mock_completer_t(memory(0 to 11)) := init(memory_size => 12);
 
@@ -123,9 +123,9 @@ requesters : for r in req_range generate
       bfm.write(ADDRS(r) + to_unsigned(i * 4, 32), WRITE_DATA(r)(i), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
       wait for 2 * CLK_PERIOD;
     end loop;
-    req_write_done(r) <= true;
+    req_write_done(r) <= '1';
 
-    wait until req_write_done = (true, true, true);
+    wait until req_write_done = "111";
 
     -- Read test
     -- Each requester reads data written by the next requester.
@@ -134,19 +134,19 @@ requesters : for r in req_range generate
       READ_DATA(r)(i) <= req_ins(r).rdata;
       wait for 2 * CLK_PERIOD;
     end loop;
-    req_read_done(r) <= true;
+    req_read_done(r) <= '1';
 
     wait until read_checker_done;
 
     -- Block write test
     bfm.writeb(ADDRS(r), WRITEB_DATA(r), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
-    req_writeb_done(r) <= true;
+    req_writeb_done(r) <= '1';
 
     wait until writeb_checker_done;
 
     -- Block read test
     bfm.readb(ADDRS((r+1) mod REQ_COUNT), READB_DATA(r), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
-    req_readb_done(r) <= true;
+    req_readb_done(r) <= '1';
 
     wait;
   end process;
@@ -196,13 +196,13 @@ end generate;
   write_order_checker : process (clk) is
   begin
     if rising_edge(clk) then
-      assert req_write_done(0) = true or req_write_done(1) = false
+      assert req_write_done(0) = '1' or req_write_done(1) = '0'
         report "requester 1 finished write before requester 0"
         severity failure;
-      assert req_write_done(0) = true or req_write_done(2) = false
+      assert req_write_done(0) = '1' or req_write_done(2) = '0'
         report "requester 2 finished write before requester 0"
         severity failure;
-      assert req_write_done(1) = true or req_write_done(2) = false
+      assert req_write_done(1) = '1' or req_write_done(2) = '0'
         report "requester 2 finished write before requester 1"
         severity failure;
     end if;
@@ -212,13 +212,13 @@ end generate;
   read_order_checker : process (clk) is
   begin
     if rising_edge(clk) then
-      assert req_read_done(0) = true or req_read_done(1) = false
+      assert req_read_done(0) = '1' or req_read_done(1) = '0'
         report "requester 1 finished read before requester 0"
         severity failure;
-      assert req_read_done(0) = true or req_read_done(2) = false
+      assert req_read_done(0) = '1' or req_read_done(2) = '0'
         report "requester 2 finished read before requester 0"
         severity failure;
-      assert req_read_done(1) = true or req_read_done(2) = false
+      assert req_read_done(1) = '1' or req_read_done(2) = '0'
         report "requester 2 finished read before requester 1"
         severity failure;
     end if;
@@ -228,13 +228,13 @@ end generate;
   block_write_order_checker : process (clk) is
   begin
     if rising_edge(clk) then
-      assert req_writeb_done(0) = true or req_writeb_done(1) = false
+      assert req_writeb_done(0) = '1' or req_writeb_done(1) = '0'
         report "requester 1 finished block write before requester 0"
         severity failure;
-      assert req_writeb_done(0) = true or req_writeb_done(2) = false
+      assert req_writeb_done(0) = '1' or req_writeb_done(2) = '0'
         report "requester 2 finished block write before requester 0"
         severity failure;
-      assert req_writeb_done(1) = true or req_writeb_done(2) = false
+      assert req_writeb_done(1) = '1' or req_writeb_done(2) = '0'
         report "requester 2 finished block write before requester 1"
         severity failure;
     end if;
@@ -244,11 +244,11 @@ end generate;
   block_read_order_checker : process (clk) is
   begin
     if rising_edge(clk) then
-      assert req_readb_done(0) = true or req_readb_done(1) = false
+      assert req_readb_done(0) = '1' or req_readb_done(1) = '0'
         report "requester 1 finished block read before requester 0";
-      assert req_readb_done(0) = true or req_readb_done(2) = false
+      assert req_readb_done(0) = '1' or req_readb_done(2) = '0'
         report "requester 2 finished block read before requester 0";
-      assert req_readb_done(1) = true or req_readb_done(2) = false
+      assert req_readb_done(1) = '1' or req_readb_done(2) = '0'
         report "requester 2 finished block read before requester 1";
     end if;
   end process;
@@ -261,7 +261,7 @@ end generate;
     wait for STAGE_TIMEOUT;
 
     -- Write final asserts
-    assert req_write_done = (true, true, true)
+    assert req_write_done = "111"
       report "not all requesters finished write transactions, req_write_done = " & to_string(req_write_done)
       severity failure;
     assert mc.write_count = 12
@@ -291,7 +291,7 @@ end generate;
     wait for 2 * STAGE_TIMEOUT;
 
     -- Read final asserts
-    assert req_read_done = (true, true, true)
+    assert req_read_done = "111"
       report "not all requesters finished read transactions, req_read_done = " & to_string(req_read_done)
       severity failure;
     assert mc.read_count = 12
@@ -322,8 +322,8 @@ end generate;
     wait for 3 * STAGE_TIMEOUT;
 
     -- Write final asserts
-    assert req_writeb_done = (true, true, true)
-      report "not all requesters finished block write transactions, req_write_done = " & to_string(req_write_done)
+    assert req_writeb_done = "111"
+      report "not all requesters finished block write transactions, req_writeb_done = " & to_string(req_writeb_done)
       severity failure;
     assert mc.write_count = 24
       report "invalid write count, got: " & to_string(mc.write_count) & ", want: 24"
@@ -352,7 +352,7 @@ end generate;
     wait for 4 * STAGE_TIMEOUT;
 
     -- Block read final asserts
-    assert req_readb_done = (true, true, true)
+    assert req_readb_done = "111"
       report "not all requesters finished block read transactions, req_readb_done = " & to_string(req_readb_done)
       severity failure;
     assert mc.read_count = 24

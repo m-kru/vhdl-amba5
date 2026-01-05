@@ -57,7 +57,7 @@ architecture test of tb_2_reqs_2_coms is
   signal req_write_done,
          req_read_done,
          req_writeb_done,
-         req_readb_done : boolean_vector(req_range) := (others => false);
+         req_readb_done : bit_vector(req_range) := (others => '0');
 
   signal mock_coms : mock_completer_array_t(com_range)(memory(0 to 3)) := (
     0 => init(memory_size => 4, REPORT_PREFIX => "mock completer 0: "),
@@ -130,9 +130,9 @@ requesters : for r in req_range generate
       );
       wait for 2 * CLK_PERIOD;
     end loop;
-    req_write_done(r) <= true;
+    req_write_done(r) <= '1';
 
-    wait until req_write_done = (true, true);
+    wait until req_write_done = "11";
 
     -- Read test, requester i accesses completer i + 1.
     for i in READ_DATA(r)'range loop
@@ -142,7 +142,7 @@ requesters : for r in req_range generate
       READ_DATA(r)(i) <= req_ins(r).rdata;
       wait for 2 * CLK_PERIOD;
     end loop;
-    req_read_done(r) <= true;
+    req_read_done(r) <= '1';
 
     wait until read_checker_done;
 
@@ -150,13 +150,13 @@ requesters : for r in req_range generate
     bfm.writeb(
       COM_ADDRS((r+1) mod REQ_COUNT), WRITEB_DATA(r), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r)
     );
-    req_writeb_done(r) <= true;
+    req_writeb_done(r) <= '1';
 
     wait until writeb_checker_done;
 
     -- Block read test, requester i accesses completer i.
     bfm.readb(COM_ADDRS(r), READB_DATA(r), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
-    req_readb_done(r) <= true;
+    req_readb_done(r) <= '1';
 
     wait;
   end process;
@@ -254,7 +254,7 @@ end generate;
     wait for STAGE_TIMEOUT;
 
     -- Write final asserts
-    assert req_write_done = (true, true)
+    assert req_write_done = "11"
       report "not all requesters finished write transactions, req_write_done = " & to_string(req_write_done)
       severity failure;
     for c in com_range loop
@@ -288,7 +288,7 @@ end generate;
     wait for 2 * STAGE_TIMEOUT;
 
     -- Read final asserts
-    assert req_read_done = (true, true)
+    assert req_read_done = "11"
       report "not all requesters finished read transactions, req_read_done = " & to_string(req_read_done)
       severity failure;
     for c in com_range loop
@@ -322,8 +322,8 @@ end generate;
     wait for 3 * STAGE_TIMEOUT;
 
     -- Write final asserts
-    assert req_writeb_done = (true, true)
-      report "not all requesters finished block write transactions, req_write_done = " & to_string(req_write_done)
+    assert req_writeb_done = "11"
+      report "not all requesters finished block write transactions, req_writeb_done = " & to_string(req_writeb_done)
       severity failure;
     for c in com_range loop
       assert mock_coms(c).write_count = 8
@@ -356,7 +356,7 @@ end generate;
     wait for 4 * STAGE_TIMEOUT;
 
     -- Block read final asserts
-    assert req_readb_done = (true, true)
+    assert req_readb_done = "11"
       report "not all requesters finished block read transactions, req_readb_done = " & to_string(req_readb_done)
       severity failure;
     for c in com_range loop
