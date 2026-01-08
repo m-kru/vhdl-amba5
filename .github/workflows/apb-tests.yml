@@ -1,0 +1,33 @@
+name: APB tests
+
+on: [push, pull_request]
+
+jobs:
+  test-apb-ghdl:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Setup GHDL with LLVM backend
+        uses: ghdl/setup-ghdl@v1
+        with:
+          backend: llvm
+      - name: Install Tcl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tcl
+      - name: Get HBS
+        run: |
+          wget https://raw.github.com/m-kru/hbs/master/hbs
+          wget https://raw.github.com/m-kru/hbs/master/hbs.tcl
+          chmod +x hbs hbs.tcl
+      - name: Run tests
+        run: |
+          export HBS_TOOL=ghdl
+          export HBS_BUILD_DIR=build-apb-ghdl
+          ./hbs test apb
