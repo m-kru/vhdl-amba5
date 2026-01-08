@@ -7,5 +7,5 @@ Currently only APB is implemented.
 All VHDL files are compatible with the standard revision 2008.
 All the code simulates correctly with ghdl, nvc, questa and xsim simulators.
 
-The internal build system is (HBS)[https://github.com/m-kru/hbs].
+The internal build system is [HBS](https://github.com/m-kru/hbs).
 However, you can use any build system, simply copy required source files.
