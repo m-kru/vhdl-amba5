@@ -14,13 +14,19 @@ library work;
 -- At any point only one requester can be connected with one completer.
 -- Shared bus does not provide the best performance but has simple structure and is sufficient for most use cases.
 -- In the case of multiple requesters asserting selx in the the same clock cycle, requester with lower index has higher priority.
+--
+-- The SYNC_ADDR_DECODING generic determines whether the address decoder should be synchronized
+-- to the clock edge. If not synchronized, the whole transaction is shorter by one clock
+-- cycle (lower latency). However, in case of multiple requesters and completers, there might
+-- be timing closure problems.
 entity Shared_Bus is
   generic (
     REPORT_PREFIX   : string := "apb: shared bus: ";
     REQUESTER_COUNT : positive := 1;
     COMPLETER_COUNT : positive := 1;
     ADDRS : addr_array_t(0 to COMPLETER_COUNT - 1); -- Completer addresses
-    MASKS : mask_array_t(0 to COMPLETER_COUNT - 1)  -- Completer address masks
+    MASKS : mask_array_t(0 to COMPLETER_COUNT - 1); -- Completer address masks
+    SYNC_ADDR_DECODING : boolean := true
   );
   port (
     arstn_i : in std_logic := '1';
@@ -48,6 +54,19 @@ architecture rtl of Shared_Bus is
 
   signal state : state_t := IDLE;
 
+  subtype requester_range is natural range 0 to REQUESTER_COUNT - 1;
+  subtype completer_range is natural range 0 to COMPLETER_COUNT - 1;
+
+  type matrix_t is array (requester_range) of std_logic_vector(completer_range);
+
+  -- Contains information which Requesters currently address a given Completer.
+  -- For example, if addr_matrix(1)(2) = '1', then it means that Requester with index 1
+  -- addresses Completer with index 2.
+  signal addr_matrix_comb, addr_matrix : matrix_t;
+
+  -- Contains information which Requester wants to access a given Completer.
+  signal selx_matrix_comb, selx_matrix : matrix_t;
+
   signal req_idx : natural range 0 to REQUESTER_COUNT - 1; -- Current requester index
   signal com_idx : natural range 0 to COMPLETER_COUNT - 1; -- Current completer index
 
@@ -61,6 +80,47 @@ begin
   assert unaligned_addr_fail     = NULL_STRING report REPORT_PREFIX & unaligned_addr_fail     severity failure;
   assert addr_not_in_mask_fail   = NULL_STRING report REPORT_PREFIX & addr_not_in_mask_fail   severity failure;
   assert addr_space_overlap_fail = NULL_STRING report REPORT_PREFIX & addr_space_overlap_fail severity failure;
+
+
+  addr_matrix_driver : process (all) is
+  begin
+    for r in requester_range loop
+      for c in completer_range loop
+        addr_matrix_comb(r)(c) <= '0';
+        if (coms_i(r).addr and unsigned(to_std_logic_vector(MASKS(c)))) = ADDRS(c) then
+          addr_matrix_comb(r)(c) <= '1';
+        end if;
+      end loop;
+    end loop;
+  end process;
+
+
+  selx_matrix_driver : process (all) is
+  begin
+    for r in requester_range loop
+      for c in completer_range loop
+        selx_matrix_comb(r)(c) <= '0';
+        if addr_matrix_comb(r)(c) = '1' and coms_i(r).selx = '1' then
+          selx_matrix_comb(r)(c) <= '1';
+        end if;
+      end loop;
+    end loop;
+  end process;
+
+
+addr_decoding_register : if SYNC_ADDR_DECODING = true generate
+  process (clk_i) is
+  begin
+    if rising_edge(clk_i) then
+      addr_matrix <= addr_matrix_comb;
+      selx_matrix <= selx_matrix_comb;
+    end if;
+  end process;
+else generate
+  addr_matrix <= addr_matrix_comb;
+  selx_matrix <= selx_matrix_comb;
+end generate;
+
 
   router : process (arstn_i, clk_i) is
     variable transfer_cnt : natural;
@@ -84,10 +144,10 @@ begin
       when IDLE =>
         transfer_cnt := 0;
 
-        requester_loop : for r in 0 to REQUESTER_COUNT-1 loop
+        requester_loop : for r in requester_range loop
           if coms_i(r).selx = '1' then
-            for c in 0 to COMPLETER_COUNT-1 loop
-              if (coms_i(r).addr and unsigned(to_std_logic_vector(MASKS(c)))) = ADDRS(c) then
+            for c in completer_range loop
+              if selx_matrix(r)(c) = '1' then
                 req_idx <= r;
                 com_idx <= c;
                 state <= COMPLETER_SETUP;

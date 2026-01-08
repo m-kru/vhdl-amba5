@@ -9,6 +9,7 @@ library lapb;
   use lapb.mock_completer.all;
 
 entity tb_1_req_2_coms is
+  generic (SYNC_ADDR_DECODING : boolean := true);
 end entity;
 
 architecture test of tb_1_req_2_coms is
@@ -99,7 +100,8 @@ begin
   generic map (
     COMPLETER_COUNT => 2,
     ADDRS => (ADDR0, ADDR1),
-    MASKS => (MASK0, MASK1)
+    MASKS => (MASK0, MASK1),
+    SYNC_ADDR_DECODING => SYNC_ADDR_DECODING
   ) port map (
     arstn_i => arstn,
     clk_i   => clk,

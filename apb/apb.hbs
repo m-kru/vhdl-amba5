@@ -196,15 +196,29 @@ namespace eval vhdl::amba5::apb {
       hbs::SetLib ""
     }
 
-    proc tb-2-reqs-1-com {} {
+    proc tb-2-reqs-1-com-sync-addr-decoding {} {
       _tb "tb_2_reqs_1_com"
       hbs::AddFile tb/shared-bus/tb-2-reqs-1-com.vhd
       hbs::Run
     }
 
-    proc tb-1-req-2-coms {} {
+    proc tb-2-reqs-1-com-async-addr-decoding {} {
+      _tb "tb_2_reqs_1_com"
+      hbs::AddFile tb/shared-bus/tb-2-reqs-1-com.vhd
+      hbs::SetGeneric SYNC_ADDR_DECODING "false"
+      hbs::Run
+    }
+
+    proc tb-1-req-2-coms-sync-addr-decoding {} {
       _tb "tb_1_req_2_coms"
       hbs::AddFile tb/shared-bus/tb-1-req-2-coms.vhd
+      hbs::Run
+    }
+
+    proc tb-1-req-2-coms-async-addr-decoding {} {
+      _tb "tb_1_req_2_coms"
+      hbs::AddFile tb/shared-bus/tb-1-req-2-coms.vhd
+      hbs::SetGeneric SYNC_ADDR_DECODING "false"
       hbs::Run
     }
 
