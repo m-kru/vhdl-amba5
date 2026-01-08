@@ -59,6 +59,16 @@ architecture rtl of Shared_Bus is
 
   type matrix_t is array (requester_range) of std_logic_vector(completer_range);
 
+  -- Returns n-th column from the matrix.
+  function column (matrix : matrix_t; n : natural) return std_logic_vector is
+    variable col : std_logic_vector(requester_range);
+  begin
+    for r in requester_range loop
+      col(r) := matrix(r)(n);
+    end loop;
+    return col;
+  end function;
+
   -- Contains information which Requesters currently address a given Completer.
   -- For example, if addr_matrix(1)(2) = '1', then it means that Requester with index 1
   -- addresses Completer with index 2.
@@ -203,6 +213,12 @@ end generate;
       when others => report "unimplemented state " & state_t'image(state) severity failure;
 
       end case;
+
+      -- Wakeup is a logical or of all requesters addressing a given completer.
+      for c in completer_range loop
+        reqs_o(c).wakeup <= or_reduce(column(addr_matrix, c));
+      end loop;
+
     end if;
   end process;
 

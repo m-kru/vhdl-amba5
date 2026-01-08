@@ -52,16 +52,6 @@ architecture rtl of Crossbar is
   subtype requester_range is natural range 0 to REQUESTER_COUNT - 1;
   subtype completer_range is natural range 0 to COMPLETER_COUNT - 1;
 
-  function or_reduce (slv : std_logic_vector) return std_logic is
-  begin
-    for i in slv'range loop
-      if slv(i) = '1' then
-        return '1';
-      end if;
-    end loop;
-    return '0';
-  end function;
-
   type matrix_t is array (requester_range) of std_logic_vector(completer_range);
 
   -- Returns n-th column from the matrix.

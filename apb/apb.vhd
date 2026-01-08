@@ -325,6 +325,9 @@ package apb is
   -- Checks whether any pair of address spaces overlap.
   function does_addr_space_overlap (addrs : addr_array_t; masks : mask_array_t) return string_t;
 
+  -- Or reduce operation required by Crossbar and Shared Bus.
+  function or_reduce (slv : std_logic_vector) return std_logic;
+
 end package;
 
 package body apb is
@@ -735,6 +738,16 @@ package body apb is
     end loop;
 
     return NULL_STRING;
+  end function;
+
+  function or_reduce (slv : std_logic_vector) return std_logic is
+  begin
+    for i in slv'range loop
+      if slv(i) = '1' then
+        return '1';
+      end if;
+    end loop;
+    return '0';
   end function;
 
 end package body;
