@@ -110,11 +110,11 @@ architecture rtl of Crossbar is
 begin
 
   -- Static sanity checks
-  assert zero_mask_fail          = NULL_STRING report REPORT_PREFIX & zero_mask_fail          severity failure;
-  assert addr_has_meta_fail      = NULL_STRING report REPORT_PREFIX & addr_has_meta_fail      severity failure;
-  assert unaligned_addr_fail     = NULL_STRING report REPORT_PREFIX & unaligned_addr_fail     severity failure;
-  assert addr_not_in_mask_fail   = NULL_STRING report REPORT_PREFIX & addr_not_in_mask_fail   severity failure;
-  assert addr_space_overlap_fail = NULL_STRING report REPORT_PREFIX & addr_space_overlap_fail severity failure;
+  assert zero_mask_fail          = NULL_STRING report REPORT_PREFIX & to_string(zero_mask_fail)          severity failure;
+  assert addr_has_meta_fail      = NULL_STRING report REPORT_PREFIX & to_string(addr_has_meta_fail)      severity failure;
+  assert unaligned_addr_fail     = NULL_STRING report REPORT_PREFIX & to_string(unaligned_addr_fail)     severity failure;
+  assert addr_not_in_mask_fail   = NULL_STRING report REPORT_PREFIX & to_string(addr_not_in_mask_fail)   severity failure;
+  assert addr_space_overlap_fail = NULL_STRING report REPORT_PREFIX & to_string(addr_space_overlap_fail) severity failure;
 
 
   simulation_sanity_checker : process (clk_i) is
