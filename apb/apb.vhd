@@ -278,6 +278,9 @@ package apb is
   -- Util functions
   --
 
+  -- Converts natural to APB address type (32-bit unsigned).
+  function to_addr (n : natural) return unsigned;
+
   -- Checks wheter mask array has at least one mask with all bits set to '0'.
   --
   -- The returned string is empty if masks has no zero masks.
@@ -638,6 +641,11 @@ package body apb is
   --
   -- util functions
   --
+
+  function to_addr (n : natural) return unsigned is
+  begin
+    return to_unsigned(n, 32);
+  end function;
 
   function masks_has_zero (masks : mask_array_t) return string_t is
     constant zero : bit_vector(31 downto 0) := (others => '0');

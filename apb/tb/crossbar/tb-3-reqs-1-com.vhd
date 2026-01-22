@@ -56,9 +56,9 @@ architecture test of tb_3_reqs_1_com is
   signal mc : mock_completer_t(memory(0 to 11)) := init(memory_size => 12);
 
   constant ADDRS : addr_array_t(req_range) := (
-    to_unsigned(0*4, 32),
-    to_unsigned(4*4, 32),
-    to_unsigned(8*4, 32)
+    to_addr(0*4),
+    to_addr(4*4),
+    to_addr(8*4)
   );
 
   constant WRITE_DATA : data_vector_2d_t(req_range)(0 to 3) := (
@@ -120,7 +120,7 @@ requesters : for r in req_range generate
 
     -- Write test
     for i in WRITE_DATA(r)'range loop
-      bfm.write(ADDRS(r) + to_unsigned(i * 4, 32), WRITE_DATA(r)(i), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
+      bfm.write(ADDRS(r) + to_addr(i * 4), WRITE_DATA(r)(i), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
       wait for 2 * CLK_PERIOD;
     end loop;
     req_write_done(r) <= '1';
@@ -130,7 +130,7 @@ requesters : for r in req_range generate
     -- Read test
     -- Each requester reads data written by the next requester.
     for i in READ_DATA(r)'range loop
-      bfm.read(ADDRS((r+1) mod REQ_COUNT) + to_unsigned(i * 4, 32), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
+      bfm.read(ADDRS((r+1) mod REQ_COUNT) + to_addr(i * 4), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
       READ_DATA(r)(i) <= req_ins(r).rdata;
       wait for 2 * CLK_PERIOD;
     end loop;

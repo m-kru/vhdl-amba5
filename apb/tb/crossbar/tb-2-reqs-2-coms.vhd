@@ -64,7 +64,7 @@ architecture test of tb_2_reqs_2_coms is
     1 => init(memory_size => 4, REPORT_PREFIX => "mock completer 1: ", ADDR => 16)
   );
 
-  constant COM_ADDRS : addr_array_t := (to_unsigned(0, 32), to_unsigned(16, 32));
+  constant COM_ADDRS : addr_array_t := (to_addr(0), to_addr(16));
 
   constant WRITE_DATA : data_vector_2d_t(req_range)(0 to 3) := (
     0 => (x"11111111", x"22222222", x"33333333", x"44444444"),
@@ -126,7 +126,7 @@ requesters : for r in req_range generate
     -- Write test, requester i accesses completer i.
     for i in WRITE_DATA(r)'range loop
       bfm.write(
-        COM_ADDRS(r) + to_unsigned(i * 4, 32), WRITE_DATA(r)(i), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r)
+        COM_ADDRS(r) + to_addr(i * 4), WRITE_DATA(r)(i), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r)
       );
       wait for 2 * CLK_PERIOD;
     end loop;
@@ -137,7 +137,7 @@ requesters : for r in req_range generate
     -- Read test, requester i accesses completer i + 1.
     for i in READ_DATA(r)'range loop
       bfm.read(
-        COM_ADDRS((r+1) mod COM_COUNT) + to_unsigned(i * 4, 32), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r)
+        COM_ADDRS((r+1) mod COM_COUNT) + to_addr(i * 4), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r)
       );
       READ_DATA(r)(i) <= req_ins(r).rdata;
       wait for 2 * CLK_PERIOD;
