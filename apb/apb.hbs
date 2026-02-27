@@ -309,6 +309,10 @@ namespace eval vhdl::amba5::apb {
         error "$hbs::ThisTargetPath: invalid arg count $argCount, expected at most 1"
       }
 
+      if {[hbs::ToolType] eq "simulation"} {
+        return
+      }
+
       if {$hbs::Tool eq "vivado-prj"} {
         hbs::AddFile vivado/apb-cdc-bridge-ref.xdc
         set_property SCOPED_TO_REF APB_CDC_Bridge [get_files apb-cdc-bridge-ref.xdc]
