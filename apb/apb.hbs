@@ -291,10 +291,32 @@ namespace eval vhdl::amba5::apb {
   # A clock domain corssing bridge.
   # The bridge is capable of connecting arbitrary clock domains.
   namespace eval cdc-bridge {
-    proc src {} {
+    # Use -no-constr flag to omit adding the default constraints.
+    proc src {args} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "lapb"
       hbs::AddFile cdc-bridge.vhd
+
+      set argCount [llength $args]
+      if {$argCount == 1} {
+        set arg [lindex $args 0]
+        if {$arg eq "-no-constr"} {
+          return
+        } else {
+          error "$hbs::ThisTargetPath: invalid arg '$arg', valid args are: '-no-constr'"
+        }
+      } elseif {$argCount > 1} {
+        error "$hbs::ThisTargetPath: invalid arg count $argCount, expected at most 1"
+      }
+
+      if {$hbs::Tool eq "vivado-prj"} {
+        hbs::AddFile vivado/apb-cdc-bridge-ref.xdc
+        set_property SCOPED_TO_REF APB_CDC_Bridge [get_files apb-cdc-bridge-ref.xdc]
+        hbs::AddFile vivado/apb-cdc-bridge-cell.tcl
+        set_property USED_IN_SYNTHESIS false [get_files apb-cdc-bridge-cell.tcl]
+      } else {
+        error "$hbs::ThisCore misses constraints for $hbs::Tool"
+      }
     }
 
     proc _tb {} {
