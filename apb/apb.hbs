@@ -3,8 +3,9 @@
 # Copyright (c) 2024 Michał Kruszewski
 
 namespace eval vhdl::amba5::apb {
-  # APB package with all primary types and functions.
   namespace eval pkg {
+    set doc "APB package with all primary types and functions."
+
     proc src {} {
       hbs::SetLib "lapb"
       hbs::AddFile apb.vhd
@@ -13,7 +14,7 @@ namespace eval vhdl::amba5::apb {
     proc _tb {top} {
       hbs::SetTool "nvc"
       if {$hbs::Tool eq "nvc"} {
-        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
       }
       hbs::SetTop $top
       src
@@ -34,12 +35,13 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
-    hbs::Register
+    hbs::Register $doc
   }
 
-  # Interface checker core.
-  # It detects erroneous and unrecommended scenarios on the interface.
   namespace eval checker {
+    set doc "Interface checker core.
+It detects erroneous and unrecommended scenarios on the interface."
+
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "lapb"
@@ -49,7 +51,7 @@ namespace eval vhdl::amba5::apb {
     proc _tb {top} {
       hbs::SetTool "nvc"
       if {$hbs::Tool eq "nvc"} {
-        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
       }
       hbs::SetTop $top
       src
@@ -79,11 +81,13 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
-    hbs::Register
+    hbs::Register $doc
   }
 
-  # Bus Function Model. It is useful only for simulation.
   namespace eval bfm {
+    set doc "Bus Functional Model.
+It is useful only for simulations."
+
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "lapb"
@@ -94,7 +98,7 @@ namespace eval vhdl::amba5::apb {
       hbs::SetTool "nvc"
       hbs::AddDep vhdl::amba5::apb::checker::src
       if {$hbs::Tool eq "nvc"} {
-        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
       }
       hbs::SetExitSeverity "warning"
       hbs::SetTop $top
@@ -126,11 +130,12 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
-    hbs::Register
+    hbs::Register $doc
   }
 
-  # A classic NxM crossbar.
   namespace eval crossbar {
+    set doc "A classic NxM crossbar."
+
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "lapb"
@@ -143,8 +148,8 @@ namespace eval vhdl::amba5::apb {
       hbs::AddDep vhdl::amba5::apb::bfm::src
       hbs::AddDep vhdl::amba5::apb::mock-completer::src
       if {$hbs::Tool eq "nvc"} {
-        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
-        hbs::AddPreSimCb hbs::SetArgsSuffix "--dump-arrays"
+        hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgSuffix "--dump-arrays"
       }
       hbs::SetTop $top
       hbs::AddDep $hbs::ThisCorePath\::src
@@ -172,10 +177,13 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
-    hbs::Register
+    hbs::Register $doc
   }
 
   namespace eval shared-bus {
+    set doc "A shared bus interconnect.
+At any time at most only one requester can be connected to one completer."
+
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "lapb"
@@ -188,8 +196,8 @@ namespace eval vhdl::amba5::apb {
       hbs::AddDep vhdl::amba5::apb::bfm::src
       hbs::AddDep vhdl::amba5::apb::mock-completer::src
       if {$hbs::Tool eq "nvc"} {
-        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
-        hbs::AddPreSimCb hbs::SetArgsSuffix "--dump-arrays"
+        hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgSuffix "--dump-arrays"
       }
       hbs::SetTop $top
       hbs::AddDep $hbs::ThisCorePath\::src
@@ -222,11 +230,13 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
-    hbs::Register
+    hbs::Register $doc
   }
 
-  # Simple memory Completer that is always ready.
   namespace eval mock-completer {
+    set doc "Simple memory Completer that is always ready.
+Used internally for testbenches."
+
     proc src {} {
       hbs::SetLib "lapb"
       hbs::AddDep vhdl::amba5::apb::pkg::src
@@ -242,18 +252,19 @@ namespace eval vhdl::amba5::apb {
       hbs::SetLib ""
       hbs::AddFile tb/mock-completer/tb.vhd
       if {$hbs::Tool eq "nvc"} {
-        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
-        hbs::AddPreSimCb hbs::SetArgsSuffix "--dump-arrays"
+        hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgSuffix "--dump-arrays"
       }
       hbs::SetExitSeverity "warning"
       hbs::Run
     }
 
-    hbs::Register
+    hbs::Register $doc
   }
 
-  # Bridge capable of converting stream of bytes into APB transactions.
   namespace eval serial-bridge {
+    set doc "Bridge capable of converting stream of bytes into APB transactions."
+
     proc src {} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "lapb"
@@ -265,8 +276,8 @@ namespace eval vhdl::amba5::apb {
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::AddDep vhdl::amba5::apb::mock-completer::src
       if {$hbs::Tool eq "nvc"} {
-        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
-        hbs::AddPreSimCb hbs::SetArgsSuffix "--dump-arrays"
+        hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgSuffix "--dump-arrays"
       }
       hbs::SetTop $top
       hbs::AddDep $hbs::ThisCorePath\::src
@@ -285,12 +296,13 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
-    hbs::Register
+    hbs::Register $doc
   }
 
-  # A clock domain corssing bridge.
-  # The bridge is capable of connecting arbitrary clock domains.
   namespace eval cdc-bridge {
+    set doc "A clock domain corssing bridge.
+The bridge is capable of connecting arbitrary clock domains."
+
     # Use -no-constr flag to omit adding the default constraints.
     proc src {args} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
@@ -325,8 +337,8 @@ namespace eval vhdl::amba5::apb {
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::AddDep vhdl::amba5::apb::mock-completer::src
       if {$hbs::Tool eq "nvc"} {
-        hbs::AddPreSimCb hbs::SetArgsPrefix "--messages=compact"
-        hbs::AddPreSimCb hbs::SetArgsSuffix "--dump-arrays"
+        hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgSuffix "--dump-arrays"
       }
       hbs::SetTop "tb"
       hbs::AddDep $hbs::ThisCorePath\::src -no-constr
@@ -362,6 +374,6 @@ namespace eval vhdl::amba5::apb {
       hbs::Run
     }
 
-    hbs::Register
+    hbs::Register $doc
   }
 }
