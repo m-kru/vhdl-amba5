@@ -23,8 +23,7 @@ jobs:
       - name: Get HBS
         run: |
           wget https://raw.github.com/m-kru/hbs/master/hbs
-          wget https://raw.github.com/m-kru/hbs/master/hbs.tcl
-          chmod +x hbs hbs.tcl
+          chmod +x hbs
       - name: Run tests
         run: |
           export HBS_TOOL=ghdl
