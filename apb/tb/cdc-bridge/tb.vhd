@@ -1,11 +1,11 @@
 library ieee;
   use ieee.std_logic_1164.all;
 
-library lapb;
-  use lapb.apb.all;
-  use lapb.bfm;
-  use lapb.checker.all;
-  use lapb.mock_completer.all;
+library amba5_apb;
+  use amba5_apb.apb.all;
+  use amba5_apb.bfm;
+  use amba5_apb.checker.all;
+  use amba5_apb.mock_completer.all;
 
 
 entity tb is
@@ -46,7 +46,7 @@ begin
   clk_com <= not clk_com after CLK_FAST_PERIOD / 2;
 
 
-  DUT : entity lapb.APB_CDC_Bridge
+  DUT : entity amba5_apb.APB_CDC_Bridge
   port map (
     com_arstn_i => arstn,
     com_clk_i   => clk_req,

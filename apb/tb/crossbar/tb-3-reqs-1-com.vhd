@@ -2,11 +2,11 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
-library lapb;
-  use lapb.apb.all;
-  use lapb.bfm;
-  use lapb.checker.all;
-  use lapb.mock_completer.all;
+library amba5_apb;
+  use amba5_apb.apb.all;
+  use amba5_apb.bfm;
+  use amba5_apb.checker.all;
+  use amba5_apb.mock_completer.all;
 
 entity tb_3_reqs_1_com is
 end entity;
@@ -161,7 +161,7 @@ end generate;
   end process;
 
 
-  DUT : entity lapb.Crossbar
+  DUT : entity amba5_apb.Crossbar
   generic map (
     REQUESTER_COUNT => REQ_COUNT,
     ADDRS => (0 => "00000000000000000000000000000000"),

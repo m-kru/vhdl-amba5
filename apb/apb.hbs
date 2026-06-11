@@ -7,7 +7,8 @@ namespace eval vhdl::amba5::apb {
     set doc "APB package with all primary types and functions."
 
     proc src {} {
-      hbs::SetLib "lapb"
+      hbs::AddDep vhdl::amba5::util::string::src
+      hbs::SetLib "amba5_apb"
       hbs::AddFile apb.vhd
     }
 
@@ -43,8 +44,9 @@ namespace eval vhdl::amba5::apb {
 It detects erroneous and unrecommended scenarios on the interface."
 
     proc src {} {
+      hbs::AddDep vhdl::amba5::util::string::src
       hbs::AddDep vhdl::amba5::apb::pkg::src
-      hbs::SetLib "lapb"
+      hbs::SetLib "amba5_apb"
       hbs::AddFile checker.vhd
     }
 
@@ -89,8 +91,9 @@ It detects erroneous and unrecommended scenarios on the interface."
 It is useful only for simulations."
 
     proc src {} {
+      hbs::AddDep vhdl::amba5::util::string::src
       hbs::AddDep vhdl::amba5::apb::pkg::src
-      hbs::SetLib "lapb"
+      hbs::SetLib "amba5_apb"
       hbs::AddFile bfm.vhd
     }
 
@@ -137,8 +140,9 @@ It is useful only for simulations."
     set doc "A classic NxM crossbar."
 
     proc src {} {
+      hbs::AddDep vhdl::amba5::util::string::src
       hbs::AddDep vhdl::amba5::apb::pkg::src
-      hbs::SetLib "lapb"
+      hbs::SetLib "amba5_apb"
       hbs::AddFile crossbar.vhd
     }
 
@@ -185,8 +189,9 @@ It is useful only for simulations."
 At any time at most only one requester can be connected to one completer."
 
     proc src {} {
+      hbs::AddDep vhdl::amba5::util::string::src
       hbs::AddDep vhdl::amba5::apb::pkg::src
-      hbs::SetLib "lapb"
+      hbs::SetLib "amba5_apb"
       hbs::AddFile shared-bus.vhd
     }
 
@@ -238,8 +243,9 @@ At any time at most only one requester can be connected to one completer."
 Used internally for testbenches."
 
     proc src {} {
-      hbs::SetLib "lapb"
+      hbs::AddDep vhdl::amba5::util::string::src
       hbs::AddDep vhdl::amba5::apb::pkg::src
+      hbs::SetLib "amba5_apb"
       hbs::AddFile mock-completer.vhd
     }
 
@@ -266,8 +272,9 @@ Used internally for testbenches."
     set doc "Bridge capable of converting stream of bytes into APB transactions."
 
     proc src {} {
+      hbs::AddDep vhdl::amba5::util::string::src
       hbs::AddDep vhdl::amba5::apb::pkg::src
-      hbs::SetLib "lapb"
+      hbs::SetLib "amba5_apb"
       hbs::AddFile serial-bridge.vhd
     }
 
@@ -306,7 +313,7 @@ The bridge is capable of connecting arbitrary clock domains."
     # Use -no-constr flag to omit adding the default constraints.
     proc src {args} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
-      hbs::SetLib "lapb"
+      hbs::SetLib "amba5_apb"
       hbs::AddFile cdc-bridge.vhd
 
       set argCount [llength $args]

@@ -6,9 +6,11 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
+library amba5_util;
+  use amba5_util.string_pkg.all;
+
 library work;
   use work.apb.all;
-
 
 package checker is
 

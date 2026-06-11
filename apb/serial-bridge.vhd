@@ -6,6 +6,9 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
+library amba5_util;
+  use amba5_util.string_pkg.all;
+
 library work;
   use work.apb.all;
 
@@ -200,7 +203,7 @@ package serial_bridge is
     data     : std_logic_vector(31 downto 0);
   end record;
 
-  -- Some simulators, for example, questa, doesn't accept init function within other init function.
+  -- Some simulators, for example, questa, doesn't accept init function within another init function.
   -- Core around this issue by defining constant.
   constant REQUESTER_OUT_INIT : requester_out_t := init;
 

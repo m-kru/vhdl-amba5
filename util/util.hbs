@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: MIT
+# https://github.com/m-kru/vhdl-amba5
+# Copyright (c) 2026 Michał Kruszewski
+
+namespace eval vhdl::amba5::util {
+  namespace eval string {
+    set doc "Package with helper fixed string type."
+
+    proc src {} {
+      hbs::SetLib "amba5_util"
+      hbs::AddFile string.vhd
+    }
+
+    hbs::Register $doc
+  }
+}

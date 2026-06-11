@@ -1,8 +1,8 @@
 library ieee;
   use ieee.std_logic_1164.all;
 
-library lapb;
-  use lapb.apb.all;
+library amba5_apb;
+  use amba5_apb.apb.all;
 
 entity tb_prot_funcs is
 end entity;
