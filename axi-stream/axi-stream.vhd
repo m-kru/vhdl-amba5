@@ -9,23 +9,23 @@ library ieee;
 package axi_stream is
 
   -- Scenarios defined as erroneous by the specification.
-  type interface_errors_t is
-    valid_no_wakeup    : std_logic: -- Valid is high but wakeup is not high.
+  type interface_errors_t is record
+    valid_no_wakeup    : std_logic; -- Valid is high but wakeup is not high.
     valid_deassert     : std_logic; -- Valid deasserted before handshake.
-    last_no_wakeup     : std_logic: -- Last is high but wakeup is not high.
-    wakeup_deassert    : std_logic: -- Wakeup deasserted before handshake.
+    last_no_wakeup     : std_logic; -- Last is high but wakeup is not high.
+    wakeup_deassert    : std_logic; -- Wakeup deasserted before handshake.
     keep_strb_reserved : std_logic; -- KEEP = '0' and STRB = '1' is a reserved combination and must not be used.
   end record;
 
-  constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0');
+  constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0');
 
   -- Scenarios not forbidden by the specification, but not recommended.
   type interface_warnings_t is record
-    wakeup_late_assert : std_logic: -- Wakeup asserted in the same clock cycle as valid.
+    wakeup_late_assert : std_logic; -- Wakeup asserted in the same clock cycle as valid.
     wakeup_no_transfer : std_logic; -- Wakeup was asserted and deasserted, but no transfer occurred.
   end record;
 
-  constant INTERFACE_WARNINGS_NONE : interface_warnings_t := ('0', '0', '0', '0', '0');
+  constant INTERFACE_WARNINGS_NONE : interface_warnings_t := ('0', '0');
 
   -- Stream type with data width of 8 bits.
   type stream8_t is record
@@ -83,9 +83,19 @@ package axi_stream is
   -- Conversion functions
   --
 
-  function to_stream8(s1024 : stream1024_t) return stream8_t;
+  function to_stream8 (s1024 : stream1024_t) return stream8_t;
 
-  function to_stream1024(s8 : stream8_t) return stream1024_t;
+  function to_stream1024 (s8 : stream8_t) return stream1024_t;
+
+  --
+  -- Functions for converting sterams for pretty printing.
+  --
+
+  function to_debug (s : stream8_t; indent : string := "") return string;
+
+  function to_debug (
+    s : stream1024_t; indent : string := ""; data_byte_count : positive := 128
+  ) return string;
 
 end package;
 
@@ -157,6 +167,57 @@ package body axi_stream is
     s.dest   := s8.dest;
 
     return s;
+  end function;
+
+  --
+  -- to_debug functions
+  --
+
+  function data_to_hstring (
+    slv1024 : std_logic_vector(1023 downto 0); data_byte_count : positive
+  ) return string is
+    variable slv : std_logic_vector(data_byte_count * 8 - 1 downto 0) :=
+      slv1024(data_byte_count * 8 - 1 downto 0);
+  begin
+    return to_hstring(slv);
+  end function;
+
+
+  function metadata_to_hstring (
+    slv128 : std_logic_vector(127 downto 0); data_byte_count : positive
+  ) return string is
+    variable slv : std_logic_vector(data_byte_count - 1 downto 0) :=
+      slv128(data_byte_count - 1 downto 0);
+  begin
+    return to_hstring(slv);
+  end function;
+
+
+  function to_debug (s : stream8_t; indent : string := "") return string is
+  begin
+    return to_debug(to_stream1024(s), indent, 1);
+  end function;
+
+
+  function to_debug (
+    s : stream1024_t; indent : string := ""; data_byte_count : positive := 128
+  ) return string is
+    constant data : string :=     data_to_hstring(s.data, data_byte_count);
+    constant strb : string := metadata_to_hstring(s.strb, data_byte_count);
+    constant keep : string := metadata_to_hstring(s.keep, data_byte_count);
+    constant user : string := metadata_to_hstring(s.user, data_byte_count);
+  begin
+    return "(" & LF &
+      indent & "  data   => x""" & data                & """," & LF &
+      indent & "  strb   => x""" & strb                & """," & LF &
+      indent & "  keep   => x""" & keep                & """," & LF &
+      indent & "  user   => x""" & user                & """," & LF &
+      indent & "  valid  => '"   & to_string(s.valid)  & "',"  & LF &
+      indent & "  last   => '"   & to_string(s.last)   & "',"  & LF &
+      indent & "  wakeup => '"   & to_string(s.wakeup) & "',"  & LF &
+      indent & "  id     => x""" & to_hstring(s.id)    & """," & LF &
+      indent & "  dest   => x""" & to_hstring(s.dest)  & """"  & LF &
+      indent & ")";
   end function;
 
 end package body;

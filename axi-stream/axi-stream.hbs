@@ -11,6 +11,23 @@ namespace eval vhdl::amba5::axi-stream {
       hbs::AddFile axi-stream.vhd
     }
 
+    proc _tb {top} {
+      hbs::SetTool "nvc"
+      if {$hbs::Tool eq "nvc"} {
+        hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
+      }
+      hbs::SetTop $top
+      src
+      hbs::SetLib ""
+    }
+
+    # Testbench for to_debug functions.
+    proc tb-to-debug {} {
+      _tb "tb_to_debug"
+      hbs::AddFile tb/tb-to_debug.vhd
+      hbs::Run
+    }
+
     hbs::Register $doc
   }
 
