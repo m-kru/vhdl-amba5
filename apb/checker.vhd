@@ -219,8 +219,7 @@ package body checker is
   function clock_idle (
     checker : checker_t;
     req     : requester_out_t;
-    com     : completer_out_t;
-    clear   : std_logic
+    com     : completer_out_t
   ) return checker_t is
     variable ck : checker_t := checker;
   begin
@@ -244,8 +243,7 @@ package body checker is
   function clock_setup (
     checker : checker_t;
     req     : requester_out_t;
-    com     : completer_out_t;
-    clear   : std_logic
+    com     : completer_out_t
   ) return checker_t is
     variable ck : checker_t := checker;
   begin
@@ -272,8 +270,7 @@ package body checker is
   function clock_access (
     checker : checker_t;
     req     : requester_out_t;
-    com     : completer_out_t;
-    clear   : std_logic
+    com     : completer_out_t
   ) return checker_t is
     variable ck : checker_t := checker;
   begin
@@ -297,16 +294,10 @@ package body checker is
   function clock_after_transfer (
     checker : checker_t;
     req : requester_out_t;
-    com : completer_out_t;
-    clear : std_logic
+    com : completer_out_t
   ) return checker_t is
     variable ck : checker_t := checker;
   begin
-    if clear = '1' then
-      ck.errors_o  := INTERFACE_ERRORS_NONE;
-      ck.warnings_o := INTERFACE_WARNINGS_NONE;
-    end if;
-
     if req.selx = '0' then
       ck.state := IDLE;
     elsif req.enable = '0' then
@@ -334,10 +325,10 @@ package body checker is
     end if;
 
     case ck.state is
-      when IDLE  => ck := clock_idle   (ck, req, com, clear);
-      when SETUP => ck := clock_setup  (ck, req, com, clear);
-      when ACCSS => ck := clock_access (ck, req, com, clear);
-      when AFTER_TRANSFER => ck := clock_after_transfer(ck, req, com, clear);
+      when IDLE  => ck := clock_idle   (ck, req, com);
+      when SETUP => ck := clock_setup  (ck, req, com);
+      when ACCSS => ck := clock_access (ck, req, com);
+      when AFTER_TRANSFER => ck := clock_after_transfer(ck, req, com);
     end case;
 
     ck := stateless_checks(ck, req, com);
