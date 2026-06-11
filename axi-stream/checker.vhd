@@ -5,6 +5,9 @@
 library ieee;
   use ieee.std_logic_1164.all;
 
+library amba5_util;
+  use amba5_util.string_pkg.all;
+
 library work;
   use work.axi_stream.all;
 
@@ -20,7 +23,7 @@ package checker is
     errors_o   : interface_errors_t;
     warnings_o : interface_warnings_t;
     -- Internal elements
-    state       : state_t
+    state       : state_t;
     prev_stream : stream1024_t;
   end record;
 
@@ -36,18 +39,29 @@ package checker is
   -- Resets the checker. It enforces clear of errors and warnings and resets the checker state.
   function reset (checker : checker_t) return checker_t;
 
-  -- Clocks checker state.
+  --
+  -- Clocks checker state functions.
   --
   -- The clear input can be used to clear detected errors and warnings.
   -- Clearing has lower priority than detection so when an error/warning is detected
   -- while clear is asserted the errors_o/warnings_o will not be zeroed.
   --
   -- Clearing does not impact the checker state.
+  --
+
+  function clock (
+    checker : checker_t;
+    stream  : stream8_t;
+    ready   : std_logic := '1';
+    clear   : std_logic := '0'
+  ) return checker_t;
+
   function clock (
     checker : checker_t;
     stream  : stream1024_t;
     ready   : std_logic := '1';
-    clear   : std_logic := '0'
+    clear   : std_logic := '0';
+    data_byte_count : positive := 128
   ) return checker_t;
 
 end package;
@@ -69,22 +83,22 @@ package body checker is
     ck.warnings_o := INTERFACE_WARNINGS_NONE;
     ck.state := IDLE;
     ck.prev_stream := init;
-    ck.awaiting_transfer := false;
     return ck;
   end function;
 
 
   function stateless_checks (
     checker : checker_t;
-    stream  : stream1024_t
+    stream  : stream1024_t;
+    data_byte_count : positive := 128
   ) return checker_t is
     variable ck : checker_t := checker;
   begin
     if stream.valid = '1' and stream.wakeup /= '1' then
-      ck.valid_no_wakeup := '1';
+      ck.errors_o.valid_no_wakeup := '1';
       report to_string(ck.REPORT_PREFIX) &
         "valid is asserted but wakeup is deasserted" & LF &
-        "stream := " & to_debug()
+        "stream := " & to_debug(stream, data_byte_count => data_byte_count)
         severity error;
     end if;
 
@@ -94,9 +108,21 @@ package body checker is
 
   function clock (
     checker : checker_t;
-    stream  : stream1024_t;
+    stream  : stream8_t;
     ready   : std_logic := '1';
     clear   : std_logic := '0'
+  ) return checker_t is
+  begin
+    return clock(checker, to_stream1024(stream), ready, clear, 1);
+  end;
+
+
+  function clock (
+    checker : checker_t;
+    stream  : stream1024_t;
+    ready   : std_logic := '1';
+    clear   : std_logic := '0';
+    data_byte_count : positive := 128
   ) return checker_t is
     variable ck : checker_t := checker;
   begin
@@ -105,13 +131,13 @@ package body checker is
       ck.warnings_o := INTERFACE_WARNINGS_NONE;
     end if;
 
-    case ck.state is
-      when IDLE      => ck := clock_idle      (ck, stream, ready);
-      when IN_PACKET => ck := clock_in_packet (ck, stream, ready);
-      when others => report "unimplemented state " & state_t'image(ck.state) severity failure;
-    end case;
+--    case ck.state is
+--      when IDLE      => ck := clock_idle      (ck, stream, ready, data_byte_count);
+--      when IN_PACKET => ck := clock_in_packet (ck, stream, ready, data_byte_count);
+--      when others => report "unimplemented state " & state_t'image(ck.state) severity failure;
+--    end case;
 
-    ck := stateless_checks(ck, stream);
+    ck := stateless_checks(ck, stream, data_byte_count);
 
     ck.prev_stream := stream;
 

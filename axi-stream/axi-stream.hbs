@@ -21,15 +21,55 @@ namespace eval vhdl::amba5::axi-stream {
       hbs::SetLib ""
     }
 
+    # Testbench for interface errors functions.
+    proc tb-errors-functions {} {
+      _tb "tb_errors_functions"
+      hbs::AddFile tb/tb-errors-functions.vhd
+      hbs::Run
+    }
+
     # Testbench for to_debug functions.
-    proc tb-to-debug {} {
-      _tb "tb_to_debug"
-      hbs::AddFile tb/tb-to_debug.vhd
+    proc tb-stream-to-debug {} {
+      _tb "tb_stream_to_debug"
+      hbs::AddFile tb/tb-stream-to_debug.vhd
       hbs::Run
     }
 
     hbs::Register $doc
   }
+
+  namespace eval checker {
+    set doc "AXI Steram interface checker core.
+It detects erroneous and unrecommended scenarios on the interface."
+
+    proc src {} {
+      hbs::AddDep vhdl::amba5::util::string::src
+      hbs::AddDep vhdl::amba5::axi-stream::pkg::src
+      hbs::SetLib "amba5_axi_stream"
+      hbs::AddFile checker.vhd
+    }
+
+    proc _tb {top} {
+      hbs::SetTool "nvc"
+      if {$hbs::Tool eq "nvc"} {
+        hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
+      }
+      hbs::SetTop $top
+      src
+      hbs::SetLib ""
+    }
+
+    # Testbench for errors detection logic.
+    proc tb-detect-errors {} {
+      _tb "tb_detect_errors"
+      hbs::AddFile tb/checker/tb-detect-errors.vhd
+      hbs::SetExitSeverity "failure"
+      hbs::Run
+    }
+
+    hbs::Register $doc
+  }
+
 
   namespace eval packet-dropper {
     set doc "ToDo"

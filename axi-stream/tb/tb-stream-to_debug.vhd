@@ -4,10 +4,10 @@ library ieee;
 library amba5_axi_stream;
   use amba5_axi_stream.axi_stream.all;
 
-entity tb_to_debug is
+entity tb_stream_to_debug is
 end entity;
 
-architecture test of tb_to_debug is
+architecture test of tb_stream_to_debug is
 begin
 
   stream8_test : process

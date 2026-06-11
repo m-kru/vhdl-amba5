@@ -19,6 +19,17 @@ package axi_stream is
 
   constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0');
 
+  -- Initializes interface_errors_t with elements set to given values.
+  function init (
+    valid_no_wakeup, valid_deassert, last_no_wakeup, wakeup_deassert, keep_strb_reserved : std_logic := '0'
+  ) return interface_errors_t;
+
+  -- Converts interface_errors_t to string for printing.
+  function to_string (errors : interface_errors_t) return string;
+
+  -- Converts interface_errors_t to string for pretty printing.
+  function to_debug (errors : interface_errors_t; indent : string := "") return string;
+
   -- Scenarios not forbidden by the specification, but not recommended.
   type interface_warnings_t is record
     wakeup_late_assert : std_logic; -- Wakeup asserted in the same clock cycle as valid.
@@ -101,6 +112,47 @@ end package;
 
 
 package body axi_stream is
+
+  --
+  -- interface_errors_t
+  --
+
+  function init (
+    valid_no_wakeup, valid_deassert, last_no_wakeup, wakeup_deassert, keep_strb_reserved : std_logic := '0'
+  ) return interface_errors_t is
+    constant errors : interface_errors_t := (
+      valid_no_wakeup, valid_deassert, last_no_wakeup, wakeup_deassert, keep_strb_reserved
+    );
+  begin
+    return errors;
+  end function;
+
+
+  function to_string (errors : interface_errors_t) return string is
+  begin
+    return "(" &
+      "valid_no_wakeup => '"    & to_string(errors.valid_no_wakeup)    & "', " &
+      "valid_deassert => '"     & to_string(errors.valid_deassert)     & "', " &
+      "last_no_wakeup => '"     & to_string(errors.last_no_wakeup)     & "', " &
+      "wakeup_deassert => '"    & to_string(errors.wakeup_deassert)    & "', " &
+      "keep_strb_reserved => '" & to_string(errors.keep_strb_reserved) & "')";
+  end function;
+
+
+  function to_debug (errors : interface_errors_t; indent : string := "") return string is
+  begin
+    return "(" & LF &
+      indent & "  valid_no_wakeup    => '" & to_string(errors.valid_no_wakeup)    & "'," & LF &
+      indent & "  valid_deassert     => '" & to_string(errors.valid_deassert)     & "'," & LF &
+      indent & "  last_no_wakeup     => '" & to_string(errors.last_no_wakeup)     & "'," & LF &
+      indent & "  wakeup_deassert    => '" & to_string(errors.wakeup_deassert)    & "'," & LF &
+      indent & "  keep_strb_reserved => '" & to_string(errors.keep_strb_reserved) & "'"  & LF &
+      indent & ")";
+  end function;
+
+  --
+  -- stream8_t
+  --
 
   function init (
     data   : std_logic_vector(7 downto 0) := (others => '0');
