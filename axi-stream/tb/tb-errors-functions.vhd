@@ -37,7 +37,7 @@ begin
       keep_strb_reserved => '-'
     );
     constant got  : string := to_debug(errors);
-    constant want : string := "(" & LF &
+    constant want : string := "("    & LF &
       "  valid_no_wakeup    => '-'," & LF &
       "  valid_deassert     => '-'," & LF &
       "  last_no_wakeup     => '-'," & LF &

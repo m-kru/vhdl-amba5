@@ -30,6 +30,7 @@ package axi_stream is
   -- Converts interface_errors_t to string for pretty printing.
   function to_debug (errors : interface_errors_t; indent : string := "") return string;
 
+
   -- Scenarios not forbidden by the specification, but not recommended.
   type interface_warnings_t is record
     wakeup_late_assert : std_logic; -- Wakeup asserted in the same clock cycle as valid.
@@ -37,6 +38,18 @@ package axi_stream is
   end record;
 
   constant INTERFACE_WARNINGS_NONE : interface_warnings_t := ('0', '0');
+
+  -- Initializes interface_warnings_t with elements set to given values.
+  function init (
+    wakeup_late_assert, wakeup_no_transfer : std_logic := '0'
+  ) return interface_warnings_t;
+
+  -- Converts interface_warnings_t to string for printing.
+  function to_string (warnings : interface_warnings_t) return string;
+
+  -- Converts interface_warnings_t to string for pretty printing.
+  function to_debug (warnings : interface_warnings_t; indent : string := "") return string;
+
 
   -- Stream type with data width of 8 bits.
   type stream8_t is record
@@ -149,6 +162,38 @@ package body axi_stream is
       indent & "  keep_strb_reserved => '" & to_string(errors.keep_strb_reserved) & "'"  & LF &
       indent & ")";
   end function;
+
+  --
+  -- interface_warnings_t
+  --
+
+  function init (
+    wakeup_late_assert, wakeup_no_transfer : std_logic := '0'
+  ) return interface_warnings_t is
+    constant warnings : interface_warnings_t := (
+      wakeup_late_assert, wakeup_no_transfer
+    );
+  begin
+    return warnings;
+  end function;
+
+
+  function to_string (warnings : interface_warnings_t) return string is
+  begin
+    return "(" &
+      "wakeup_late_assert => '" & to_string(warnings.wakeup_late_assert) & "', " &
+      "wakeup_no_transfer => '" & to_string(warnings.wakeup_no_transfer) & "')";
+  end function;
+
+
+  function to_debug (warnings : interface_warnings_t; indent : string := "") return string is
+  begin
+    return "(" & LF &
+      indent & "  wakeup_late_assert => '" & to_string(warnings.wakeup_late_assert) & "'," & LF &
+      indent & "  wakeup_no_transfer => '" & to_string(warnings.wakeup_no_transfer) & "'"  & LF &
+      indent & ")";
+  end function;
+
 
   --
   -- stream8_t

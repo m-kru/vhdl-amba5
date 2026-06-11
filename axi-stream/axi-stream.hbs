@@ -28,6 +28,13 @@ namespace eval vhdl::amba5::axi-stream {
       hbs::Run
     }
 
+    # Testbench for interface warnings functions.
+    proc tb-warnings-functions {} {
+      _tb "tb_warnings_functions"
+      hbs::AddFile tb/tb-warnings-functions.vhd
+      hbs::Run
+    }
+
     # Testbench for to_debug functions.
     proc tb-stream-to-debug {} {
       _tb "tb_stream_to_debug"
