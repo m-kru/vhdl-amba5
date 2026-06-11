@@ -1,0 +1,47 @@
+# SPDX-License-Identifier: MIT
+# https://github.com/m-kru/vhdl-amba5
+# Copyright (c) 2026 Michał Kruszewski
+
+namespace eval vhdl::amba5::axi-stream {
+  namespace eval pkg {
+    set doc "AXI-Stream package with all primary types and functions."
+
+    proc src {} {
+      hbs::SetLib "amba5_axi_stream"
+      hbs::AddFile axi-stream.vhd
+    }
+
+    hbs::Register $doc
+  }
+
+  namespace eval packet-dropper {
+    set doc "ToDo"
+
+    proc src {} {
+      hbs::AddDep vhdl::amba5::util::string::src
+      hbs::AddDep vhdl::amba5::axi-stream::pkg::src
+      hbs::SetLib "amba5_axi_stream"
+      hbs::AddFile packet-dropper.vhd
+    }
+
+    proc _tb {top} {
+      hbs::SetTool "nvc"
+      if {$hbs::Tool eq "nvc"} {
+        hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
+      }
+      hbs::SetTop $top
+      src
+      hbs::SetLib ""
+    }
+
+    # Testbench for protection_t functions.
+    proc tb-stream8-infinite-space {} {
+      _tb "tb_stream8_infinite_space"
+      hbs::AddFile tb/packet-dropper/tb-stream8-infinite-space.vhd
+      hbs::Run
+    }
+
+    hbs::Register $doc
+  }
+
+}
