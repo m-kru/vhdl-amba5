@@ -3,6 +3,7 @@ library ieee;
 
 library amba5_axi_stream;
   use amba5_axi_stream.axi_stream.all;
+  use amba5_axi_stream.checker.all;
   use amba5_axi_stream.packet_dropper.all;
 
 entity tb_stream8_infinite_space is
@@ -19,6 +20,9 @@ architecture test of tb_stream8_infinite_space is
 
   signal istream : stream8_t := init;
   signal ostream : stream8_t;
+
+  signal istream_ck : checker_t := init("input stream checker: ");
+  signal ostream_ck : checker_t := init("output stream checker: ");
 
 begin
 
@@ -63,6 +67,15 @@ begin
       assert pd.state /= DROPPING
         report "packet dropper must not enter DROPPING state in this testbench"
         severity failure;
+    end if;
+  end process;
+
+
+  checkers : process (clk)
+  begin
+    if rising_edge(clk) then
+      istream_ck <= clock(istream_ck, istream);
+      ostream_ck <= clock(ostream_ck, ostream);
     end if;
   end process;
 

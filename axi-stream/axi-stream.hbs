@@ -93,6 +93,7 @@ It detects erroneous and unrecommended scenarios on the interface."
       if {$hbs::Tool eq "nvc"} {
         hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
       }
+      hbs::AddDep vhdl::amba5::axi-stream::checker::src
       hbs::SetTop $top
       src
       hbs::SetLib ""
