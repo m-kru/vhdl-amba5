@@ -320,7 +320,7 @@ package body checker is
     variable ck : checker_t := checker;
   begin
     if clear = '1' then
-      ck.errors_o  := INTERFACE_ERRORS_NONE;
+      ck.errors_o   := INTERFACE_ERRORS_NONE;
       ck.warnings_o := INTERFACE_WARNINGS_NONE;
     end if;
 
@@ -329,6 +329,7 @@ package body checker is
       when SETUP => ck := clock_setup  (ck, req, com);
       when ACCSS => ck := clock_access (ck, req, com);
       when AFTER_TRANSFER => ck := clock_after_transfer(ck, req, com);
+      when others => report "unimplemented state " & state_t'image(ck.state) severity failure;
     end case;
 
     ck := stateless_checks(ck, req, com);
