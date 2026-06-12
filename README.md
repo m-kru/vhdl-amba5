@@ -1,7 +1,7 @@
 [![Tests](https://github.com/m-kru/vhdl-amba5/actions/workflows/apb-nvc-tests.yml/badge.svg?branch=master)](https://github.com/m-kru/vhdl-amba5/actions?query=master)
-[![Tests](https://github.com/m-kru/vhdl-amba5/actions/workflows/axi-stream-nvc-tests.yml/badge.svg?branch=master)](https://github.com/m-kru/vhdl-amba5/actions?query=master)
-
 [![Tests](https://github.com/m-kru/vhdl-amba5/actions/workflows/apb-ghdl-tests.yml/badge.svg?branch=master)](https://github.com/m-kru/vhdl-amba5/actions?query=master)
+
+[![Tests](https://github.com/m-kru/vhdl-amba5/actions/workflows/axi-stream-nvc-tests.yml/badge.svg?branch=master)](https://github.com/m-kru/vhdl-amba5/actions?query=master)
 [![Tests](https://github.com/m-kru/vhdl-amba5/actions/workflows/axi-stream-ghdl-tests.yml/badge.svg?branch=master)](https://github.com/m-kru/vhdl-amba5/actions?query=master)
 
 # vhdl-amba5
