@@ -61,6 +61,25 @@ begin
     assert ck.errors_o   = init(keep_strb_reserved => '1') report to_debug(ck.errors_o) severity failure;
     assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
 
+    -- Clear
+    stream.keep(0) := '1';
+    stream.wakeup  := '1';
+    stream.valid   := '0';
+    ck := clock(ck, stream, clear => '1');
+    assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
+    assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
+
+    --
+    -- valid_deassert
+    --
+    stream.wakeup := '1';
+    ck := clock(ck, stream, ready => '0');
+    stream.valid := '1';
+    ck := clock(ck, stream, ready => '0');
+    stream.valid := '0';
+    ck := clock(ck, stream, ready => '0');
+    assert ck.errors_o   = init(valid_deassert => '1') report to_debug(ck.errors_o) severity failure;
+    assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
 
     std.env.finish;
   end process;
