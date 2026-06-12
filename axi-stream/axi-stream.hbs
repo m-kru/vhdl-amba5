@@ -24,6 +24,7 @@ namespace eval vhdl::amba5::axi-stream {
     # Testbench for interface errors functions.
     proc tb-errors-functions {} {
       _tb "tb_errors_functions"
+      hbs::SetExitSeverity "failure"
       hbs::AddFile tb/tb-errors-functions.vhd
       hbs::Run
     }

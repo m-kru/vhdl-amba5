@@ -102,6 +102,25 @@ package body checker is
         severity error;
     end if;
 
+    if stream.last = '1' and stream.wakeup /= '1' then
+      ck.errors_o.last_no_wakeup := '1';
+      report to_string(ck.REPORT_PREFIX) &
+        "last is asserted but wakeup is deasserted" & LF &
+        "stream := " & to_debug(stream, data_byte_count => data_byte_count)
+        severity error;
+    end if;
+
+    for i in 0 to data_byte_count / 8 loop
+      if stream.keep(i) = '0' and stream.strb(i) /= '0' then
+        ck.errors_o.keep_strb_reserved := '1';
+        report to_string(ck.REPORT_PREFIX) &
+          "reserved keep strb byte qualification for byte " & to_string(i) &
+          ", (check specification table 2-3)" & LF &
+          "stream := " & to_debug(stream, data_byte_count => data_byte_count)
+          severity error;
+      end if;
+    end loop;
+
     return ck;
   end function;
 
