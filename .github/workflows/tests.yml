@@ -3,7 +3,7 @@ name: APB tests
 on: [push, pull_request]
 
 jobs:
-  test-apb-ghdl:
+  test-apb-nvc:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -12,10 +12,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - name: Setup GHDL with LLVM backend
-        uses: ghdl/setup-ghdl@v1
+      - name: Setup NVC simulator
+        uses: nickg/setup-nvc@v1
         with:
-          backend: llvm
+          version: latest
       - name: Install Tcl
         run: |
           sudo apt-get update
@@ -26,6 +26,6 @@ jobs:
           chmod +x hbs
       - name: Run tests
         run: |
-          export HBS_TOOL=ghdl
-          export HBS_BUILD_DIR=build-apb-ghdl
+          export HBS_TOOL=nvc
+          export HBS_BUILD_DIR=build-apb-nvc
           ./hbs test apb
