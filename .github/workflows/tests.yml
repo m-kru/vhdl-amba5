@@ -28,4 +28,4 @@ jobs:
         run: |
           export HBS_TOOL=ghdl
           export HBS_BUILD_DIR=build-apb-ghdl
-          ./hbs test apb
+          ./hbs test -workers 1 apb
