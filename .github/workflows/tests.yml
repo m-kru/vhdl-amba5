@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   test-apb-ghdl:
-    runs-on: ubuntu-lateset
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,4 +28,4 @@ jobs:
         run: |
           export HBS_TOOL=ghdl
           export HBS_BUILD_DIR=build-apb-ghdl
-          ./hbs test -workers 1 apb
+          ./hbs test apb
