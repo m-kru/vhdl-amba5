@@ -1,9 +1,9 @@
-name: APB tests
+name: AXI-Stream NVC tests
 
 on: [push, pull_request]
 
 jobs:
-  test-apb-nvc:
+  test-axi-stream-nvc:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -27,5 +27,5 @@ jobs:
       - name: Run tests
         run: |
           export HBS_TOOL=nvc
-          export HBS_BUILD_DIR=build-apb-nvc
-          ./hbs test apb
+          export HBS_BUILD_DIR=build-axi-stream-nvc
+          ./hbs test axi-stream
