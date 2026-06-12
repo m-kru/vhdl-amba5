@@ -13,7 +13,7 @@ library work;
 
 package checker is
 
-  type state_t is (IDLE, IN_PACKET);
+  type state_t is (SLEEP, IDLE, IN_PACKET);
 
   -- A checker capable of detecting interface errors and warnings.
   type checker_t is record
@@ -23,8 +23,9 @@ package checker is
     errors_o   : interface_errors_t;
     warnings_o : interface_warnings_t;
     -- Internal elements
-    state       : state_t;
-    prev_stream : stream1024_t;
+    state          : state_t;
+    prev_stream    : stream1024_t;
+    transfer_count : natural; -- Number of transfers within packet.
   end record;
 
   -- One-dimensional array of checkers.
@@ -81,8 +82,9 @@ package body checker is
   begin
     ck.errors_o := INTERFACE_ERRORS_NONE;
     ck.warnings_o := INTERFACE_WARNINGS_NONE;
-    ck.state := IDLE;
+    ck.state := SLEEP;
     ck.prev_stream := init;
+    ck.transfer_count := 0;
     return ck;
   end function;
 
@@ -125,6 +127,57 @@ package body checker is
   end function;
 
 
+  function clock_sleep (
+    checker : checker_t;
+    stream  : stream1024_t;
+    data_byte_count : positive := 128
+  ) return checker_t is
+    variable ck : checker_t := checker;
+  begin
+    ck.transfer_count := 0;
+
+    if stream.wakeup = '1' then
+      if stream.valid = '1' then
+        ck.warnings_o.wakeup_late_assert := '1';
+        report to_string(ck.REPORT_PREFIX) &
+          "wakeup and valid asserted in the same clock cycle" & LF &
+          "stream := " & to_debug(stream, data_byte_count => data_byte_count)
+          severity warning;
+      end if;
+      ck.state := IDLE;
+    end if;
+    return ck;
+  end function;
+
+
+  function clock_idle (
+    checker : checker_t;
+    stream  : stream1024_t;
+    ready   : std_logic := '1';
+    data_byte_count : positive := 128
+  ) return checker_t is
+    variable ck : checker_t := checker;
+  begin
+    if stream.wakeup = '0' then
+      if ck.transfer_count = 0 then
+        ck.warnings_o.wakeup_no_transfer := '1';
+        report to_string(ck.REPORT_PREFIX) &
+          "wakeup without any transfer" & LF &
+          "stream := " & to_debug(stream, data_byte_count => data_byte_count)
+          severity warning;
+      end if;
+
+      ck.state := SLEEP;
+    end if;
+
+    if stream.valid = '1' and ready = '1' then
+      ck.transfer_count := ck.transfer_count + 1;
+    end if;
+
+    return ck;
+  end function;
+
+
   function clock (
     checker : checker_t;
     stream  : stream8_t;
@@ -150,11 +203,12 @@ package body checker is
       ck.warnings_o := INTERFACE_WARNINGS_NONE;
     end if;
 
---    case ck.state is
---      when IDLE      => ck := clock_idle      (ck, stream, ready, data_byte_count);
+    case ck.state is
+      when SLEEP     => ck := clock_sleep     (ck, stream,        data_byte_count);
+      when IDLE      => ck := clock_idle      (ck, stream, ready, data_byte_count);
 --      when IN_PACKET => ck := clock_in_packet (ck, stream, ready, data_byte_count);
---      when others => report "unimplemented state " & state_t'image(ck.state) severity failure;
---    end case;
+      when others => report "unimplemented state " & state_t'image(ck.state) severity failure;
+    end case;
 
     ck := stateless_checks(ck, stream, data_byte_count);
 

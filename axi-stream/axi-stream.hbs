@@ -75,6 +75,13 @@ It detects erroneous and unrecommended scenarios on the interface."
       hbs::Run
     }
 
+    # Testbench for warnings detection logic.
+    proc tb-detect-warnings {} {
+      _tb "tb_detect_warnings"
+      hbs::AddFile tb/checker/tb-detect-warnings.vhd
+      hbs::Run
+    }
+
     hbs::Register $doc
   }
 
