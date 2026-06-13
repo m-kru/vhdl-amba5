@@ -17,7 +17,7 @@ library work;
 -- The bfm capabilities might not be sufficient for an advanced ASIC design verification.
 -- However, it should be sufficient for an FPGA design verification.
 --
--- The wakeup signal after transactions is left with the same value as before transactions.
+-- The wakeup signal after transactions is deasserted.
 package bfm is
 
   -- BFM configuration type.
