@@ -48,16 +48,16 @@ begin
   begin
     wait for 2 ns;
 
-    bfm.read(x"00000000", clk, req, com, msg => ", user msg");
+    bfm.read(x"00000000", req, com, clk, msg => ", user msg");
     assert com.rdata = DATA(0) report to_string(com.rdata);
 
-    bfm.read(x"00000001", clk, req, com, msg => ", user msg");
+    bfm.read(x"00000001", req, com, clk, msg => ", user msg");
     assert com.rdata = DATA(1) report to_string(com.rdata);
 
-    bfm.read(x"00000002", clk, req, com, msg => ", user msg");
+    bfm.read(x"00000002", req, com, clk, msg => ", user msg");
     assert com.rdata = DATA(2) report to_string(com.rdata);
 
-    bfm.read(x"00000003", clk, req, com, msg => ", user msg");
+    bfm.read(x"00000003", req, com, clk, msg => ", user msg");
     assert com.rdata = DATA(3) report to_string(com.rdata);
 
     wait for 2 ns;

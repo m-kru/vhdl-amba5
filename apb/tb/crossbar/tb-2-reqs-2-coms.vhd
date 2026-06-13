@@ -129,7 +129,7 @@ requesters : for r in req_range generate
     -- Write test, requester i accesses completer i.
     for i in WRITE_DATA(r)'range loop
       bfm.write(
-        COM_ADDRS(r) + to_addr(i * 4), WRITE_DATA(r)(i), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r)
+        COM_ADDRS(r) + to_addr(i * 4), WRITE_DATA(r)(i), req_outs(r), req_ins(r), clk, cfg => bfm_cfgs(r)
       );
       wait for 2 * CLK_PERIOD;
     end loop;
@@ -140,7 +140,7 @@ requesters : for r in req_range generate
     -- Read test, requester i accesses completer i + 1.
     for i in READ_DATA(r)'range loop
       bfm.read(
-        COM_ADDRS((r+1) mod COM_COUNT) + to_addr(i * 4), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r)
+        COM_ADDRS((r+1) mod COM_COUNT) + to_addr(i * 4), req_outs(r), req_ins(r), clk, cfg => bfm_cfgs(r)
       );
       READ_DATA(r)(i) <= req_ins(r).rdata;
       wait for 2 * CLK_PERIOD;
@@ -151,14 +151,14 @@ requesters : for r in req_range generate
 
     -- Block write test, requester i accesses completer i + 1
     bfm.writeb(
-      COM_ADDRS((r+1) mod REQ_COUNT), WRITEB_DATA(r), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r)
+      COM_ADDRS((r+1) mod REQ_COUNT), WRITEB_DATA(r), req_outs(r), req_ins(r), clk, cfg => bfm_cfgs(r)
     );
     req_writeb_done(r) <= '1';
 
     wait until writeb_checker_done;
 
     -- Block read test, requester i accesses completer i.
-    bfm.readb(COM_ADDRS(r), READB_DATA(r), clk, req_outs(r), req_ins(r), cfg => bfm_cfgs(r));
+    bfm.readb(COM_ADDRS(r), READB_DATA(r), req_outs(r), req_ins(r), clk, cfg => bfm_cfgs(r));
     req_readb_done(r) <= '1';
 
     wait;

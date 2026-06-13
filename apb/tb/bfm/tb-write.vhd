@@ -41,7 +41,7 @@ begin
   main : process is
   begin
     wait for 2 ns;
-    bfm.write(ADDR, DATA, clk, req, com, msg => ", user msg");
+    bfm.write(ADDR, DATA, req, com, clk, msg => ", user msg");
     wait;
   end process;
 

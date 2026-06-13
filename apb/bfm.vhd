@@ -50,9 +50,9 @@ package bfm is
   procedure write (
     constant addr  : in unsigned(31 downto 0);
     constant data  : in std_logic_vector(31 downto 0);
-    signal   clk   : in std_logic;
     signal   req   : out requester_out_t;
     signal   com   : in  completer_out_t;
+    signal   clk   : in std_logic;
     constant prot  : in protection_t := (data_instruction => '0', secure_non_secure => '0', normal_privileged => '0');
     constant nse   : in std_logic := '-';
     constant strb  : in std_logic_vector(  3 downto 0) := "1111";
@@ -67,9 +67,9 @@ package bfm is
   -- There is no data out parameter as the data is available in the com.rdata element.
   procedure read (
     constant addr  : in unsigned(31 downto 0);
-    signal   clk   : in std_logic;
     signal   req   : out requester_out_t;
     signal   com   : in  completer_out_t;
+    signal   clk   : in std_logic;
     constant prot  : in protection_t := (data_instruction => '0', secure_non_secure => '0', normal_privileged => '0');
     constant nse   : in std_logic := '-';
     constant auser : in std_logic_vector(127 downto 0) := (others => '-');
@@ -82,9 +82,9 @@ package bfm is
   procedure writeb (
     constant addr  : in unsigned(31 downto 0); -- Start address
     constant data  : in data32_array_t;
-    signal   clk   : in std_logic;
     signal   req   : inout requester_out_t;
     signal   com   : in  completer_out_t;
+    signal   clk   : in std_logic;
     constant prot  : in protection_t := (data_instruction => '0', secure_non_secure => '0', normal_privileged => '0');
     constant nse   : in std_logic := '-';
     constant strb  : in std_logic_vector(  3 downto 0) := "1111";
@@ -100,9 +100,9 @@ package bfm is
   procedure readb (
     constant addr  : in unsigned(31 downto 0); -- Start address
     signal   data  : out data32_array_t;
-    signal   clk   : in std_logic;
     signal   req   : inout requester_out_t;
     signal   com   : in  completer_out_t;
+    signal   clk   : in std_logic;
     constant prot  : in protection_t := (data_instruction => '0', secure_non_secure => '0', normal_privileged => '0');
     constant nse   : in std_logic := '-';
     constant auser : in std_logic_vector(127 downto 0) := (others => '-');
@@ -130,9 +130,9 @@ package body bfm is
   procedure write (
     constant addr  : in unsigned(31 downto 0);
     constant data  : in std_logic_vector(31 downto 0);
-    signal   clk   : in std_logic;
     signal   req   : out requester_out_t;
     signal   com   : in  completer_out_t;
+    signal   clk   : in std_logic;
     constant prot  : in protection_t := (data_instruction => '0', secure_non_secure => '0', normal_privileged => '0');
     constant nse   : in std_logic := '-';
     constant strb  : in std_logic_vector(  3 downto 0) := "1111";
@@ -208,9 +208,9 @@ package body bfm is
 
   procedure read (
     constant addr  : in unsigned(31 downto 0);
-    signal   clk   : in std_logic;
     signal   req   : out requester_out_t;
     signal   com   : in  completer_out_t;
+    signal   clk   : in std_logic;
     constant prot  : in protection_t := (data_instruction => '0', secure_non_secure => '0', normal_privileged => '0');
     constant nse   : in std_logic := '-';
     constant auser : in std_logic_vector(127 downto 0) := (others => '-');
@@ -283,9 +283,9 @@ package body bfm is
   procedure writeb (
     constant addr  : in unsigned(31 downto 0);
     constant data  : in data32_array_t;
-    signal   clk   : in std_logic;
     signal   req   : inout requester_out_t;
     signal   com   : in  completer_out_t;
+    signal   clk   : in std_logic;
     constant prot  : in protection_t := (data_instruction => '0', secure_non_secure => '0', normal_privileged => '0');
     constant nse   : in std_logic := '-';
     constant strb  : in std_logic_vector(  3 downto 0) := "1111";
@@ -389,9 +389,9 @@ package body bfm is
   procedure readb (
     constant addr  : in unsigned(31 downto 0);
     signal   data  : out data32_array_t;
-    signal   clk   : in std_logic;
     signal   req   : inout requester_out_t;
     signal   com   : in  completer_out_t;
+    signal   clk   : in std_logic;
     constant prot  : in protection_t := (data_instruction => '0', secure_non_secure => '0', normal_privileged => '0');
     constant nse   : in std_logic := '-';
     constant auser : in std_logic_vector(127 downto 0) := (others => '-');

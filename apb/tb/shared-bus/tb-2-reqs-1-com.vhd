@@ -70,7 +70,7 @@ begin
   begin
     wait until arstn = '1';
     for i in DATA0'range loop
-      bfm.write(to_addr(ADDR0 + i * 4), DATA0(i), clk, req0_out, req0_in, cfg => bfm0_cfg);
+      bfm.write(to_addr(ADDR0 + i * 4), DATA0(i), req0_out, req0_in, clk, cfg => bfm0_cfg);
       wait for 2 ns;
     end loop;
     wait;
@@ -81,7 +81,7 @@ begin
   begin
     wait until arstn = '1';
     for i in DATA1'range loop
-      bfm.write(to_addr(ADDR1 + i * 4), DATA1(i), clk, req1_out, req1_in, cfg => bfm1_cfg);
+      bfm.write(to_addr(ADDR1 + i * 4), DATA1(i), req1_out, req1_in, clk, cfg => bfm1_cfg);
     end loop;
     wait for 2 ns;
     wait;

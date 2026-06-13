@@ -59,7 +59,7 @@ begin
   main : process is
   begin
     wait for 2 ns;
-    bfm.writeb(ADDR, DATA, clk, req, com, msg => ", user msg");
+    bfm.writeb(ADDR, DATA, req, com, clk, msg => ", user msg");
     write_done <= true;
     wait;
   end process;

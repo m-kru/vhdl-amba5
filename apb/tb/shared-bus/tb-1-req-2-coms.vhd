@@ -68,9 +68,9 @@ begin
   begin
     wait until arstn = '1';
 
-    bfm.write(ADDR0, DATA0, clk, req_out, req_in);
+    bfm.write(ADDR0, DATA0, req_out, req_in, clk);
     wait for 2 ns;
-    bfm.write(ADDR1, DATA1, clk, req_out, req_in);
+    bfm.write(ADDR1, DATA1, req_out, req_in, clk);
 
     data := mc0.memory(to_integer(ADDR0) / 4);
     assert data = DATA0

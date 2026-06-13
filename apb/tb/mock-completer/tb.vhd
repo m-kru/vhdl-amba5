@@ -56,14 +56,14 @@ begin
     wait for 2 ns;
 
     -- Single write read test
-    bfm.write(ADDR, x"204080A0", clk, req, com);
+    bfm.write(ADDR, x"204080A0", req, com, clk);
     wait for 1 ns;
-    bfm.read(ADDR, clk, req, com);
+    bfm.read(ADDR, req, com, clk);
     wait for 1 ns;
     assert com.rdata = x"204080A0";
 
     -- Block write test
-    bfm.writeb(ADDR, DATA, clk, req, com);
+    bfm.writeb(ADDR, DATA, req, com, clk);
     wait for 1 ns;
     for i in DATA'range loop
       assert mc.memory(i) = DATA(i)
@@ -71,7 +71,7 @@ begin
     end loop;
 
     -- Block read test
-    bfm.readb(ADDR, read_data, clk, req, com);
+    bfm.readb(ADDR, read_data, req, com, clk);
     wait for 1 ns;
     for i in read_data'range loop
       assert read_data(i) = mc.memory(i)
