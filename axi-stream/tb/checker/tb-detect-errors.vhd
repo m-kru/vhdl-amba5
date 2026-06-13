@@ -81,6 +81,24 @@ begin
     assert ck.errors_o   = init(valid_deassert => '1') report to_debug(ck.errors_o) severity failure;
     assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
 
+    -- Clear
+    ck := clock(ck, stream, clear => '1');
+    assert ck.errors_o   = INTERFACE_ERRORS_NONE   report to_debug(ck.errors_o)   severity failure;
+    assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
+
+    --
+    -- data_change
+    --
+    stream.wakeup := '1';
+    ck := clock(ck, stream, ready => '0');
+    stream.valid := '1';
+    stream.data := x"55";
+    ck := clock(ck, stream, ready => '0');
+    stream.data := x"88";
+    ck := clock(ck, stream, ready => '0');
+    assert ck.errors_o   = init(data_change => '1') report to_debug(ck.errors_o) severity failure;
+    assert ck.warnings_o = INTERFACE_WARNINGS_NONE report to_debug(ck.warnings_o) severity failure;
+
     std.env.finish;
   end process;
 

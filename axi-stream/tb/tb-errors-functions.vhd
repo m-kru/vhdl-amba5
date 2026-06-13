@@ -15,10 +15,11 @@ begin
       valid_no_wakeup    => '1',
       valid_deassert     => '1',
       last_no_wakeup     => '1',
-      keep_strb_reserved => '1'
+      keep_strb_reserved => '1',
+      data_change        => '1'
     );
     constant got  : string := to_string(errors);
-    constant want : string := "(valid_no_wakeup => '1', valid_deassert => '1', last_no_wakeup => '1', keep_strb_reserved => '1')";
+    constant want : string := "(valid_no_wakeup => '1', valid_deassert => '1', last_no_wakeup => '1', keep_strb_reserved => '1', data_change => '1')";
   begin
     assert got = want
       report LF & "got:  " & got & LF & "want: " & want
@@ -32,14 +33,16 @@ begin
       valid_no_wakeup    => '-',
       valid_deassert     => '-',
       last_no_wakeup     => '-',
-      keep_strb_reserved => '-'
+      keep_strb_reserved => '-',
+      data_change        => '-'
     );
     constant got  : string := to_debug(errors);
     constant want : string := "("    & LF &
       "  valid_no_wakeup    => '-'," & LF &
       "  valid_deassert     => '-'," & LF &
       "  last_no_wakeup     => '-'," & LF &
-      "  keep_strb_reserved => '-'"  & LF &
+      "  keep_strb_reserved => '-'," & LF &
+      "  data_change        => '-'"  & LF &
       ")";
   begin
     assert got = want

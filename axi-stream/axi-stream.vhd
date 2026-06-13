@@ -17,13 +17,14 @@ package axi_stream is
     valid_deassert     : std_logic; -- Valid deasserted before handshake.
     last_no_wakeup     : std_logic; -- Last is high but wakeup is not high.
     keep_strb_reserved : std_logic; -- KEEP = '0' and STRB = '1' is a reserved combination and must not be used.
+    data_change        : std_logic; -- Data changed while waiting for handshake.
   end record;
 
-  constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0');
+  constant INTERFACE_ERRORS_NONE : interface_errors_t := ('0', '0', '0', '0', '0');
 
   -- Initializes interface_errors_t with elements set to given values.
   function init (
-    valid_no_wakeup, valid_deassert, last_no_wakeup, keep_strb_reserved : std_logic := '0'
+    valid_no_wakeup, valid_deassert, last_no_wakeup, keep_strb_reserved, data_change : std_logic := '0'
   ) return interface_errors_t;
 
   -- Converts interface_errors_t to string for printing.
@@ -117,6 +118,10 @@ package axi_stream is
   -- Functions for converting sterams for pretty printing.
   --
 
+  function data_to_hstring (
+    slv1024 : std_logic_vector(1023 downto 0); data_byte_count : positive
+  ) return string;
+
   function to_debug (s : stream8_t; indent : string := "") return string;
 
   function to_debug (
@@ -133,10 +138,10 @@ package body axi_stream is
   --
 
   function init (
-    valid_no_wakeup, valid_deassert, last_no_wakeup, keep_strb_reserved : std_logic := '0'
+    valid_no_wakeup, valid_deassert, last_no_wakeup, keep_strb_reserved, data_change : std_logic := '0'
   ) return interface_errors_t is
     constant errors : interface_errors_t := (
-      valid_no_wakeup, valid_deassert, last_no_wakeup, keep_strb_reserved
+      valid_no_wakeup, valid_deassert, last_no_wakeup, keep_strb_reserved, data_change
     );
   begin
     return errors;
@@ -149,7 +154,8 @@ package body axi_stream is
       "valid_no_wakeup => '"    & to_string(errors.valid_no_wakeup)    & "', " &
       "valid_deassert => '"     & to_string(errors.valid_deassert)     & "', " &
       "last_no_wakeup => '"     & to_string(errors.last_no_wakeup)     & "', " &
-      "keep_strb_reserved => '" & to_string(errors.keep_strb_reserved) & "')";
+      "keep_strb_reserved => '" & to_string(errors.keep_strb_reserved) & "', " &
+      "data_change => '"        & to_string(errors.keep_strb_reserved) & "')";
   end function;
 
 
@@ -159,7 +165,8 @@ package body axi_stream is
       indent & "  valid_no_wakeup    => '" & to_string(errors.valid_no_wakeup)    & "'," & LF &
       indent & "  valid_deassert     => '" & to_string(errors.valid_deassert)     & "'," & LF &
       indent & "  last_no_wakeup     => '" & to_string(errors.last_no_wakeup)     & "'," & LF &
-      indent & "  keep_strb_reserved => '" & to_string(errors.keep_strb_reserved) & "'"  & LF &
+      indent & "  keep_strb_reserved => '" & to_string(errors.keep_strb_reserved) & "'," & LF &
+      indent & "  data_change        => '" & to_string(errors.keep_strb_reserved) & "'"  & LF &
       indent & ")";
   end function;
 

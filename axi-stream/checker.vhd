@@ -185,6 +185,18 @@ package body checker is
     end if;
 
 
+    if ck.prev_stream.valid = '1' and stream.valid = '1' and ck.prev_ready /= '1' then
+      if ck.prev_stream.data /= stream.data then
+        ck.errors_o.data_change := '1';
+        report to_string(ck.REPORT_PREFIX) &
+          "data change while waiting for handshake, " &
+          "previous data => x""" &  data_to_hstring(ck.prev_stream.data, data_byte_count) & """" &LF &
+          "stream := " & to_debug(stream, data_byte_count => data_byte_count)
+          severity error;
+      end if;
+    end if;
+
+
     if stream.valid = '1' and ready = '1' then
       ck.transfer_count := ck.transfer_count + 1;
     end if;
