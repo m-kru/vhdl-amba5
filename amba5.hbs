@@ -2,12 +2,23 @@
 # https://github.com/m-kru/vhdl-amba5
 # Copyright (c) 2026 Michał Kruszewski
 
-namespace eval vhdl::amba5::util {
+namespace eval vhdl::amba5 {
+  namespace eval data {
+    set doc "Package with data types of different widths."
+
+    proc src {} {
+      hbs::SetLib "amba5"
+      hbs::AddFile data.vhd
+    }
+
+    hbs::Register $doc
+  }
+
   namespace eval string {
     set doc "Package with helper fixed string type."
 
     proc src {} {
-      hbs::SetLib "amba5_util"
+      hbs::SetLib "amba5"
       hbs::AddFile string.vhd
     }
 

@@ -6,8 +6,8 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
-library amba5_util;
-  use amba5_util.string_pkg.all;
+library amba5;
+  use amba5.string_pkg.all;
 
 -- The apb package contains types and subprograms useful for designs with Advanced Peripheral Bus (APB).
 package apb is
@@ -23,18 +23,6 @@ package apb is
 
   -- An alias to the mask_array_t.
   alias mask_vector_t is mask_array_t;
-
-  -- A one-dimensional array of data with the width equal to the APB maximum data width.
-  type data_array_t is array (natural range <>) of std_logic_vector(31 downto 0);
-
-  -- A two-dimensional array of data with the width equal to the APB maximum data width.
-  type data_array_2d_t is array (natural range <>, natural range <>) of std_logic_vector(31 downto 0);
-
-  -- An alias to the data_array_t.
-  alias data_vector_t is data_array_t;
-
-  -- A two-dimensional vector of APB data with maximum data width.
-  type data_vector_2d_t is array (natural range <>) of data_vector_t;
 
   -- Scenarios defined as erroneous by the specification.
   type interface_errors_t is record

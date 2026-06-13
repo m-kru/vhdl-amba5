@@ -5,8 +5,8 @@
 library ieee;
   use ieee.std_logic_1164.all;
 
-library amba5_util;
-  use amba5_util.string_pkg.all;
+library amba5;
+  use amba5.string_pkg.all;
 
 library work;
   use work.axi_stream.all;

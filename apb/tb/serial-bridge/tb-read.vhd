@@ -2,6 +2,9 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
+library amba5;
+  use amba5.data.all;
+
 library amba5_apb;
   use amba5_apb.apb.all;
   use amba5_apb.checker.all;
@@ -27,7 +30,7 @@ architecture test of tb_read is
   signal ck : checker_t := init;
   signal com : completer_out_t := init;
 
-  signal completer_data : data_array_t(0 to 3) := (
+  signal completer_data : data32_array_t(0 to 3) := (
     x"00000000", x"12345678", x"DEADBEEF", x"ABCDEF01"
   );
   signal mc : mock_completer_t(memory(0 to 3)) := init(memory_size => 4);

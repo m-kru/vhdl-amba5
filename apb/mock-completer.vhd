@@ -6,8 +6,9 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
-library amba5_util;
-  use amba5_util.string_pkg.all;
+library amba5;
+  use amba5.data.all;
+  use amba5.string_pkg.all;
 
 library work;
   use work.apb.all;
@@ -24,7 +25,7 @@ package mock_completer is
     REPORT_PREFIX : string_t; -- Optional REPORT_PREFIX used in report messages.
     ADDR : natural; -- Completer base address.
     -- Internal elements
-    memory : data_array_t;
+    memory : data32_array_t;
     -- Statistics elements
     read_count  : natural; -- Number of read transfers.
     write_count : natural; -- Number of write transfers.

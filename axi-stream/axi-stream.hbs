@@ -7,6 +7,7 @@ namespace eval vhdl::amba5::axi-stream {
     set doc "AXI-Stream package with all primary types and functions."
 
     proc src {} {
+      hbs::AddDep vhdl::amba5::data::src
       hbs::SetLib "amba5_axi_stream"
       hbs::AddFile axi-stream.vhd
     }
@@ -51,7 +52,7 @@ namespace eval vhdl::amba5::axi-stream {
 It detects erroneous and unrecommended scenarios on the interface."
 
     proc src {} {
-      hbs::AddDep vhdl::amba5::util::string::src
+      hbs::AddDep vhdl::amba5::string::src
       hbs::AddDep vhdl::amba5::axi-stream::pkg::src
       hbs::SetLib "amba5_axi_stream"
       hbs::AddFile checker.vhd
@@ -90,7 +91,7 @@ It detects erroneous and unrecommended scenarios on the interface."
     set doc "ToDo"
 
     proc src {} {
-      hbs::AddDep vhdl::amba5::util::string::src
+      hbs::AddDep vhdl::amba5::string::src
       hbs::AddDep vhdl::amba5::axi-stream::pkg::src
       hbs::SetLib "amba5_axi_stream"
       hbs::AddFile packet-dropper.vhd

@@ -1,6 +1,9 @@
 library ieee;
   use ieee.std_logic_1164.all;
 
+library amba5;
+  use amba5.data.all;
+
 library amba5_apb;
   use amba5_apb.apb.all;
   use amba5_apb.bfm;
@@ -34,11 +37,11 @@ architecture test of tb is
 
   signal mc : mock_completer_t(memory(0 to 7)) := init(memory_size => 8);
 
-  constant DATA : data_array_t(0 to 7) := (
+  constant DATA : data32_array_t(0 to 7) := (
     x"11111111", x"deadbeef", x"88888888", x"5555aaaa", x"aaaa5555", x"01010101", x"22222222", x"eeeeeeee"
   );
 
-  signal read_data : data_array_t(0 to 7);
+  signal read_data : data32_array_t(0 to 7);
 
 begin
 

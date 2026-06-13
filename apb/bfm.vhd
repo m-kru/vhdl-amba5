@@ -6,8 +6,9 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
-library amba5_util;
-  use amba5_util.string_pkg.all;
+library amba5;
+  use amba5.data.all;
+  use amba5.string_pkg.all;
 
 library work;
   use work.apb.all;
@@ -80,7 +81,7 @@ package bfm is
   -- Carries out block write transaction with multiple write transfer.
   procedure writeb (
     constant addr  : in unsigned(31 downto 0); -- Start address
-    constant data  : in data_array_t;
+    constant data  : in data32_array_t;
     signal   clk   : in std_logic;
     signal   req   : inout requester_out_t;
     signal   com   : in  completer_out_t;
@@ -98,7 +99,7 @@ package bfm is
   -- Carries out block read transaction with multiple read transfers.
   procedure readb (
     constant addr  : in unsigned(31 downto 0); -- Start address
-    signal   data  : out data_array_t;
+    signal   data  : out data32_array_t;
     signal   clk   : in std_logic;
     signal   req   : inout requester_out_t;
     signal   com   : in  completer_out_t;
@@ -281,7 +282,7 @@ package body bfm is
 
   procedure writeb (
     constant addr  : in unsigned(31 downto 0);
-    constant data  : in data_array_t;
+    constant data  : in data32_array_t;
     signal   clk   : in std_logic;
     signal   req   : inout requester_out_t;
     signal   com   : in  completer_out_t;
@@ -387,7 +388,7 @@ package body bfm is
 
   procedure readb (
     constant addr  : in unsigned(31 downto 0);
-    signal   data  : out data_array_t;
+    signal   data  : out data32_array_t;
     signal   clk   : in std_logic;
     signal   req   : inout requester_out_t;
     signal   com   : in  completer_out_t;

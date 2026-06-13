@@ -2,6 +2,9 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
+library amba5;
+  use amba5.data.all;
+
 library amba5_apb;
   use amba5_apb.apb.all;
   use amba5_apb.bfm;
@@ -66,19 +69,19 @@ architecture test of tb_2_reqs_2_coms is
 
   constant COM_ADDRS : addr_array_t := (to_addr(0), to_addr(16));
 
-  constant WRITE_DATA : data_vector_2d_t(req_range)(0 to 3) := (
+  constant WRITE_DATA : data32_vector_2d_t(req_range)(0 to 3) := (
     0 => (x"11111111", x"22222222", x"33333333", x"44444444"),
     1 => (x"66666666", x"77777777", x"88888888", x"99999999")
   );
 
-  signal READ_DATA : data_vector_2d_t(req_range)(0 to 3);
+  signal READ_DATA : data32_vector_2d_t(req_range)(0 to 3);
 
-  constant WRITEB_DATA : data_vector_2d_t(req_range)(0 to 3) := (
+  constant WRITEB_DATA : data32_vector_2d_t(req_range)(0 to 3) := (
     0 => (x"A5A5A5A5", x"12121212", x"DDDD3333", x"77777777"),
     1 => (x"28282828", x"EEEEEEEE", x"99999999", x"33333333")
   );
 
-  signal READB_DATA : data_vector_2d_t(req_range)(0 to 3);
+  signal READB_DATA : data32_vector_2d_t(req_range)(0 to 3);
 
   signal write_checker_done,
          read_checker_done,

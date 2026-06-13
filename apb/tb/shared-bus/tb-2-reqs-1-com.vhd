@@ -2,6 +2,9 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
+library amba5;
+  use amba5.data.all;
+
 library amba5_apb;
   use amba5_apb.apb.all;
   use amba5_apb.bfm;
@@ -35,10 +38,10 @@ architecture test of tb_2_reqs_1_com is
   signal mc : mock_completer_t(memory(0 to 7)) := init(memory_size => 8);
 
   constant ADDR0 : natural := 0;
-  constant DATA0 : data_array_t := (x"11111111", x"22222222", x"33333333", x"44444444");
+  constant DATA0 : data32_array_t := (x"11111111", x"22222222", x"33333333", x"44444444");
 
   constant ADDR1 : natural := 16;
-  constant DATA1 : data_array_t := (x"AAAAAAAA", x"BBBBBBBB", x"CCCCCCCC", x"DDDDDDDD");
+  constant DATA1 : data32_array_t := (x"AAAAAAAA", x"BBBBBBBB", x"CCCCCCCC", x"DDDDDDDD");
 
 begin
 

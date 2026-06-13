@@ -5,6 +5,9 @@
 library ieee;
   use ieee.std_logic_1164.all;
 
+library amba5;
+  use amba5.data.all;
+
 -- The axi_stream package contains types and subprograms useful for designs with AXI-Stream Protocol.
 package axi_stream is
 
@@ -52,7 +55,7 @@ package axi_stream is
 
   -- Stream type with data width of 8 bits.
   type stream8_t is record
-    data   : std_logic_vector(7 downto 0);
+    data   : data8_t;
     strb   : std_logic_vector(0 downto 0);
     keep   : std_logic_vector(0 downto 0);
     user   : std_logic_vector(0 downto 0);
@@ -64,7 +67,7 @@ package axi_stream is
   end record;
 
   function init (
-    data   : std_logic_vector(7 downto 0) := (others => '0');
+    data   : data8_t := (others => '0');
     strb   : std_logic_vector(0 downto 0) := (others => '1');
     keep   : std_logic_vector(0 downto 0) := (others => '1');
     user   : std_logic_vector(0 downto 0) := (others => '0');
@@ -78,7 +81,7 @@ package axi_stream is
 
   -- Stream type with data width of 1024 bits.
   type stream1024_t is record
-    data   : std_logic_vector(1023 downto 0);
+    data   : data1024_t;
     strb   : std_logic_vector(127  downto 0);
     keep   : std_logic_vector(127  downto 0);
     user   : std_logic_vector(127  downto 0);
@@ -90,7 +93,7 @@ package axi_stream is
   end record;
 
   function init (
-    data   : std_logic_vector(1023 downto 0) := (others => '0');
+    data   : data1024_t := (others => '0');
     strb   : std_logic_vector(127  downto 0) := (others => '1');
     keep   : std_logic_vector(127  downto 0) := (others => '1');
     user   : std_logic_vector(127  downto 0) := (others => '0');
@@ -197,7 +200,7 @@ package body axi_stream is
   --
 
   function init (
-    data   : std_logic_vector(7 downto 0) := (others => '0');
+    data   : data8_t := (others => '0');
     strb   : std_logic_vector(0 downto 0) := (others => '1');
     keep   : std_logic_vector(0 downto 0) := (others => '1');
     user   : std_logic_vector(0 downto 0) := (others => '0');
@@ -231,7 +234,7 @@ package body axi_stream is
 
 
   function init (
-    data   : std_logic_vector(1023 downto 0) := (others => '0');
+    data   : data1024_t := (others => '0');
     strb   : std_logic_vector(127  downto 0) := (others => '1');
     keep   : std_logic_vector(127  downto 0) := (others => '1');
     user   : std_logic_vector(127  downto 0) := (others => '0');

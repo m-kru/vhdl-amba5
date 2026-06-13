@@ -2,6 +2,9 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
+library amba5;
+  use amba5.data.all;
+
 library amba5_apb;
   use amba5_apb.apb.all;
   use amba5_apb.bfm;
@@ -21,11 +24,11 @@ architecture test of tb_writeb is
   signal com : completer_out_t := init;
 
   constant ADDR : unsigned(31 downto 0) := x"00000000";
-  constant DATA : data_array_t := (
+  constant DATA : data32_array_t := (
     x"01234567", x"89ABCDEF", x"DAEDBEEF", x"F0F0F0F0"
   );
 
-  signal written_data : data_array_t(0 to 3);
+  signal written_data : data32_array_t(0 to 3);
 
   signal write_done : boolean := false;
 
