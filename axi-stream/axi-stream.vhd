@@ -251,7 +251,12 @@ package body axi_stream is
 
 
   function to_stream1024(s8 : stream8_t) return stream1024_t is
-    variable s : stream1024_t := init;
+    variable s : stream1024_t := init(
+      data => (others => '-'),
+      strb => (others => '-'),
+      keep => (others => '-'),
+      user => (others => '-')
+    );
   begin
     s.data(7 downto 0) := s8.data;
     s.strb(0 downto 0) := s8.strb;

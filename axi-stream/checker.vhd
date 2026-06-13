@@ -74,6 +74,8 @@ package body checker is
     variable ck : checker_t;
   begin
     ck.REPORT_PREFIX := make(REPORT_PREFIX);
+    ck.errors_o := INTERFACE_ERRORS_NONE;
+    ck.warnings_o := INTERFACE_WARNINGS_NONE;
     return ck;
   end function;
 

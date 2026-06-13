@@ -86,6 +86,38 @@ It detects erroneous and unrecommended scenarios on the interface."
     hbs::Register $doc
   }
 
+  namespace eval bfm {
+    set doc "Bus Functional Model.
+It is useful only for simulations."
+
+    proc src {} {
+      hbs::AddDep vhdl::amba5::data::src
+      hbs::AddDep vhdl::amba5::string::src
+      hbs::AddDep vhdl::amba5::axi-stream::pkg::src
+      hbs::SetLib "amba5_axi_stream"
+      hbs::AddFile bfm.vhd
+    }
+
+    proc _tb {top} {
+      hbs::SetTool "nvc"
+      hbs::AddDep vhdl::amba5::axi-stream::checker::src
+      if {$hbs::Tool eq "nvc"} {
+        hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
+      }
+      hbs::SetExitSeverity "warning"
+      hbs::SetTop $top
+      src
+      hbs::SetLib ""
+    }
+
+    proc tb-stream8-transmit {} {
+      _tb "tb_stream8_transmit"
+      hbs::AddFile tb/bfm/tb-stream8-transmit.vhd
+      hbs::Run
+    }
+
+    hbs::Register $doc
+  }
 
   namespace eval packet-dropper {
     set doc "ToDo"
