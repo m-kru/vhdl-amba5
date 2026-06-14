@@ -134,6 +134,7 @@ It is useful only for simulations."
       if {$hbs::Tool eq "nvc"} {
         hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
       }
+      hbs::AddDep vhdl::amba5::axi-stream::bfm::src
       hbs::AddDep vhdl::amba5::axi-stream::checker::src
       hbs::SetTop $top
       src
@@ -141,9 +142,9 @@ It is useful only for simulations."
     }
 
     # Testbench for protection_t functions.
-    proc tb-stream8-infinite-space {} {
-      _tb "tb_stream8_infinite_space"
-      hbs::AddFile tb/packet-dropper/tb-stream8-infinite-space.vhd
+    proc tb-stream8 {} {
+      _tb "tb_stream8"
+      hbs::AddFile tb/packet-dropper/tb-stream8.vhd
       hbs::Run
     }
 
