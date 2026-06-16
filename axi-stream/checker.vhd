@@ -81,6 +81,13 @@ package checker is
 
   function clock (
     checker : checker_t;
+    stream  : stream128_t;
+    ready   : std_logic := '1';
+    clear   : std_logic := '0'
+  ) return checker_t;
+
+  function clock (
+    checker : checker_t;
     stream  : stream1024_t;
     ready   : std_logic := '1';
     clear   : std_logic := '0';
@@ -267,6 +274,17 @@ package body checker is
   ) return checker_t is
   begin
     return clock(checker, to_stream1024(stream), ready, clear, 8);
+  end;
+
+
+  function clock (
+    checker : checker_t;
+    stream  : stream128_t;
+    ready   : std_logic := '1';
+    clear   : std_logic := '0'
+  ) return checker_t is
+  begin
+    return clock(checker, to_stream1024(stream), ready, clear, 16);
   end;
 
 
