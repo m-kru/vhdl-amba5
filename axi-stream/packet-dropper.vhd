@@ -4,7 +4,21 @@ library ieee;
 library amba5_axi_stream;
   use amba5_axi_stream.axi_stream.all;
 
-
+-- Packtet dropper.
+--
+-- The packet dropper introduces one clock latency.
+-- The input stream packets can be streamed without gaps between packets.
+--
+-- NOTE: The packet dropper might not work correctly if the receiver asserts
+-- and deasserts ready without valid being asserted. This is permitted by the AXI-Stream
+-- specification, but not supported by the packet dropper.
+--
+-- NOTE: The packet dropper might now work correctly if the transmitter does not support
+-- back-pressure, but the receiver does. In such a case, it is up to you to make sure
+-- the packets are dropped correctly.
+--
+-- The drop_event_o is asserted for one clock cycle each time a packet is dropped.
+-- To count the dropped packets simply count the clock cycles the drop_event was asserted.
 entity Packet_Dropper is
   generic (
     REPORT_PREFIX : string := "axi stream: packet dropper: "
