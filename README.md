@@ -7,7 +7,7 @@
 # vhdl-amba5
 
 Library with VHDL cores implementing Advanced Microcontroller Bus Architecture 5 (AMBA5) specifications such as APB, AHB, and AXI.
-Currently only APB is implemented.
+Currently supported standards are APB and AXI-Stream.
 All VHDL files are compatible with the standard revision 2008 and have no external dependencies.
 All the code simulates correctly with ghdl, nvc, questa and xsim simulators.
 
