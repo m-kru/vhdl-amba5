@@ -104,6 +104,22 @@ package bfm is
     constant msg    : in string := "" -- An optional user message added at the end of the report message.
   );
 
+  -- See doc for transmit for stream8_t.
+  procedure transmit (
+    constant data   : in data64_array_t;
+    signal   stream : inout stream64_t;
+    signal   ready  : in std_logic;
+    signal   clk    : in std_logic;
+    constant last   : in std_logic := '1';
+    constant strb   : in std_logic_vector(7 downto 0) := (others => '1');
+    constant keep   : in std_logic_vector(7 downto 0) := (others => '1');
+    constant user   : in std_logic_vector(7 downto 0) := (others => '-');
+    constant id     : in std_logic_vector(7 downto 0) := (others => '-');
+    constant dest   : in std_logic_vector(7 downto 0) := (others => '-');
+    constant cfg    : in config_t := DEFAULT_CONFIG;
+    constant msg    : in string := "" -- An optional user message added at the end of the report message.
+  );
+
 end package;
 
 
@@ -258,6 +274,53 @@ package body bfm is
     constant strb   : in std_logic_vector(3 downto 0) := (others => '1');
     constant keep   : in std_logic_vector(3 downto 0) := (others => '1');
     constant user   : in std_logic_vector(3 downto 0) := (others => '-');
+    constant id     : in std_logic_vector(7 downto 0) := (others => '-');
+    constant dest   : in std_logic_vector(7 downto 0) := (others => '-');
+    constant cfg    : in config_t := DEFAULT_CONFIG;
+    constant msg    : in string := "" -- An optional user message added at the end of the report message.
+  ) is
+    constant init_wakeup : std_logic := stream.wakeup;
+  begin
+    report to_string(cfg.REPORT_PREFIX) &
+      "transmit: data length := " & to_string(data'length) & msg;
+
+    transmit_assert_wakeup(stream.wakeup, clk, cfg, msg);
+
+    stream.strb  <= strb;
+    stream.keep  <= keep;
+    stream.user  <= user;
+    stream.id    <= id;
+    stream.dest  <= dest;
+    stream.valid <= '1';
+
+    for i in data'range loop
+      if i = data'right then
+        stream.last <= last;
+      end if;
+
+      stream.data <= data(i);
+      transmit_wait_for_ready(ready, clk, cfg, msg);
+    end loop;
+
+    -- Cleanup
+    stream.valid  <= '0';
+    stream.last   <= '0';
+    stream.wakeup <= init_wakeup;
+
+    wait for 0 ns;
+    wait for 0 ns;
+  end procedure;
+
+
+  procedure transmit (
+    constant data   : in data64_array_t;
+    signal   stream : inout stream64_t;
+    signal   ready  : in std_logic;
+    signal   clk    : in std_logic;
+    constant last   : in std_logic := '1';
+    constant strb   : in std_logic_vector(7 downto 0) := (others => '1');
+    constant keep   : in std_logic_vector(7 downto 0) := (others => '1');
+    constant user   : in std_logic_vector(7 downto 0) := (others => '-');
     constant id     : in std_logic_vector(7 downto 0) := (others => '-');
     constant dest   : in std_logic_vector(7 downto 0) := (others => '-');
     constant cfg    : in config_t := DEFAULT_CONFIG;

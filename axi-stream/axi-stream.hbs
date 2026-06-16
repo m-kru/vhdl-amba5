@@ -160,6 +160,12 @@ It is useful only for simulations."
       hbs::Run
     }
 
+    proc tb-stream64-drop-all-single-transfer {} {
+      _tb "tb_stream64_drop_all_single_transfer"
+      hbs::AddFile tb/packet-dropper/tb-stream64-drop-all-single-transfer.vhd
+      hbs::Run
+    }
+
     hbs::Register $doc
   }
 
