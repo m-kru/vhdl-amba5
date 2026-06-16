@@ -106,6 +106,32 @@ package axi_stream is
   ) return stream16_t;
 
 
+  -- Stream type with data width of 32 bits.
+  type stream32_t is record
+    data   : data32_t;
+    strb   : std_logic_vector(3 downto 0);
+    keep   : std_logic_vector(3 downto 0);
+    user   : std_logic_vector(3 downto 0);
+    valid  : std_logic;
+    last   : std_logic;
+    wakeup : std_logic;
+    id     : std_logic_vector(7 downto 0);
+    dest   : std_logic_vector(7 downto 0);
+  end record;
+
+  function init (
+    data   : data32_t := (others => '0');
+    strb   : std_logic_vector(3 downto 0) := (others => '1');
+    keep   : std_logic_vector(3 downto 0) := (others => '1');
+    user   : std_logic_vector(3 downto 0) := (others => '0');
+    valid  : std_logic := '0';
+    last   : std_logic := '0';
+    wakeup : std_logic := '1';
+    id     : std_logic_vector(7 downto 0) := (others => '0');
+    dest   : std_logic_vector(7 downto 0) := (others => '0')
+  ) return stream32_t;
+
+
   -- Stream type with data width of 1024 bits.
   type stream1024_t is record
     data   : data1024_t;
@@ -137,13 +163,20 @@ package axi_stream is
   --
 
   function to_stream8 (s16   : stream16_t)   return stream8_t;
+  function to_stream8 (s32   : stream32_t)   return stream8_t;
   function to_stream8 (s1024 : stream1024_t) return stream8_t;
 
   function to_stream16 (s8    : stream8_t)    return stream16_t;
+  function to_stream16 (s32   : stream32_t)   return stream16_t;
   function to_stream16 (s1024 : stream1024_t) return stream16_t;
+
+  function to_stream32 (s8    : stream8_t)    return stream32_t;
+  function to_stream32 (s16   : stream16_t)   return stream32_t;
+  function to_stream32 (s1024 : stream1024_t) return stream32_t;
 
   function to_stream1024 (s8  : stream8_t)  return stream1024_t;
   function to_stream1024 (s16 : stream16_t) return stream1024_t;
+  function to_stream1024 (s32 : stream32_t) return stream1024_t;
 
   --
   -- Functions for converting sterams for pretty printing.
@@ -270,6 +303,23 @@ package body axi_stream is
   end function;
 
 
+  function to_stream8 (s32 : stream32_t) return stream8_t is
+    constant s : stream8_t := (
+      s32.data(7 downto 0),
+      s32.strb(0 downto 0),
+      s32.keep(0 downto 0),
+      s32.user(0 downto 0),
+      s32.valid,
+      s32.last,
+      s32.wakeup,
+      s32.id,
+      s32.dest
+    );
+  begin
+    return s;
+  end function;
+
+
   function to_stream8 (s1024 : stream1024_t) return stream8_t is
     constant s : stream8_t := (
       s1024.data(7 downto 0),
@@ -329,12 +379,110 @@ package body axi_stream is
   end function;
 
 
+  function to_stream16 (s32 : stream32_t) return stream16_t is
+    constant s : stream16_t := (
+      s32.data(15 downto 0),
+      s32.strb( 1 downto 0),
+      s32.keep( 1 downto 0),
+      s32.user( 1 downto 0),
+      s32.valid,
+      s32.last,
+      s32.wakeup,
+      s32.id,
+      s32.dest
+    );
+  begin
+    return s;
+  end function;
+
+
   function to_stream16 (s1024 : stream1024_t) return stream16_t is
     constant s : stream16_t := (
       s1024.data(15 downto 0),
       s1024.strb( 1 downto 0),
       s1024.keep( 1 downto 0),
       s1024.user( 1 downto 0),
+      s1024.valid,
+      s1024.last,
+      s1024.wakeup,
+      s1024.id,
+      s1024.dest
+    );
+  begin
+    return s;
+  end function;
+
+  --
+  -- stream32_t
+  --
+
+  function init (
+    data   : data32_t := (others => '0');
+    strb   : std_logic_vector(3 downto 0) := (others => '1');
+    keep   : std_logic_vector(3 downto 0) := (others => '1');
+    user   : std_logic_vector(3 downto 0) := (others => '0');
+    valid  : std_logic := '0';
+    last   : std_logic := '0';
+    wakeup : std_logic := '1';
+    id     : std_logic_vector(7 downto 0) := (others => '0');
+    dest   : std_logic_vector(7 downto 0) := (others => '0')
+  ) return stream32_t is
+    constant s : stream32_t := (data, strb, keep, user, valid, last, wakeup, id, dest);
+  begin
+    return s;
+  end function;
+
+
+  function to_stream32 (s8 : stream8_t) return stream32_t is
+    variable s : stream32_t := init(
+      data => (others => '-'),
+      strb => (others => '-'),
+      keep => (others => '-'),
+      user => (others => '-')
+    );
+  begin
+    s.data(7 downto 0) := s8.data;
+    s.strb(0 downto 0) := s8.strb;
+    s.keep(0 downto 0) := s8.keep;
+    s.user(0 downto 0) := s8.user;
+    s.valid  := s8.valid;
+    s.last   := s8.last;
+    s.wakeup := s8.wakeup;
+    s.id     := s8.id;
+    s.dest   := s8.dest;
+
+    return s;
+  end function;
+
+
+  function to_stream32 (s16 : stream16_t) return stream32_t is
+    variable s : stream32_t := init(
+      data => (others => '-'),
+      strb => (others => '-'),
+      keep => (others => '-'),
+      user => (others => '-')
+    );
+  begin
+    s.data(15 downto 0) := s16.data;
+    s.strb( 1 downto 0) := s16.strb;
+    s.keep( 1 downto 0) := s16.keep;
+    s.user( 1 downto 0) := s16.user;
+    s.valid  := s16.valid;
+    s.last   := s16.last;
+    s.wakeup := s16.wakeup;
+    s.id     := s16.id;
+    s.dest   := s16.dest;
+
+    return s;
+  end function;
+
+
+  function to_stream32 (s1024 : stream1024_t) return stream32_t is
+    constant s : stream32_t := (
+      s1024.data(31 downto 0),
+      s1024.strb( 3 downto 0),
+      s1024.keep( 3 downto 0),
+      s1024.user( 3 downto 0),
       s1024.valid,
       s1024.last,
       s1024.wakeup,
@@ -405,6 +553,28 @@ package body axi_stream is
     s.wakeup := s16.wakeup;
     s.id     := s16.id;
     s.dest   := s16.dest;
+
+    return s;
+  end function;
+
+
+  function to_stream1024 (s32 : stream32_t) return stream1024_t is
+    variable s : stream1024_t := init(
+      data => (others => '-'),
+      strb => (others => '-'),
+      keep => (others => '-'),
+      user => (others => '-')
+    );
+  begin
+    s.data(31 downto 0) := s32.data;
+    s.strb( 3 downto 0) := s32.strb;
+    s.keep( 3 downto 0) := s32.keep;
+    s.user( 3 downto 0) := s32.user;
+    s.valid  := s32.valid;
+    s.last   := s32.last;
+    s.wakeup := s32.wakeup;
+    s.id     := s32.id;
+    s.dest   := s32.dest;
 
     return s;
   end function;
