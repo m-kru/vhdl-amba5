@@ -69,7 +69,10 @@ begin
           if istream_i.valid then
             drop_event_o <= '1';
             if istream_i.last /= '1' then
+              report REPORT_PREFIX & "single transfer packet drop";
               state <= DROPPING;
+            else
+              report REPORT_PREFIX & "packet drop start";
             end if;
           end if;
         else
@@ -90,8 +93,10 @@ begin
               if drop_i = '1' then
                 drop_event_o <= '1';
                 if istream_i.last = '1' then
+                  report REPORT_PREFIX & "single transfer packet drop";
                   state <= IDLE;
                 else
+                  report REPORT_PREFIX & "packet drop start";
                   ostream_o.valid <= '0';
                   ostream_o.last <= '0';
                   state <= DROPPING;
@@ -110,6 +115,7 @@ begin
         ostream_o.last <= '0';
 
         if istream_i.last = '1' then
+          report REPORT_PREFIX & "packet drop end";
           state <= IDLE;
         end if;
       end case;

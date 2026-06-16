@@ -154,6 +154,12 @@ It is useful only for simulations."
       hbs::Run
     }
 
+    proc tb-stream32-drop-every-other {} {
+      _tb "tb_stream32_drop_every_other"
+      hbs::AddFile tb/packet-dropper/tb-stream32-drop-every-other.vhd
+      hbs::Run
+    }
+
     hbs::Register $doc
   }
 
