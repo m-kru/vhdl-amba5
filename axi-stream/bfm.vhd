@@ -72,6 +72,22 @@ package bfm is
     constant msg    : in string := "" -- An optional user message added at the end of the report message.
   );
 
+  -- See doc for transmit for stream8_t.
+  procedure transmit (
+    constant data   : in data16_array_t;
+    signal   stream : inout stream16_t;
+    signal   ready  : in std_logic;
+    signal   clk    : in std_logic;
+    constant last   : in std_logic := '1';
+    constant strb   : in std_logic_vector(0 downto 0) := (others => '1');
+    constant keep   : in std_logic_vector(0 downto 0) := (others => '1');
+    constant user   : in std_logic_vector(0 downto 0) := (others => '-');
+    constant id     : in std_logic_vector(7 downto 0) := (others => '-');
+    constant dest   : in std_logic_vector(7 downto 0) := (others => '-');
+    constant cfg    : in config_t := DEFAULT_CONFIG;
+    constant msg    : in string := "" -- An optional user message added at the end of the report message.
+  );
+
 end package;
 
 
@@ -88,6 +104,41 @@ package body bfm is
   end function;
 
 
+  -- Common wakeup assertion procedure.
+  procedure transmit_assert_wakeup (
+    signal wakeup : inout std_logic;
+    signal clk    : in std_logic;
+    constant cfg  : in config_t;
+    constant msg  : in string
+  ) is
+  begin
+    if wakeup /= '1' then
+      wakeup <= '1';
+      wait until rising_edge(clk) for cfg.timeout;
+      if clk /= '1' then
+        report to_string(cfg.REPORT_PREFIX) &
+          "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
+      end if;
+    end if;
+  end procedure;
+
+
+  -- Common procedure for waiting for the ready signal for handshake.
+  procedure transmit_wait_for_ready (
+    signal ready : in std_logic;
+    signal clk   : in std_logic;
+    constant cfg  : in config_t;
+    constant msg  : in string
+  ) is
+  begin
+    wait until rising_edge(clk) and ready = '1' for cfg.timeout;
+    if ready /= '1' then
+      report to_string(cfg.REPORT_PREFIX) &
+        "timeout while waiting for handshake" severity cfg.timeout_severity;
+    end if;
+  end procedure;
+
+
   procedure transmit (
     constant data   : in data8_array_t;
     signal   stream : inout stream8_t;
@@ -102,17 +153,12 @@ package body bfm is
     constant cfg    : in config_t := DEFAULT_CONFIG;
     constant msg    : in string := "" -- An optional user message added at the end of the report message.
   ) is
+    constant init_wakeup : std_logic := stream.wakeup;
   begin
     report to_string(cfg.REPORT_PREFIX) &
       "transmit: data length := " & to_string(data'length) & msg;
 
-    -- Assert wakeup signal
-    stream.wakeup <= '1';
-    wait until rising_edge(clk) for cfg.timeout;
-    if clk /= '1' then
-      report to_string(cfg.REPORT_PREFIX) &
-        "timeout while waiting for clk to assert wakeup" severity cfg.timeout_severity;
-    end if;
+    transmit_assert_wakeup(stream.wakeup, clk, cfg, msg);
 
     stream.strb  <= strb;
     stream.keep  <= keep;
@@ -123,24 +169,64 @@ package body bfm is
 
     for i in data'range loop
       if i = data'right then
-        stream.last <= '1';
+        stream.last <= last;
       end if;
 
       stream.data <= data(i);
-
-      wait until rising_edge(clk) and ready = '1' for cfg.timeout;
-      if ready /= '1' then
-        report to_string(cfg.REPORT_PREFIX) &
-          "timeout while waiting for handshake" severity cfg.timeout_severity;
-      end if;
+      transmit_wait_for_ready(ready, clk, cfg, msg);
     end loop;
 
     -- Cleanup
-    stream.valid <= '0';
-    stream.last  <= '0';
+    stream.valid  <= '0';
+    stream.last   <= '0';
+    stream.wakeup <= init_wakeup;
 
-    -- Deassert wakeup signal value
-    stream.wakeup <= '0';
+    wait for 0 ns;
+    wait for 0 ns;
+  end procedure;
+
+
+  procedure transmit (
+    constant data   : in data16_array_t;
+    signal   stream : inout stream16_t;
+    signal   ready  : in std_logic;
+    signal   clk    : in std_logic;
+    constant last   : in std_logic := '1';
+    constant strb   : in std_logic_vector(1 downto 0) := (others => '1');
+    constant keep   : in std_logic_vector(1 downto 0) := (others => '1');
+    constant user   : in std_logic_vector(1 downto 0) := (others => '-');
+    constant id     : in std_logic_vector(7 downto 0) := (others => '-');
+    constant dest   : in std_logic_vector(7 downto 0) := (others => '-');
+    constant cfg    : in config_t := DEFAULT_CONFIG;
+    constant msg    : in string := "" -- An optional user message added at the end of the report message.
+  ) is
+    constant init_wakeup : std_logic := stream.wakeup;
+  begin
+    report to_string(cfg.REPORT_PREFIX) &
+      "transmit: data length := " & to_string(data'length) & msg;
+
+    transmit_assert_wakeup(stream.wakeup, clk, cfg, msg);
+
+    stream.strb  <= strb;
+    stream.keep  <= keep;
+    stream.user  <= user;
+    stream.id    <= id;
+    stream.dest  <= dest;
+    stream.valid <= '1';
+
+    for i in data'range loop
+      if i = data'right then
+        stream.last <= last;
+      end if;
+
+      stream.data <= data(i);
+      transmit_wait_for_ready(ready, clk, cfg, msg);
+    end loop;
+
+    -- Cleanup
+    stream.valid  <= '0';
+    stream.last   <= '0';
+    stream.wakeup <= init_wakeup;
 
     wait for 0 ns;
     wait for 0 ns;

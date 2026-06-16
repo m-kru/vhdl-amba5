@@ -133,6 +133,7 @@ It is useful only for simulations."
       hbs::SetTool "nvc"
       if {$hbs::Tool eq "nvc"} {
         hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
+        hbs::AddPreSimCb hbs::SetArgSuffix "--dump-arrays"
       }
       hbs::AddDep vhdl::amba5::axi-stream::bfm::src
       hbs::AddDep vhdl::amba5::axi-stream::checker::src
@@ -141,10 +142,15 @@ It is useful only for simulations."
       hbs::SetLib ""
     }
 
-    # Testbench for protection_t functions.
     proc tb-stream8 {} {
       _tb "tb_stream8"
       hbs::AddFile tb/packet-dropper/tb-stream8.vhd
+      hbs::Run
+    }
+
+    proc tb-stream16-no-back-pressure-no-drop {} {
+      _tb "tb_stream16_no_back_pressure_no_drop"
+      hbs::AddFile tb/packet-dropper/tb-stream16-no-back-pressure-no-drop.vhd
       hbs::Run
     }
 

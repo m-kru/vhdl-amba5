@@ -1,187 +1,119 @@
--- SPDX-License-Identifier: MIT
--- https://github.com/m-kru/vhdl-amba5
--- Copyright (c) 2026 Michał Kruszewski
-
 library ieee;
   use ieee.std_logic_1164.all;
 
-library amba5;
-  use amba5.string_pkg.all;
+library amba5_axi_stream;
+  use amba5_axi_stream.axi_stream.all;
 
-library work;
-  use work.axi_stream.all;
 
-package packet_dropper is
+entity Packet_Dropper is
+  generic (
+    REPORT_PREFIX : string := "axi stream: packet dropper: "
+  );
+  port (
+    arstn_i : in  std_logic := '1';
+    clk_i   : in  std_logic;
+    -- Input Stream
+    istream_i : in  stream1024_t;
+    iready_o  : out std_logic;
+    -- Output Stream
+    ostream_o : out stream1024_t;
+    oready_i  : in  std_logic;
+    -- Control
+    drop_i       : in  std_logic;
+    drop_event_o : out std_logic
+  );
+end entity;
+
+
+architecture rtl of Packet_Dropper is
 
   type state_t is (IDLE, DROPPING, FORWARDING);
+  signal state : state_t := IDLE;
 
-  -- Packtet dropper.
-  --
-  -- The packet dropper introduces one clock latency.
-  -- The input stream packets can be streamed without gaps between packets.
-  --
-  -- NOTE: The packet dropper might not work correctly if the receiver asserts
-  -- and deasserts ready without valid being asserted. This is permitted by the AXI-Stream
-  -- specification, but not supported by the packet dropper.
-  --
-  -- NOTE: The packet dropper might now work correctly if the transmitter does not support
-  -- back-pressure, but the receiver does. In such a case, it is up to you to make sure
-  -- the packets are dropped correctly.
-  --
-  -- The drop_event is asserted for one clock cycle each time a packet is dropped.
-  -- To count the dropped packets simply count the clock cycles the drop_event was asserted.
-  type packet_dropper_t is record
-    -- Configuration elements
-    REPORT_PREFIX : string_t; -- Optional prefix used in report messages
+begin
 
-    -- Output elements
-    ostream    : stream1024_t; -- Output stream
-    iready     : std_logic; -- Input stream
-    drop_event : std_logic;
-
-    -- Internal elements
-    state : state_t;
-  end record;
-
-  -- Some simulators, for example, questa, doesn't accept init function within another init function.
-  -- Core around this issue by defining constant.
-  constant STREAM_INIT : stream1024_t := init;
-
-  function init (
-    REPORT_PREFIX : string := "axi stream: packet dropper: ";
-    ostream       : stream1024_t := STREAM_INIT;
-    iready        : std_logic := '0';
-    drop_event    : std_logic := '0';
-    state         : state_t := IDLE
-  ) return packet_dropper_t;
-
-  -- Clocks packet dropper.
-  function clock (
-    packet_dropper : packet_dropper_t;
-    istream        : stream1024_t;
-    drop           : std_logic;
-    oready         : std_logic := '1'
-  ) return packet_dropper_t;
-
-end package;
-
-
-package body packet_dropper is
-
-  function init (
-    REPORT_PREFIX : string := "axi stream: packet dropper: ";
-    ostream       : stream1024_t := STREAM_INIT;
-    iready        : std_logic := '0';
-    drop_event    : std_logic := '0';
-    state         : state_t := IDLE
-  ) return packet_dropper_t is
-    constant pd : packet_dropper_t := (
-      make(REPORT_PREFIX), ostream, iready, drop_event, state
-    );
+  -- iready_o driver
+  process (drop_i, state, oready_i)
   begin
-    return pd;
-  end function;
-
-
-  function clock_idle (
-    packet_dropper : packet_dropper_t;
-    istream        : stream1024_t;
-    drop           : std_logic;
-    oready         : std_logic := '1'
-  ) return packet_dropper_t is
-    variable pd : packet_dropper_t := packet_dropper;
-  begin
-    if istream.valid and pd.iready then -- Valid handshake, transfer
-      if drop = '1' then
-        pd.ostream.valid := '0';
-        pd.ostream.last  := '0';
-
-        pd.drop_event := '1';
-        pd.state  := DROPPING;
-        pd.iready := '1';
-      else
-        pd.state  := FORWARDING;
-        pd.iready := oready;
-      end if;
-    else -- No handshake
-      pd.iready := oready;
-      if drop = '1' then
-        pd.iready := '1';
-      end if;
-    end if;
-
-    -- Check packet end condition
-    if istream.last = '1' then
-      pd.state  := IDLE;
-      pd.iready := oready;
-    end if;
-
-    return pd;
-  end function;
-
-
-  function clock_dropping (
-    packet_dropper : packet_dropper_t;
-    istream        : stream1024_t;
-    oready         : std_logic := '1'
-  ) return packet_dropper_t is
-    variable pd : packet_dropper_t := packet_dropper;
-  begin
-    pd.iready := '1';
-
-    pd.ostream.valid := '0';
-    pd.ostream.last  := '0';
-
-    -- Check packet end condition
-    if istream.last = '1' then
-      pd.state  := IDLE;
-      pd.iready := oready;
-    end if;
-
-    return pd;
-  end function;
-
-
-  function clock_forwarding (
-    packet_dropper : packet_dropper_t;
-    istream        : stream1024_t;
-    oready         : std_logic := '1'
-  ) return packet_dropper_t is
-    variable pd : packet_dropper_t := packet_dropper;
-  begin
-    pd.iready := oready;
-
-    if istream.valid = '1' and pd.iready = '1' then
-      -- Check packet end condition
-      if istream.last = '1' then
-        pd.state := IDLE;
-      end if;
-    end if;
-
-    return pd;
-  end function;
-
-
-  function clock (
-    packet_dropper : packet_dropper_t;
-    istream        : stream1024_t;
-    drop           : std_logic;
-    oready         : std_logic := '1'
-  ) return packet_dropper_t is
-    variable pd : packet_dropper_t := packet_dropper;
-  begin
-    pd.ostream := istream;
-    pd.drop_event := '0';
-
-    case pd.state is
-      when IDLE       => pd := clock_idle       (pd, istream, drop, oready);
-      when DROPPING   => pd := clock_dropping   (pd, istream,       oready);
-      when FORWARDING => pd := clock_forwarding (pd, istream,       oready);
-      when others => report "unimplemented state " & state_t'image(pd.state) severity failure;
+    case state is
+    when IDLE =>
+     if drop_i = '1' then
+       iready_o <= '1';
+     else
+       iready_o <= oready_i;
+     end if;
+    when DROPPING =>
+      iready_o <= '1';
+    when FORWARDING =>
+      iready_o <= oready_i;
     end case;
-
-    return pd;
-  end function;
+  end process;
 
 
-end package body;
+  process (arstn_i, clk_i)
+  begin
+    if arstn_i = '0' then
+      ostream_o <= init;
+      drop_event_o <= '0';
+      state <= IDLE;
+    elsif rising_edge(clk_i) then
+      drop_event_o <= '0';
+
+      case state is
+
+      when IDLE =>
+        ostream_o.valid <= '0';
+        ostream_o.last <= '0';
+
+        if drop_i = '1' then
+          if istream_i.valid then
+            drop_event_o <= '1';
+            if istream_i.last /= '1' then
+              state <= DROPPING;
+            end if;
+          end if;
+        else
+          if istream_i.valid then
+            ostream_o <= istream_i;
+            state <= FORWARDING;
+          end if;
+        end if;
+
+      when FORWARDING =>
+        if ostream_o.valid = '1' and oready_i = '1' then
+          if istream_i.valid = '1' then
+            ostream_o <= istream_i;
+          end if;
+
+          if ostream_o.last = '1' then
+            if istream_i.valid = '1' then
+              if drop_i = '1' then
+                drop_event_o <= '1';
+                if istream_i.last = '1' then
+                  state <= IDLE;
+                else
+                  ostream_o.valid <= '0';
+                  ostream_o.last <= '0';
+                  state <= DROPPING;
+                end if;
+              end if;
+            else
+              ostream_o.valid <= '0';
+              ostream_o.last <= '0';
+              state <= IDLE;
+            end if;
+          end if;
+        end if;
+
+      when DROPPING =>
+        ostream_o.valid <= '0';
+        ostream_o.last <= '0';
+
+        if istream_i.last = '1' then
+          state <= IDLE;
+        end if;
+      end case;
+
+    end if;
+  end process;
+end architecture;
