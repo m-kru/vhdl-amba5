@@ -71,12 +71,12 @@ package axi_stream is
     data   : data8_t := (others => '0');
     strb   : std_logic_vector(0 downto 0) := (others => '1');
     keep   : std_logic_vector(0 downto 0) := (others => '1');
-    user   : std_logic_vector(0 downto 0) := (others => '0');
+    user   : std_logic_vector(0 downto 0) := (others => '-');
     valid  : std_logic := '0';
     last   : std_logic := '0';
     wakeup : std_logic := '1';
-    id     : std_logic_vector(7 downto 0) := (others => '0');
-    dest   : std_logic_vector(7 downto 0) := (others => '0')
+    id     : std_logic_vector(7 downto 0) := (others => '-');
+    dest   : std_logic_vector(7 downto 0) := (others => '-')
   ) return stream8_t;
 
 
@@ -97,12 +97,12 @@ package axi_stream is
     data   : data16_t := (others => '0');
     strb   : std_logic_vector(1 downto 0) := (others => '1');
     keep   : std_logic_vector(1 downto 0) := (others => '1');
-    user   : std_logic_vector(1 downto 0) := (others => '0');
+    user   : std_logic_vector(1 downto 0) := (others => '-');
     valid  : std_logic := '0';
     last   : std_logic := '0';
     wakeup : std_logic := '1';
-    id     : std_logic_vector(7 downto 0) := (others => '0');
-    dest   : std_logic_vector(7 downto 0) := (others => '0')
+    id     : std_logic_vector(7 downto 0) := (others => '-');
+    dest   : std_logic_vector(7 downto 0) := (others => '-')
   ) return stream16_t;
 
 
@@ -123,12 +123,12 @@ package axi_stream is
     data   : data32_t := (others => '0');
     strb   : std_logic_vector(3 downto 0) := (others => '1');
     keep   : std_logic_vector(3 downto 0) := (others => '1');
-    user   : std_logic_vector(3 downto 0) := (others => '0');
+    user   : std_logic_vector(3 downto 0) := (others => '-');
     valid  : std_logic := '0';
     last   : std_logic := '0';
     wakeup : std_logic := '1';
-    id     : std_logic_vector(7 downto 0) := (others => '0');
-    dest   : std_logic_vector(7 downto 0) := (others => '0')
+    id     : std_logic_vector(7 downto 0) := (others => '-');
+    dest   : std_logic_vector(7 downto 0) := (others => '-')
   ) return stream32_t;
 
 
@@ -149,12 +149,12 @@ package axi_stream is
     data   : data1024_t := (others => '0');
     strb   : std_logic_vector(127  downto 0) := (others => '1');
     keep   : std_logic_vector(127  downto 0) := (others => '1');
-    user   : std_logic_vector(127  downto 0) := (others => '0');
+    user   : std_logic_vector(127  downto 0) := (others => '-');
     valid  : std_logic := '0';
     last   : std_logic := '0';
     wakeup : std_logic := '1';
-    id     : std_logic_vector(7 downto 0) := (others => '0');
-    dest   : std_logic_vector(7 downto 0) := (others => '0')
+    id     : std_logic_vector(7 downto 0) := (others => '-');
+    dest   : std_logic_vector(7 downto 0) := (others => '-')
   ) return stream1024_t;
 
 
@@ -273,12 +273,12 @@ package body axi_stream is
     data   : data8_t := (others => '0');
     strb   : std_logic_vector(0 downto 0) := (others => '1');
     keep   : std_logic_vector(0 downto 0) := (others => '1');
-    user   : std_logic_vector(0 downto 0) := (others => '0');
+    user   : std_logic_vector(0 downto 0) := (others => '-');
     valid  : std_logic := '0';
     last   : std_logic := '0';
     wakeup : std_logic := '1';
-    id     : std_logic_vector(7 downto 0) := (others => '0');
-    dest   : std_logic_vector(7 downto 0) := (others => '0')
+    id     : std_logic_vector(7 downto 0) := (others => '-');
+    dest   : std_logic_vector(7 downto 0) := (others => '-')
   ) return stream8_t is
     constant s : stream8_t := (data, strb, keep, user, valid, last, wakeup, id, dest);
   begin
@@ -344,12 +344,12 @@ package body axi_stream is
     data   : data16_t := (others => '0');
     strb   : std_logic_vector(1 downto 0) := (others => '1');
     keep   : std_logic_vector(1 downto 0) := (others => '1');
-    user   : std_logic_vector(1 downto 0) := (others => '0');
+    user   : std_logic_vector(1 downto 0) := (others => '-');
     valid  : std_logic := '0';
     last   : std_logic := '0';
     wakeup : std_logic := '1';
-    id     : std_logic_vector(7 downto 0) := (others => '0');
-    dest   : std_logic_vector(7 downto 0) := (others => '0')
+    id     : std_logic_vector(7 downto 0) := (others => '-');
+    dest   : std_logic_vector(7 downto 0) := (others => '-')
   ) return stream16_t is
     constant s : stream16_t := (data, strb, keep, user, valid, last, wakeup, id, dest);
   begin
@@ -420,12 +420,12 @@ package body axi_stream is
     data   : data32_t := (others => '0');
     strb   : std_logic_vector(3 downto 0) := (others => '1');
     keep   : std_logic_vector(3 downto 0) := (others => '1');
-    user   : std_logic_vector(3 downto 0) := (others => '0');
+    user   : std_logic_vector(3 downto 0) := (others => '-');
     valid  : std_logic := '0';
     last   : std_logic := '0';
     wakeup : std_logic := '1';
-    id     : std_logic_vector(7 downto 0) := (others => '0');
-    dest   : std_logic_vector(7 downto 0) := (others => '0')
+    id     : std_logic_vector(7 downto 0) := (others => '-');
+    dest   : std_logic_vector(7 downto 0) := (others => '-')
   ) return stream32_t is
     constant s : stream32_t := (data, strb, keep, user, valid, last, wakeup, id, dest);
   begin
@@ -501,12 +501,12 @@ package body axi_stream is
     data   : data1024_t := (others => '0');
     strb   : std_logic_vector(127  downto 0) := (others => '1');
     keep   : std_logic_vector(127  downto 0) := (others => '1');
-    user   : std_logic_vector(127  downto 0) := (others => '0');
+    user   : std_logic_vector(127  downto 0) := (others => '-');
     valid  : std_logic := '0';
     last   : std_logic := '0';
     wakeup : std_logic := '1';
-    id     : std_logic_vector(7 downto 0) := (others => '0');
-    dest   : std_logic_vector(7 downto 0) := (others => '0')
+    id     : std_logic_vector(7 downto 0) := (others => '-');
+    dest   : std_logic_vector(7 downto 0) := (others => '-')
   ) return stream1024_t is
     constant s : stream1024_t := (data, strb, keep, user, valid, last, wakeup, id, dest);
   begin
