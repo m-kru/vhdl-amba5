@@ -15,7 +15,9 @@ library amba5_axi_stream;
 --
 -- NOTE: The packet dropper might now work correctly if the transmitter does not support
 -- back-pressure, but the receiver does. In such a case, it is up to you to make sure
--- the packets are dropped correctly.
+-- the packets are dropped correctly. Make sure the receiver ready is never deasserted
+-- during packet forwarding, and use the ready signal between packets transmission to
+-- correctly drive the drop_i port.
 --
 -- The drop_event_o is asserted for one clock cycle each time a packet is dropped.
 -- To count the dropped packets simply count the clock cycles the drop_event was asserted.
@@ -108,6 +110,8 @@ begin
                 drop_event_o <= '1';
                 if istream_i.last = '1' then
                   report REPORT_PREFIX & "single transfer packet drop";
+                  ostream_o.valid <= '0';
+                  ostream_o.last <= '0';
                   state <= IDLE;
                 else
                   report REPORT_PREFIX & "packet drop start";
