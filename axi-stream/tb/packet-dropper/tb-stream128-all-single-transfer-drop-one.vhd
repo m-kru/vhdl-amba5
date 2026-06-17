@@ -96,6 +96,7 @@ begin
     arstn <= '1';
     wait for CLK_PERIOD;
     clk_en <= '1';
+    wait for CLK_PERIOD;
 
     started <= '1';
     for i in DATA'range loop

@@ -77,6 +77,7 @@ begin
     arstn <= '1';
     wait for CLK_PERIOD;
     clk_en <= '1';
+    wait for CLK_PERIOD;
 
     for i in DATA'range loop
       bfm.transmit(DATA(i to i), istream, iready, clk);

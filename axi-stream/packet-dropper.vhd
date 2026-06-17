@@ -80,6 +80,7 @@ begin
       when IDLE =>
         ostream_o.valid <= '0';
         ostream_o.last <= '0';
+        ostream_o.wakeup <= istream_i.wakeup;
 
         if drop_i = '1' then
           if istream_i.valid then

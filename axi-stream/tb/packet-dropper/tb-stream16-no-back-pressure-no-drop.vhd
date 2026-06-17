@@ -77,6 +77,7 @@ begin
     arstn <= '1';
     wait for CLK_PERIOD;
     clk_en <= '1';
+    wait for CLK_PERIOD;
 
     for i in 0 to 3 loop
       bfm.transmit(DATA(2 * i to 2 * i + 1), istream, iready, clk);
