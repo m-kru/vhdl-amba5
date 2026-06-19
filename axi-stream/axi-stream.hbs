@@ -172,6 +172,12 @@ It is useful only for simulations."
       hbs::Run
     }
 
+    proc tb-stream256-all-single-transfer-forward-one {} {
+      _tb "tb_stream256_all_single_transfer_forward_one"
+      hbs::AddFile tb/packet-dropper/tb-stream256-all-single-transfer-forward-one.vhd
+      hbs::Run
+    }
+
     hbs::Register $doc
   }
 

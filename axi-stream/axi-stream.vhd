@@ -1047,9 +1047,9 @@ package body axi_stream is
 
   function init (
     data   : data256_t := (others => '0');
-    strb   : std_logic_vector(15 downto 0) := (others => '1');
-    keep   : std_logic_vector(15 downto 0) := (others => '1');
-    user   : std_logic_vector(15 downto 0) := (others => '-');
+    strb   : std_logic_vector(31 downto 0) := (others => '1');
+    keep   : std_logic_vector(31 downto 0) := (others => '1');
+    user   : std_logic_vector(31 downto 0) := (others => '-');
     valid  : std_logic := '0';
     last   : std_logic := '0';
     wakeup : std_logic := '1';
