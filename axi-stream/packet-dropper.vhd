@@ -83,7 +83,7 @@ begin
         ostream_o.wakeup <= istream_i.wakeup;
 
         if drop_i = '1' then
-          if istream_i.valid then
+          if istream_i.valid = '1' then
             drop_event_o <= '1';
             if istream_i.last /= '1' then
               report REPORT_PREFIX & "packet drop start";
@@ -93,7 +93,7 @@ begin
             end if;
           end if;
         else
-          if istream_i.valid then
+          if istream_i.valid = '1' then
             ostream_o <= istream_i;
             state <= FORWARDING;
           end if;
