@@ -133,7 +133,7 @@ begin
         ostream_o.valid <= '0';
         ostream_o.last <= '0';
 
-        if istream_i.last = '1' then
+        if istream_i.valid = '1' and istream_i.last = '1' then
           report REPORT_PREFIX & "packet drop end";
           state <= IDLE;
         end if;
