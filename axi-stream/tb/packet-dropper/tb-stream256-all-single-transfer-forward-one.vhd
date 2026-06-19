@@ -166,4 +166,20 @@ begin
     end if;
   end process;
 
+
+  ostream_strb_keep_checker : process (clk)
+  begin
+    if rising_edge(clk) then
+      if ostream.valid = '1' and oready = '1' then
+        assert ostream.strb = x"FFFFFFFF"
+          report "invalid output stream strb value, got 0x" & to_hstring(ostream.strb) & ", want 0xFFFFFFFF"
+          severity failure;
+        assert ostream.keep = x"FFFFFFFF"
+          report "invalid output stream keep value, got 0x" & to_hstring(ostream.keep) & ", want 0xFFFFFFFF"
+          severity failure;
+      end if;
+    end if;
+  end process;
+
+
 end architecture;

@@ -161,11 +161,26 @@ begin
   end process;
 
 
-  checkers : process (clk)
+  stream_checkers : process (clk)
   begin
     if rising_edge(clk) then
       istream_ck <= clock(istream_ck, istream, iready);
       ostream_ck <= clock(ostream_ck, ostream, oready);
+    end if;
+  end process;
+
+
+  ostream_strb_keep_checker : process (clk)
+  begin
+    if rising_edge(clk) then
+      if ostream.valid = '1' and oready = '1' then
+        assert ostream.strb = "1"
+          report "invalid output stream strb value, got 0b" & to_string(ostream.strb) & ", want 0b1"
+          severity failure;
+        assert ostream.keep = "1"
+          report "invalid output stream keep value, got 0b" & to_string(ostream.keep) & ", want 0b1"
+          severity failure;
+      end if;
     end if;
   end process;
 
