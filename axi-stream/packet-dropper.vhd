@@ -93,7 +93,7 @@ begin
             end if;
           end if;
         else
-          if istream_i.valid = '1' then
+          if istream_i.valid = '1' and oready_i = '1' then
             ostream_o <= istream_i;
             state <= FORWARDING;
           end if;
