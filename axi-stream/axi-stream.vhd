@@ -335,7 +335,7 @@ package body axi_stream is
       "valid_deassert => '"     & to_string(errors.valid_deassert)     & "', " &
       "last_no_wakeup => '"     & to_string(errors.last_no_wakeup)     & "', " &
       "keep_strb_reserved => '" & to_string(errors.keep_strb_reserved) & "', " &
-      "data_change => '"        & to_string(errors.keep_strb_reserved) & "')";
+      "data_change => '"        & to_string(errors.data_change)        & "')";
   end function;
 
 
@@ -346,7 +346,7 @@ package body axi_stream is
       indent & "  valid_deassert     => '" & to_string(errors.valid_deassert)     & "'," & LF &
       indent & "  last_no_wakeup     => '" & to_string(errors.last_no_wakeup)     & "'," & LF &
       indent & "  keep_strb_reserved => '" & to_string(errors.keep_strb_reserved) & "'," & LF &
-      indent & "  data_change        => '" & to_string(errors.keep_strb_reserved) & "'"  & LF &
+      indent & "  data_change        => '" & to_string(errors.data_change)        & "'"  & LF &
       indent & ")";
   end function;
 
