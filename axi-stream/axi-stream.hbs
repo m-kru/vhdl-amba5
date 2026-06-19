@@ -148,6 +148,12 @@ It is useful only for simulations."
       hbs::Run
     }
 
+    proc tb-stream8-id-dest {} {
+      _tb "tb_stream8_id_dest"
+      hbs::AddFile tb/packet-dropper/tb-stream8-id-dest.vhd
+      hbs::Run
+    }
+
     proc tb-stream16-no-back-pressure-no-drop {} {
       _tb "tb_stream16_no_back_pressure_no_drop"
       hbs::AddFile tb/packet-dropper/tb-stream16-no-back-pressure-no-drop.vhd
