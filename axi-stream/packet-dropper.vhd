@@ -54,7 +54,7 @@ begin
 
 
   -- iready_o driver
-  process (state, oready_i, ostream)
+  process (all)
   begin
     case state is
     when IDLE =>
