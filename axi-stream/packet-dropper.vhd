@@ -84,7 +84,6 @@ begin
 
       when IDLE =>
         ostream.valid <= '0';
-        ostream.last <= '0';
         ostream.wakeup <= istream_i.wakeup;
 
         if drop_i = '1' then
@@ -105,17 +104,8 @@ begin
         end if;
 
       when FORWARDING =>
-        if ostream.valid = '0' or
-          (istream_i.valid = '1' and oready_i = '1')
-        then
-          ostream <= istream_i;
-        end if;
-
         if ostream.valid = '1' and oready_i = '1' then
-          if istream_i.valid = '0' then
-            ostream.valid <= '0';
-            ostream.last <= '0';
-          end if;
+          ostream <= istream_i;
 
           if ostream.last = '1' then
             if istream_i.valid = '1' then
@@ -124,26 +114,24 @@ begin
                 if istream_i.last = '1' then
                   report REPORT_PREFIX & "single transfer packet drop";
                   ostream.valid <= '0';
-                  ostream.last <= '0';
                   state <= IDLE;
                 else
                   report REPORT_PREFIX & "packet drop start";
                   ostream.valid <= '0';
-                  ostream.last <= '0';
                   state <= DROPPING;
                 end if;
               end if;
             else
               ostream.valid <= '0';
-              ostream.last <= '0';
               state <= IDLE;
             end if;
           end if;
+        elsif ostream.valid = '0' then
+          ostream <= istream_i;
         end if;
 
       when DROPPING =>
         ostream.valid <= '0';
-        ostream.last <= '0';
 
         if istream_i.valid = '1' and istream_i.last = '1' then
           report REPORT_PREFIX & "packet drop end";

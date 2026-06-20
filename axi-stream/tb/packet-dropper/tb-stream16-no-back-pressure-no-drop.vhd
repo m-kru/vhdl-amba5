@@ -98,7 +98,6 @@ begin
     wait for CLK_PERIOD;
 
     assert ostream.valid = '0' report "ostream.valid asserted" severity failure;
-    assert ostream.last  = '0' report "ostream.last asserted"  severity failure;
 
     for i in RX_DATA'range loop
       assert RX_DATA(i) = DATA(i)

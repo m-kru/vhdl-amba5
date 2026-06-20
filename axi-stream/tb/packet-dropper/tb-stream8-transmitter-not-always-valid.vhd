@@ -117,7 +117,6 @@ begin
     wait for CLK_PERIOD;
 
     assert ostream.valid = '0' report "ostream.valid asserted" severity failure;
-    assert ostream.last  = '0' report "ostream.last asserted"  severity failure;
 
     assert data_count = DATA'length
       report "invalid data count, got " & to_string(data_count) & ", want " & to_string(DATA'length)

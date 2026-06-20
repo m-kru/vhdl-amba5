@@ -119,7 +119,6 @@ begin
     wait for CLK_PERIOD;
 
     assert ostream.valid = '0' report "ostream.valid asserted" severity failure;
-    assert ostream.last  = '0' report "ostream.last asserted"  severity failure;
 
     assert drop_count = 4
       report "invalid drop count, got " & to_string(drop_count) & ", want 4"
