@@ -64,7 +64,7 @@ begin
     when FORWARDING =>
       if ostream.valid = '1' then
         iready_o <= oready_i;
-      elsif ostream.valid = '0' then
+      else
         iready_o <= '1';
       end if;
     end case;
