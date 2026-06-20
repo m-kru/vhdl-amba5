@@ -110,14 +110,13 @@ begin
           if ostream.last = '1' then
             if istream_i.valid = '1' then
               if drop_i = '1' then
+                ostream.valid <= '0';
                 drop_event_o <= '1';
                 if istream_i.last = '1' then
                   report REPORT_PREFIX & "single transfer packet drop";
-                  ostream.valid <= '0';
                   state <= IDLE;
                 else
                   report REPORT_PREFIX & "packet drop start";
-                  ostream.valid <= '0';
                   state <= DROPPING;
                 end if;
               end if;
