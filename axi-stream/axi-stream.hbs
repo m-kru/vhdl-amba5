@@ -148,6 +148,12 @@ It is useful only for simulations."
       hbs::Run
     }
 
+    proc tb-stream8-transmitter-not-always-valid {} {
+      _tb "tb_stream8_transmitter_not_always_valid"
+      hbs::AddFile tb/packet-dropper/tb-stream8-transmitter-not-always-valid.vhd
+      hbs::Run
+    }
+
     proc tb-stream8-id-dest {} {
       _tb "tb_stream8_id_dest"
       hbs::AddFile tb/packet-dropper/tb-stream8-id-dest.vhd

@@ -93,16 +93,21 @@ begin
             end if;
           end if;
         else
-          if istream_i.valid = '1' and oready_i = '1' then
+          if istream_i.valid = '1' then
             ostream_o <= istream_i;
             state <= FORWARDING;
           end if;
         end if;
 
       when FORWARDING =>
+        if istream_i.valid = '1' and oready_i = '1' then
+          ostream_o <= istream_i;
+        end if;
+
         if ostream_o.valid = '1' and oready_i = '1' then
-          if istream_i.valid = '1' then
-            ostream_o <= istream_i;
+          if istream_i.valid = '0' then
+            ostream_o.valid <= '0';
+            ostream_o.last <= '0';
           end if;
 
           if ostream_o.last = '1' then
