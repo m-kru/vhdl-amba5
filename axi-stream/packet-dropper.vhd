@@ -49,7 +49,7 @@ architecture rtl of Packet_Dropper is
 begin
 
   -- iready_o driver
-  process (state, oready_i)
+  process (state, oready_i, ostream_o)
   begin
     case state is
     when IDLE =>
@@ -57,7 +57,11 @@ begin
     when DROPPING =>
       iready_o <= '1';
     when FORWARDING =>
-      iready_o <= oready_i;
+      if ostream_o.valid = '1' then
+        iready_o <= oready_i;
+      elsif ostream_o.valid = '0' then
+        iready_o <= '1';
+      end if;
     end case;
   end process;
 
@@ -96,7 +100,9 @@ begin
         end if;
 
       when FORWARDING =>
-        if istream_i.valid = '1' and oready_i = '1' then
+        if ostream_o.valid = '0' or
+          (istream_i.valid = '1' and oready_i = '1')
+        then
           ostream_o <= istream_i;
         end if;
 

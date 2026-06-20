@@ -160,6 +160,12 @@ It is useful only for simulations."
       hbs::Run
     }
 
+    proc tb-stream8-receiver-ready-after-valid {} {
+      _tb "tb_stream8_receiver_ready_after_valid"
+      hbs::AddFile tb/packet-dropper/tb-stream8-receiver-ready-after-valid.vhd
+      hbs::Run
+    }
+
     proc tb-stream16-no-back-pressure-no-drop {} {
       _tb "tb_stream16_no_back_pressure_no_drop"
       hbs::AddFile tb/packet-dropper/tb-stream16-no-back-pressure-no-drop.vhd

@@ -8,10 +8,10 @@ library amba5_axi_stream;
   use amba5_axi_stream.axi_stream.all;
   use amba5_axi_stream.checker.all;
 
-entity tb_stream8_transmitter_not_always_valid is
+entity tb_stream8_receiver_ready_after_valid is
 end entity;
 
-architecture test of tb_stream8_transmitter_not_always_valid is
+architecture test of tb_stream8_receiver_ready_after_valid is
 
   signal arstn : std_logic := '1';
 
@@ -28,7 +28,7 @@ architecture test of tb_stream8_transmitter_not_always_valid is
 
   signal ostream1024 : stream1024_t;
   signal ostream : stream8_t;
-  signal oready  : std_logic := '1';
+  signal oready  : std_logic := '0';
 
   signal istream_ck : checker_t := init("input stream checker: ");
   signal ostream_ck : checker_t := init("output stream checker: ");
@@ -68,31 +68,25 @@ begin
     arstn <= '1';
     wait for CLK_PERIOD;
 
-    -- Packet transmission
+    for i in DATA'range loop
+      istream.data <= DATA(i);
+      istream.valid <= '0';
+      wait for 5 * CLK_PERIOD;
+      istream.valid <= '1';
+      istream.last <= '0';
+      if i = DATA'right then
+        istream.last <= '1';
+      end if;
 
-    istream.data <= DATA(0);
-    istream.valid <= '1';
-    wait for CLK_PERIOD;
+      wait until rising_edge(clk) and istream.valid = '1' and iready = '1' for 10 * CLK_PERIOD;
+      assert istream.valid = '1' and iready = '1'
+        report "timeout waiting for input stream handshake"
+        severity failure;
+    end loop;
 
-    istream.data <= DATA(1);
-    istream.valid <= '0';
-    wait for CLK_PERIOD;
-    istream.valid <= '1';
-    wait for CLK_PERIOD;
-
-    istream.data <= DATA(2);
-    wait for CLK_PERIOD;
-
-    istream.data <= DATA(3);
-    istream.valid <= '0';
-    wait for CLK_PERIOD;
-    istream.valid <= '1';
-    istream.last <= '1';
-    wait for CLK_PERIOD;
     istream.valid <= '0';
 
-
-    wait for CLK_PERIOD;
+    wait for 3 * CLK_PERIOD;
     finished <= '1';
     wait for 3 * CLK_PERIOD;
 
@@ -133,9 +127,15 @@ begin
     variable idx : natural := 0;
   begin
     if rising_edge(clk) then
+      if ostream.valid = '1' then
+        oready <= '1';
+      else
+        oready <= '0';
+      end if;
+
       if ostream.valid = '1' and oready = '1' then
         assert ostream.data = DATA(idx)
-          report to_string(idx) & ": got 0b" & to_string(ostream.data) & ", want 0b" & to_string(DATA(idx))
+          report to_string(idx) & ": got 0x" & to_hstring(ostream.data) & ", want 0x" & to_hstring(DATA(idx))
           severity failure;
 
           data_count <= data_count + 1;
