@@ -49,15 +49,11 @@ architecture rtl of Packet_Dropper is
 begin
 
   -- iready_o driver
-  process (drop_i, state, oready_i)
+  process (state, oready_i)
   begin
     case state is
     when IDLE =>
-     if drop_i = '1' then
        iready_o <= '1';
-     else
-       iready_o <= oready_i;
-     end if;
     when DROPPING =>
       iready_o <= '1';
     when FORWARDING =>
