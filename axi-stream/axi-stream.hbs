@@ -142,9 +142,9 @@ It is useful only for simulations."
       hbs::SetLib ""
     }
 
-    proc tb-stream8 {} {
-      _tb "tb_stream8"
-      hbs::AddFile tb/packet-dropper/tb-stream8.vhd
+    proc tb-stream8-basic-back-pressure-and-drop {} {
+      _tb "tb_stream8_basic_back_pressure_and_drop"
+      hbs::AddFile tb/packet-dropper/tb-stream8-basic-back-pressure-and-drop.vhd
       hbs::Run
     }
 

@@ -9,10 +9,10 @@ library amba5_axi_stream;
   use amba5_axi_stream.bfm;
   use amba5_axi_stream.checker.all;
 
-entity tb_stream8 is
+entity tb_stream8_basic_back_pressure_and_drop is
 end entity;
 
-architecture test of tb_stream8 is
+architecture test of tb_stream8_basic_back_pressure_and_drop is
 
   constant CLK_PERIOD : time := 10 ns;
   signal clk : std_logic := '0';
