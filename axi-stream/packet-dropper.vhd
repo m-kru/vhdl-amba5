@@ -46,10 +46,15 @@ architecture rtl of Packet_Dropper is
   type state_t is (IDLE, DROPPING, FORWARDING);
   signal state : state_t := IDLE;
 
+  signal ostream :  stream1024_t;
+
 begin
 
+  ostream_o <= ostream;
+
+
   -- iready_o driver
-  process (state, oready_i, ostream_o)
+  process (state, oready_i, ostream)
   begin
     case state is
     when IDLE =>
@@ -57,9 +62,9 @@ begin
     when DROPPING =>
       iready_o <= '1';
     when FORWARDING =>
-      if ostream_o.valid = '1' then
+      if ostream.valid = '1' then
         iready_o <= oready_i;
-      elsif ostream_o.valid = '0' then
+      elsif ostream.valid = '0' then
         iready_o <= '1';
       end if;
     end case;
@@ -69,7 +74,7 @@ begin
   process (arstn_i, clk_i)
   begin
     if arstn_i = '0' then
-      ostream_o <= init;
+      ostream <= init;
       drop_event_o <= '0';
       state <= IDLE;
     elsif rising_edge(clk_i) then
@@ -78,9 +83,9 @@ begin
       case state is
 
       when IDLE =>
-        ostream_o.valid <= '0';
-        ostream_o.last <= '0';
-        ostream_o.wakeup <= istream_i.wakeup;
+        ostream.valid <= '0';
+        ostream.last <= '0';
+        ostream.wakeup <= istream_i.wakeup;
 
         if drop_i = '1' then
           if istream_i.valid = '1' then
@@ -94,51 +99,51 @@ begin
           end if;
         else
           if istream_i.valid = '1' then
-            ostream_o <= istream_i;
+            ostream <= istream_i;
             state <= FORWARDING;
           end if;
         end if;
 
       when FORWARDING =>
-        if ostream_o.valid = '0' or
+        if ostream.valid = '0' or
           (istream_i.valid = '1' and oready_i = '1')
         then
-          ostream_o <= istream_i;
+          ostream <= istream_i;
         end if;
 
-        if ostream_o.valid = '1' and oready_i = '1' then
+        if ostream.valid = '1' and oready_i = '1' then
           if istream_i.valid = '0' then
-            ostream_o.valid <= '0';
-            ostream_o.last <= '0';
+            ostream.valid <= '0';
+            ostream.last <= '0';
           end if;
 
-          if ostream_o.last = '1' then
+          if ostream.last = '1' then
             if istream_i.valid = '1' then
               if drop_i = '1' then
                 drop_event_o <= '1';
                 if istream_i.last = '1' then
                   report REPORT_PREFIX & "single transfer packet drop";
-                  ostream_o.valid <= '0';
-                  ostream_o.last <= '0';
+                  ostream.valid <= '0';
+                  ostream.last <= '0';
                   state <= IDLE;
                 else
                   report REPORT_PREFIX & "packet drop start";
-                  ostream_o.valid <= '0';
-                  ostream_o.last <= '0';
+                  ostream.valid <= '0';
+                  ostream.last <= '0';
                   state <= DROPPING;
                 end if;
               end if;
             else
-              ostream_o.valid <= '0';
-              ostream_o.last <= '0';
+              ostream.valid <= '0';
+              ostream.last <= '0';
               state <= IDLE;
             end if;
           end if;
         end if;
 
       when DROPPING =>
-        ostream_o.valid <= '0';
-        ostream_o.last <= '0';
+        ostream.valid <= '0';
+        ostream.last <= '0';
 
         if istream_i.valid = '1' and istream_i.last = '1' then
           report REPORT_PREFIX & "packet drop end";
