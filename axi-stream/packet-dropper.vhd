@@ -13,7 +13,7 @@ library amba5_axi_stream;
 -- and deasserts ready without valid being asserted. This is permitted by the AXI-Stream
 -- specification, but not supported by the packet dropper.
 --
--- NOTE: The packet dropper might now work correctly if the transmitter does not support
+-- NOTE: The packet dropper might not work correctly if the transmitter does not support
 -- back-pressure, but the receiver does. In such a case, it is up to you to make sure
 -- the packets are dropped correctly. Make sure the receiver ready is never deasserted
 -- during packet forwarding, and use the ready signal between packets transmission to
