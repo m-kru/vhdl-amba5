@@ -210,6 +210,32 @@ package axi_stream is
   ) return stream256_t;
 
 
+  -- Stream type with data width of 512 bits.
+  type stream512_t is record
+    data   : data512_t;
+    strb   : std_logic_vector(63 downto 0);
+    keep   : std_logic_vector(63 downto 0);
+    user   : std_logic_vector(63 downto 0);
+    valid  : std_logic;
+    last   : std_logic;
+    wakeup : std_logic;
+    id     : std_logic_vector(7 downto 0);
+    dest   : std_logic_vector(7 downto 0);
+  end record;
+
+  function init (
+    data   : data512_t := (others => '0');
+    strb   : std_logic_vector(63 downto 0) := (others => '1');
+    keep   : std_logic_vector(63 downto 0) := (others => '1');
+    user   : std_logic_vector(63 downto 0) := (others => '-');
+    valid  : std_logic := '0';
+    last   : std_logic := '0';
+    wakeup : std_logic := '1';
+    id     : std_logic_vector(7 downto 0) := (others => '-');
+    dest   : std_logic_vector(7 downto 0) := (others => '-')
+  ) return stream512_t;
+
+
   -- Stream type with data width of 1024 bits.
   type stream1024_t is record
     data   : data1024_t;
@@ -244,6 +270,7 @@ package axi_stream is
   function to_stream8 (s32   : stream32_t)   return stream8_t;
   function to_stream8 (s64   : stream64_t)   return stream8_t;
   function to_stream8 (s128  : stream128_t)  return stream8_t;
+  function to_stream8 (s512  : stream512_t)  return stream8_t;
   function to_stream8 (s256  : stream256_t)  return stream8_t;
   function to_stream8 (s1024 : stream1024_t) return stream8_t;
 
@@ -251,6 +278,7 @@ package axi_stream is
   function to_stream16 (s32   : stream32_t)   return stream16_t;
   function to_stream16 (s64   : stream64_t)   return stream16_t;
   function to_stream16 (s128  : stream128_t)  return stream16_t;
+  function to_stream16 (s512  : stream512_t)  return stream16_t;
   function to_stream16 (s256  : stream256_t)  return stream16_t;
   function to_stream16 (s1024 : stream1024_t) return stream16_t;
 
@@ -258,6 +286,7 @@ package axi_stream is
   function to_stream32 (s16   : stream16_t)   return stream32_t;
   function to_stream32 (s64   : stream64_t)   return stream32_t;
   function to_stream32 (s128  : stream128_t)  return stream32_t;
+  function to_stream32 (s512  : stream512_t)  return stream32_t;
   function to_stream32 (s256  : stream256_t)  return stream32_t;
   function to_stream32 (s1024 : stream1024_t) return stream32_t;
 
@@ -265,6 +294,7 @@ package axi_stream is
   function to_stream64 (s16   : stream16_t)   return stream64_t;
   function to_stream64 (s32   : stream32_t)   return stream64_t;
   function to_stream64 (s128  : stream128_t)  return stream64_t;
+  function to_stream64 (s512  : stream512_t)  return stream64_t;
   function to_stream64 (s256  : stream256_t)  return stream64_t;
   function to_stream64 (s1024 : stream1024_t) return stream64_t;
 
@@ -272,6 +302,7 @@ package axi_stream is
   function to_stream128 (s16   : stream16_t)   return stream128_t;
   function to_stream128 (s32   : stream32_t)   return stream128_t;
   function to_stream128 (s64   : stream64_t)   return stream128_t;
+  function to_stream128 (s512  : stream512_t)  return stream128_t;
   function to_stream128 (s256  : stream256_t)  return stream128_t;
   function to_stream128 (s1024 : stream1024_t) return stream128_t;
 
@@ -280,7 +311,17 @@ package axi_stream is
   function to_stream256 (s32   : stream32_t)   return stream256_t;
   function to_stream256 (s64   : stream64_t)   return stream256_t;
   function to_stream256 (s128  : stream128_t)  return stream256_t;
+  function to_stream256 (s512  : stream512_t)  return stream256_t;
   function to_stream256 (s1024 : stream1024_t) return stream256_t;
+
+  function to_stream512 (s8    : stream8_t)    return stream512_t;
+  function to_stream512 (s16   : stream16_t)   return stream512_t;
+  function to_stream512 (s32   : stream32_t)   return stream512_t;
+  function to_stream512 (s64   : stream64_t)   return stream512_t;
+  function to_stream512 (s128  : stream128_t)  return stream512_t;
+  function to_stream512 (s256  : stream256_t)  return stream512_t;
+  function to_stream512 (s1024 : stream1024_t) return stream512_t;
+
 
   function to_stream1024 (s8   : stream8_t)   return stream1024_t;
   function to_stream1024 (s16  : stream16_t)  return stream1024_t;
@@ -288,6 +329,7 @@ package axi_stream is
   function to_stream1024 (s64  : stream64_t)  return stream1024_t;
   function to_stream1024 (s128 : stream128_t) return stream1024_t;
   function to_stream1024 (s256 : stream256_t) return stream1024_t;
+  function to_stream1024 (s512 : stream512_t) return stream1024_t;
 
   --
   -- Functions for converting sterams for pretty printing.
@@ -303,6 +345,7 @@ package axi_stream is
   function to_debug (s : stream64_t;  indent : string := "") return string;
   function to_debug (s : stream128_t; indent : string := "") return string;
   function to_debug (s : stream256_t; indent : string := "") return string;
+  function to_debug (s : stream512_t; indent : string := "") return string;
 
   function to_debug (
     s : stream1024_t; indent : string := ""; data_byte_count : positive := 128
@@ -487,6 +530,23 @@ package body axi_stream is
   end function;
 
 
+  function to_stream8 (s512 : stream512_t) return stream8_t is
+    constant s : stream8_t := (
+      s512.data(7 downto 0),
+      s512.strb(0 downto 0),
+      s512.keep(0 downto 0),
+      s512.user(0 downto 0),
+      s512.valid,
+      s512.last,
+      s512.wakeup,
+      s512.id,
+      s512.dest
+    );
+  begin
+    return s;
+  end function;
+
+
   function to_stream8 (s1024 : stream1024_t) return stream8_t is
     constant s : stream8_t := (
       s1024.data(7 downto 0),
@@ -608,6 +668,23 @@ package body axi_stream is
       s256.wakeup,
       s256.id,
       s256.dest
+    );
+  begin
+    return s;
+  end function;
+
+
+  function to_stream16 (s512 : stream512_t) return stream16_t is
+    constant s : stream16_t := (
+      s512.data(15 downto 0),
+      s512.strb( 1 downto 0),
+      s512.keep( 1 downto 0),
+      s512.user( 1 downto 0),
+      s512.valid,
+      s512.last,
+      s512.wakeup,
+      s512.id,
+      s512.dest
     );
   begin
     return s;
@@ -740,6 +817,23 @@ package body axi_stream is
       s256.wakeup,
       s256.id,
       s256.dest
+    );
+  begin
+    return s;
+  end function;
+
+
+  function to_stream32 (s512 : stream512_t) return stream32_t is
+    constant s : stream32_t := (
+      s512.data(31 downto 0),
+      s512.strb( 3 downto 0),
+      s512.keep( 3 downto 0),
+      s512.user( 3 downto 0),
+      s512.valid,
+      s512.last,
+      s512.wakeup,
+      s512.id,
+      s512.dest
     );
   begin
     return s;
@@ -883,6 +977,23 @@ package body axi_stream is
   end function;
 
 
+  function to_stream64 (s512 : stream512_t) return stream64_t is
+    constant s : stream64_t := (
+      s512.data(63 downto 0),
+      s512.strb( 7 downto 0),
+      s512.keep( 7 downto 0),
+      s512.user( 7 downto 0),
+      s512.valid,
+      s512.last,
+      s512.wakeup,
+      s512.id,
+      s512.dest
+    );
+  begin
+    return s;
+  end function;
+
+
   function to_stream64 (s1024 : stream1024_t) return stream64_t is
     constant s : stream64_t := (
       s1024.data(63 downto 0),
@@ -1019,6 +1130,23 @@ package body axi_stream is
       s256.wakeup,
       s256.id,
       s256.dest
+    );
+  begin
+    return s;
+  end function;
+
+
+  function to_stream128 (s512 : stream512_t) return stream128_t is
+    constant s : stream128_t := (
+      s512.data(127 downto 0),
+      s512.strb( 15 downto 0),
+      s512.keep( 15 downto 0),
+      s512.user( 15 downto 0),
+      s512.valid,
+      s512.last,
+      s512.wakeup,
+      s512.id,
+      s512.dest
     );
   begin
     return s;
@@ -1172,12 +1300,199 @@ package body axi_stream is
   end function;
 
 
+  function to_stream256 (s512 : stream512_t) return stream256_t is
+    constant s : stream256_t := (
+      s512.data(255 downto 0),
+      s512.strb( 31 downto 0),
+      s512.keep( 31 downto 0),
+      s512.user( 31 downto 0),
+      s512.valid,
+      s512.last,
+      s512.wakeup,
+      s512.id,
+      s512.dest
+    );
+  begin
+    return s;
+  end function;
+
+
   function to_stream256 (s1024 : stream1024_t) return stream256_t is
     constant s : stream256_t := (
       s1024.data(255 downto 0),
       s1024.strb( 31 downto 0),
       s1024.keep( 31 downto 0),
       s1024.user( 31 downto 0),
+      s1024.valid,
+      s1024.last,
+      s1024.wakeup,
+      s1024.id,
+      s1024.dest
+    );
+  begin
+    return s;
+  end function;
+
+
+  --
+  -- stream512_t
+  --
+
+  function init (
+    data   : data512_t := (others => '0');
+    strb   : std_logic_vector(63 downto 0) := (others => '1');
+    keep   : std_logic_vector(63 downto 0) := (others => '1');
+    user   : std_logic_vector(63 downto 0) := (others => '-');
+    valid  : std_logic := '0';
+    last   : std_logic := '0';
+    wakeup : std_logic := '1';
+    id     : std_logic_vector(7 downto 0) := (others => '-');
+    dest   : std_logic_vector(7 downto 0) := (others => '-')
+  ) return stream512_t is
+    constant s : stream512_t := (data, strb, keep, user, valid, last, wakeup, id, dest);
+  begin
+    return s;
+  end function;
+
+
+  function to_stream512 (s8 : stream8_t) return stream512_t is
+    variable s : stream512_t := init(
+      data => (others => '-'),
+      strb => (others => '-'),
+      keep => (others => '-'),
+      user => (others => '-')
+    );
+  begin
+    s.data(7 downto 0) := s8.data;
+    s.strb(0 downto 0) := s8.strb;
+    s.keep(0 downto 0) := s8.keep;
+    s.user(0 downto 0) := s8.user;
+    s.valid  := s8.valid;
+    s.last   := s8.last;
+    s.wakeup := s8.wakeup;
+    s.id     := s8.id;
+    s.dest   := s8.dest;
+
+    return s;
+  end function;
+
+
+  function to_stream512 (s16 : stream16_t) return stream512_t is
+    variable s : stream512_t := init(
+      data => (others => '-'),
+      strb => (others => '-'),
+      keep => (others => '-'),
+      user => (others => '-')
+    );
+  begin
+    s.data(15 downto 0) := s16.data;
+    s.strb( 1 downto 0) := s16.strb;
+    s.keep( 1 downto 0) := s16.keep;
+    s.user( 1 downto 0) := s16.user;
+    s.valid  := s16.valid;
+    s.last   := s16.last;
+    s.wakeup := s16.wakeup;
+    s.id     := s16.id;
+    s.dest   := s16.dest;
+
+    return s;
+  end function;
+
+
+  function to_stream512 (s32 : stream32_t) return stream512_t is
+    variable s : stream512_t := init(
+      data => (others => '-'),
+      strb => (others => '-'),
+      keep => (others => '-'),
+      user => (others => '-')
+    );
+  begin
+    s.data(31 downto 0) := s32.data;
+    s.strb( 3 downto 0) := s32.strb;
+    s.keep( 3 downto 0) := s32.keep;
+    s.user( 3 downto 0) := s32.user;
+    s.valid  := s32.valid;
+    s.last   := s32.last;
+    s.wakeup := s32.wakeup;
+    s.id     := s32.id;
+    s.dest   := s32.dest;
+
+    return s;
+  end function;
+
+
+  function to_stream512 (s64 : stream64_t) return stream512_t is
+    variable s : stream512_t := init(
+      data => (others => '-'),
+      strb => (others => '-'),
+      keep => (others => '-'),
+      user => (others => '-')
+    );
+  begin
+    s.data(63 downto 0) := s64.data;
+    s.strb( 7 downto 0) := s64.strb;
+    s.keep( 7 downto 0) := s64.keep;
+    s.user( 7 downto 0) := s64.user;
+    s.valid  := s64.valid;
+    s.last   := s64.last;
+    s.wakeup := s64.wakeup;
+    s.id     := s64.id;
+    s.dest   := s64.dest;
+
+    return s;
+  end function;
+
+
+  function to_stream512 (s128 : stream128_t) return stream512_t is
+    variable s : stream512_t := init(
+      data => (others => '-'),
+      strb => (others => '-'),
+      keep => (others => '-'),
+      user => (others => '-')
+    );
+  begin
+    s.data(127 downto 0) := s128.data;
+    s.strb( 15 downto 0) := s128.strb;
+    s.keep( 15 downto 0) := s128.keep;
+    s.user( 15 downto 0) := s128.user;
+    s.valid  := s128.valid;
+    s.last   := s128.last;
+    s.wakeup := s128.wakeup;
+    s.id     := s128.id;
+    s.dest   := s128.dest;
+
+    return s;
+  end function;
+
+
+  function to_stream512 (s256 : stream256_t) return stream512_t is
+    variable s : stream512_t := init(
+      data => (others => '-'),
+      strb => (others => '-'),
+      keep => (others => '-'),
+      user => (others => '-')
+    );
+  begin
+    s.data(255 downto 0) := s256.data;
+    s.strb( 31 downto 0) := s256.strb;
+    s.keep( 31 downto 0) := s256.keep;
+    s.user( 31 downto 0) := s256.user;
+    s.valid  := s256.valid;
+    s.last   := s256.last;
+    s.wakeup := s256.wakeup;
+    s.id     := s256.id;
+    s.dest   := s256.dest;
+
+    return s;
+  end function;
+
+
+  function to_stream512 (s1024 : stream1024_t) return stream512_t is
+    constant s : stream512_t := (
+      s1024.data(511 downto 0),
+      s1024.strb( 63 downto 0),
+      s1024.keep( 63 downto 0),
+      s1024.user( 63 downto 0),
       s1024.valid,
       s1024.last,
       s1024.wakeup,
@@ -1320,6 +1635,28 @@ package body axi_stream is
   end function;
 
 
+  function to_stream1024 (s512 : stream512_t) return stream1024_t is
+    variable s : stream1024_t := init(
+      data => (others => '-'),
+      strb => (others => '-'),
+      keep => (others => '-'),
+      user => (others => '-')
+    );
+  begin
+    s.data(511 downto 0) := s512.data;
+    s.strb( 63 downto 0) := s512.strb;
+    s.keep( 63 downto 0) := s512.keep;
+    s.user( 63 downto 0) := s512.user;
+    s.valid  := s512.valid;
+    s.last   := s512.last;
+    s.wakeup := s512.wakeup;
+    s.id     := s512.id;
+    s.dest   := s512.dest;
+
+    return s;
+  end function;
+
+
   function to_stream1024 (s256 : stream256_t) return stream1024_t is
     variable s : stream1024_t := init(
       data => (others => '-'),
@@ -1398,6 +1735,12 @@ package body axi_stream is
   function to_debug (s : stream256_t; indent : string := "") return string is
   begin
     return to_debug(to_stream1024(s), indent, 32);
+  end function;
+
+
+  function to_debug (s : stream512_t; indent : string := "") return string is
+  begin
+    return to_debug(to_stream1024(s), indent, 64);
   end function;
 
 
