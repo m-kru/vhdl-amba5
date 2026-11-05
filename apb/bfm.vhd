@@ -64,9 +64,10 @@ package bfm is
   );
 
   -- Carries out read transaction with a single read transfer.
-  -- There is no data out parameter as the data is available in the com.rdata element.
+  -- Captures read data at the completion edge, before deasserting the request.
   procedure read (
     constant addr  : in unsigned(31 downto 0);
+    signal   data  : out std_logic_vector(31 downto 0);
     signal   req   : out requester_out_t;
     signal   com   : in  completer_out_t;
     signal   clk   : in std_logic;
@@ -208,6 +209,7 @@ package body bfm is
 
   procedure read (
     constant addr  : in unsigned(31 downto 0);
+    signal   data  : out std_logic_vector(31 downto 0);
     signal   req   : out requester_out_t;
     signal   com   : in  completer_out_t;
     signal   clk   : in std_logic;
@@ -268,6 +270,9 @@ package body bfm is
         "Completer indicates error" severity slverr_severity;
     end if;
 
+    -- Capture read data before the Completer can change it after completion.
+    data <= com.rdata;
+
     -- Cleanup
     req.selx <= '0';
     req.enable <= '0';
@@ -275,7 +280,6 @@ package body bfm is
     -- Deassert wakeup signal value
     req.wakeup <= '0';
 
-    wait for 0 ns;
     wait for 0 ns;
   end procedure read;
 

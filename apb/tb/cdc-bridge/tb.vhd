@@ -98,9 +98,9 @@ begin
 
     report "carrying out single transfer test";
     bfm.write(x"00000004", x"AAAA5555", req_com_req, com_req_req, clk_req, cfg => bfm_cfg);
-    bfm.read(x"00000004", req_com_req, com_req_req, clk_req, cfg => bfm_cfg);
-    assert com_req_req.rdata = x"AAAA5555"
-      report to_string(com_req_req.rdata)
+    bfm.read(x"00000004", read_data(0), req_com_req, com_req_req, clk_req, cfg => bfm_cfg);
+    assert read_data(0) = x"AAAA5555"
+      report to_string(read_data(0))
       severity failure;
 
     report "carrying out block transaction test";

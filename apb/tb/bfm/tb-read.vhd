@@ -19,6 +19,7 @@ architecture test of tb_read is
   signal ck : checker_t := init;
   signal req : requester_out_t := init;
   signal com : completer_out_t := init;
+  signal read_data : std_logic_vector(31 downto 0);
 
   type data_t is array (0 to 3) of std_logic_vector(31 downto 0);
   constant DATA : data_t := (x"00000001", x"01234567", x"89ABCDEF", x"DEADBEEF");
@@ -26,8 +27,6 @@ architecture test of tb_read is
 begin
 
   clk <= not clk after 0.5 ns;
-
-  com.ready <= '1';
 
 
   interface_checker : process (clk) is
@@ -38,9 +37,23 @@ begin
   end process;
 
 
-  data_driver : process (clk) is
+  completer : process (clk)
+    variable responded : bit := '0';
   begin
-    com.rdata <= DATA(to_integer(req.addr));
+    if rising_edge(clk) then
+      com.ready <= '0';
+      com.rdata <= (others => '-');
+
+      if req.selx = '1' and req.enable = '1' then
+        if responded = '0' then
+          com.ready <= '1';
+          com.rdata <= DATA(to_integer(req.addr));
+          responded := '1';
+        end if;
+      else
+        responded := '0';
+      end if;
+    end if;
   end process;
 
 
@@ -48,17 +61,11 @@ begin
   begin
     wait for 2 ns;
 
-    bfm.read(x"00000000", req, com, clk, msg => ", user msg");
-    assert com.rdata = DATA(0) report to_string(com.rdata);
-
-    bfm.read(x"00000001", req, com, clk, msg => ", user msg");
-    assert com.rdata = DATA(1) report to_string(com.rdata);
-
-    bfm.read(x"00000002", req, com, clk, msg => ", user msg");
-    assert com.rdata = DATA(2) report to_string(com.rdata);
-
-    bfm.read(x"00000003", req, com, clk, msg => ", user msg");
-    assert com.rdata = DATA(3) report to_string(com.rdata);
+    for i in DATA'range loop
+      bfm.read(to_unsigned(i, 32), read_data, req, com, clk, msg => ", user msg");
+      assert read_data = DATA(i)
+        report "got " & to_hstring(read_data) & ", want " & to_hstring(DATA(i));
+    end loop;
 
     wait for 2 ns;
     std.env.finish;

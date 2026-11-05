@@ -122,6 +122,8 @@ end generate;
 
 
 requesters : for r in req_range generate
+  signal read_word : std_logic_vector(31 downto 0);
+begin
   requester_0 : process is
   begin
     wait until arstn = '1';
@@ -140,9 +142,9 @@ requesters : for r in req_range generate
     -- Read test, requester i accesses completer i + 1.
     for i in READ_DATA(r)'range loop
       bfm.read(
-        COM_ADDRS((r+1) mod COM_COUNT) + to_addr(i * 4), req_outs(r), req_ins(r), clk, cfg => bfm_cfgs(r)
+        COM_ADDRS((r+1) mod COM_COUNT) + to_addr(i * 4), read_word, req_outs(r), req_ins(r), clk, cfg => bfm_cfgs(r)
       );
-      READ_DATA(r)(i) <= req_ins(r).rdata;
+      READ_DATA(r)(i) <= read_word;
       wait for 2 * CLK_PERIOD;
     end loop;
     req_read_done(r) <= '1';

@@ -58,9 +58,9 @@ begin
     -- Single write read test
     bfm.write(ADDR, x"204080A0", req, com, clk);
     wait for 1 ns;
-    bfm.read(ADDR, req, com, clk);
+    bfm.read(ADDR, read_data(0), req, com, clk);
     wait for 1 ns;
-    assert com.rdata = x"204080A0";
+    assert read_data(0) = x"204080A0";
 
     -- Block write test
     bfm.writeb(ADDR, DATA, req, com, clk);
