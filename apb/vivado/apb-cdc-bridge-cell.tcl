@@ -17,8 +17,12 @@ foreach cell $apb_cdc_bridge_cells {
   set period0 [get_property PERIOD $clk0]
   set period1 [get_property PERIOD $clk1]
 
+  # Select pins explicitly so direct paths ending at register D pins are also covered.
+  set bridge_pins [get_pins -of_objects \
+    [get_cells -hierarchical -filter "NAME =~ *${cellName}/*"]]
+
   set_max_delay -datapath_only -from $clk0 -to $clk1 \
-    -through [get_cells -hierarchical -filter "NAME =~ *${cellName}/*"] $period1
+    -through $bridge_pins $period1
   set_max_delay -datapath_only -from $clk1 -to $clk0 \
-    -through [get_cells -hierarchical -filter "NAME =~ *${cellName}/*"] $period0
+    -through $bridge_pins $period0
 }
