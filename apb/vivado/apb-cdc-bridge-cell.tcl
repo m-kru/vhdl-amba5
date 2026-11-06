@@ -1,6 +1,6 @@
 # APB CDC Bridge cell constrains.
 
-set apb_cdc_bridge_cells [get_cells -hier -filter {REF_NAME == APB_CDC_Bridge}]
+set apb_cdc_bridge_cells [get_cells -hier -filter {ORIG_REF_NAME == APB_CDC_Bridge}]
 foreach cell $apb_cdc_bridge_cells {
   set cellName [get_property NAME $cell]
 
