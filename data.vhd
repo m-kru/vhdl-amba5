@@ -90,6 +90,14 @@ package data is
   function to_data8_array(d512  : data512_array_t)  return data8_array_t;
   function to_data8_array(d1024 : data1024_array_t) return data8_array_t;
 
+  function to_data16_array(d8    : data8_array_t; pad_byte : data8_t := x"00" ) return data16_array_t;
+  function to_data16_array(d32   : data32_array_t)   return data16_array_t;
+  function to_data16_array(d64   : data64_array_t)   return data16_array_t;
+  function to_data16_array(d128  : data128_array_t)  return data16_array_t;
+  function to_data16_array(d256  : data256_array_t)  return data16_array_t;
+  function to_data16_array(d512  : data512_array_t)  return data16_array_t;
+  function to_data16_array(d1024 : data1024_array_t) return data16_array_t;
+
 end package data;
 
 
@@ -191,6 +199,105 @@ package body data is
         res(j+b) := d1024(i)(8*b+7 downto 8*b);
       end loop;
       j := j + 128;
+    end loop;
+    return res;
+  end function;
+
+
+  function to_data16_array(d8 : data8_array_t; pad_byte : data8_t := x"00" ) return data16_array_t is
+    variable res : data16_array_t(0 to (d8'length + 1) / 2 - 1) := (others => pad_byte & pad_byte);
+    variable j : natural := 0;
+  begin
+    for i in d8'range loop
+      if j mod 2 = 0 then
+        res(j/2)(7 downto 0) := d8(i);
+      else
+        res(j/2)(15 downto 8) := d8(i);
+      end if;
+      j := j + 1;
+    end loop;
+    return res;
+  end function;
+
+
+  function to_data16_array(d32 : data32_array_t) return data16_array_t is
+    variable res : data16_array_t(0 to 2 * d32'length - 1);
+    variable j : natural := 0;
+  begin
+    for i in d32'range loop
+      res(j)   := d32(i)(15 downto 0);
+      res(j+1) := d32(i)(31 downto 16);
+      j := j + 2;
+    end loop;
+    return res;
+  end function;
+
+
+  function to_data16_array(d64 : data64_array_t) return data16_array_t is
+    variable res : data16_array_t(0 to 4 * d64'length - 1);
+    variable j : natural := 0;
+  begin
+    for i in d64'range loop
+      for b in 0 to 3 loop
+        res(j+b) := d64(i)(16*b+15 downto 16*b);
+      end loop;
+      j := j + 4;
+    end loop;
+    return res;
+  end function;
+
+
+  function to_data16_array(d128 : data128_array_t) return data16_array_t is
+    variable res : data16_array_t(0 to 8 * d128'length - 1);
+    variable j : natural := 0;
+  begin
+    for i in d128'range loop
+      for b in 0 to 7 loop
+        res(j+b) := d128(i)(16*b+15 downto 16*b);
+      end loop;
+      j := j + 8;
+    end loop;
+    return res;
+  end function;
+
+
+  function to_data16_array(d256 : data256_array_t) return data16_array_t is
+    variable res : data16_array_t(0 to 16 * d256'length - 1);
+    variable j : natural := 0;
+  begin
+    for i in d256'range loop
+      for b in 0 to 15 loop
+        res(j+b) := d256(i)(16*b+15 downto 16*b);
+      end loop;
+      j := j + 16;
+    end loop;
+    return res;
+  end function;
+
+
+  function to_data16_array(d512 : data512_array_t) return data16_array_t is
+    variable res : data16_array_t(0 to 32 * d512'length - 1);
+    variable j : natural := 0;
+  begin
+    for i in d512'range loop
+      for b in 0 to 31 loop
+        res(j+b) := d512(i)(16*b+15 downto 16*b);
+      end loop;
+      j := j + 32;
+    end loop;
+    return res;
+  end function;
+
+
+  function to_data16_array(d1024 : data1024_array_t) return data16_array_t is
+    variable res : data16_array_t(0 to 64 * d1024'length - 1);
+    variable j : natural := 0;
+  begin
+    for i in d1024'range loop
+      for b in 0 to 63 loop
+        res(j+b) := d1024(i)(16*b+15 downto 16*b);
+      end loop;
+      j := j + 64;
     end loop;
     return res;
   end function;
