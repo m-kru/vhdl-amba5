@@ -262,6 +262,24 @@ package axi_stream is
   ) return stream1024_t;
 
 
+  -- Stream byte data type determined by the keep and strb values.
+  -- - DATA:     keep = '1' and strb = '1',
+  -- - POSITION: keep = '1' and strb = '0',
+  -- - NUL:      keep = '0' and strb = '0',
+  -- - RESERVED: keep = '0' and strb = '1'.
+  -- - OTHER:    other values including meta values not described in the standard.
+  type byte_type_t is (DATA, POSITION, NUL, RESERVED, OTHER);
+
+  function byte_type (s8 : stream8_t) return byte_type_t;
+  function byte_type (s16   : stream16_t;   byte_idx : natural) return byte_type_t;
+  function byte_type (s32   : stream32_t;   byte_idx : natural) return byte_type_t;
+  function byte_type (s64   : stream64_t;   byte_idx : natural) return byte_type_t;
+  function byte_type (s128  : stream128_t;  byte_idx : natural) return byte_type_t;
+  function byte_type (s256  : stream256_t;  byte_idx : natural) return byte_type_t;
+  function byte_type (s512  : stream512_t;  byte_idx : natural) return byte_type_t;
+  function byte_type (s1024 : stream1024_t; byte_idx : natural) return byte_type_t;
+
+
   --
   -- Conversion functions
   --
@@ -355,6 +373,106 @@ end package;
 
 
 package body axi_stream is
+
+  --
+  -- byte_type functions
+  --
+
+  function byte_type (s8 : stream8_t) return byte_type_t is
+  begin
+    case s8.keep(0) & s8.strb(0) is
+      when "11" => return DATA;
+      when "10" => return POSITION;
+      when "00" => return NUL;
+      when "01" => return RESERVED;
+      when others => return OTHER;
+    end case;
+  end function;
+
+
+  function byte_type (s16 : stream16_t; byte_idx : natural) return byte_type_t is
+  begin
+    case s16.keep(byte_idx) & s16.strb(byte_idx) is
+      when "11" => return DATA;
+      when "10" => return POSITION;
+      when "00" => return NUL;
+      when "01" => return RESERVED;
+      when others => return OTHER;
+    end case;
+  end function;
+
+
+  function byte_type (s32 : stream32_t; byte_idx : natural) return byte_type_t is
+  begin
+    case s32.keep(byte_idx) & s32.strb(byte_idx) is
+      when "11" => return DATA;
+      when "10" => return POSITION;
+      when "00" => return NUL;
+      when "01" => return RESERVED;
+      when others => return OTHER;
+    end case;
+  end function;
+
+
+  function byte_type (s64 : stream64_t; byte_idx : natural) return byte_type_t is
+  begin
+    case s64.keep(byte_idx) & s64.strb(byte_idx) is
+      when "11" => return DATA;
+      when "10" => return POSITION;
+      when "00" => return NUL;
+      when "01" => return RESERVED;
+      when others => return OTHER;
+    end case;
+  end function;
+
+
+  function byte_type (s128 : stream128_t; byte_idx : natural) return byte_type_t is
+  begin
+    case s128.keep(byte_idx) & s128.strb(byte_idx) is
+      when "11" => return DATA;
+      when "10" => return POSITION;
+      when "00" => return NUL;
+      when "01" => return RESERVED;
+      when others => return OTHER;
+    end case;
+  end function;
+
+
+  function byte_type (s256 : stream256_t; byte_idx : natural) return byte_type_t is
+  begin
+    case s256.keep(byte_idx) & s256.strb(byte_idx) is
+      when "11" => return DATA;
+      when "10" => return POSITION;
+      when "00" => return NUL;
+      when "01" => return RESERVED;
+      when others => return OTHER;
+    end case;
+  end function;
+
+
+  function byte_type (s512 : stream512_t; byte_idx : natural) return byte_type_t is
+  begin
+    case s512.keep(byte_idx) & s512.strb(byte_idx) is
+      when "11" => return DATA;
+      when "10" => return POSITION;
+      when "00" => return NUL;
+      when "01" => return RESERVED;
+      when others => return OTHER;
+    end case;
+  end function;
+
+
+  function byte_type (s1024 : stream1024_t; byte_idx : natural) return byte_type_t is
+  begin
+    case s1024.keep(byte_idx) & s1024.strb(byte_idx) is
+      when "11" => return DATA;
+      when "10" => return POSITION;
+      when "00" => return NUL;
+      when "01" => return RESERVED;
+      when others => return OTHER;
+    end case;
+  end function;
+
 
   --
   -- interface_errors_t
