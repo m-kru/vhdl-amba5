@@ -80,7 +80,7 @@ begin
     wait for CLK_PERIOD;
 
     for i in DATA'range loop
-      bfm.transmit(DATA(i to i), istream, iready, clk);
+      bfm.transmit(to_data8_array(DATA(i to i)), istream, iready, clk);
       istream.wakeup <= '1';
     end loop;
 
