@@ -11,6 +11,7 @@ library amba5;
   use amba5.string_pkg.all;
 
 library work;
+  use work.axi_stream;
   use work.axi_stream.all;
 
 -- The bfm package represents BFM (Bus Functional Model) for the AXI-Stream.
@@ -47,143 +48,139 @@ package bfm is
   alias config_vector_t is config_array_t;
 
   -- Transmits bytes via stream in array order, starting with the lowest byte lane.
-  -- Unused byte lanes in the final transfer are zero-filled with strb and keep cleared.
+  -- Unused byte lanes in the final transfer are zero-filled with strb and keep cleared,
+  -- unless byte_types contains only OTHER, which leaves strb and keep unchanged for all lanes.
   -- An empty array causes no transfers or signal changes.
   --
   -- The initial value of the strm.last signal is not modified.
   -- The value of the last parameter is assigned to the strm.last for the last transfer.
   -- After the last transfer, the value of the strm.last is assigned to '0'.
   --
+  -- A single-element byte_types array applies to all supplied bytes. Otherwise,
+  -- byte_types must have the same length as bytes and applies in array order.
+  -- DATA, POSITION, NUL and RESERVED use their corresponding binary encodings.
+  -- OTHER leaves strb and keep unchanged for the corresponding byte lane.
   -- All other parameters are assigned to the stream fields for all transfers.
   --
-  -- To achieve single packet transfer with different values for strb, keep, etc.,
-  -- simply call transmit multiple times with only the last transmit having the
-  -- last parameter set to '1'.
+  -- The last parameter value is assigned to the strm.last in the last transfer.
+  -- Multiple transmit calls can form a single packet if last is '1' only in the last call.
   procedure transmit (
-    constant data  : in data8_array_t;
+    constant bytes : in data8_array_t;
     signal   strm  : inout stream8_t;
     signal   ready : in std_logic;
     signal   clk   : in std_logic;
     constant last  : in std_logic := '1';
-    constant strb  : in std_logic_vector(0 downto 0) := (others => '1');
-    constant keep  : in std_logic_vector(0 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user  : in std_logic_vector(0 downto 0) := (others => '-');
     constant id    : in std_logic_vector(7 downto 0) := (others => '-');
     constant dest  : in std_logic_vector(7 downto 0) := (others => '-');
     constant cfg   : in config_t := DEFAULT_CONFIG;
-    constant msg   : in string := "" -- An optional user message added at the end of the report message.
+    constant msg   : in string := ""
   );
 
   -- See doc for transmit for stream8_t.
   procedure transmit (
-    constant data  : in data8_array_t;
+    constant bytes : in data8_array_t;
     signal   strm  : inout stream16_t;
     signal   ready : in std_logic;
     signal   clk   : in std_logic;
     constant last  : in std_logic := '1';
-    constant strb  : in std_logic_vector(1 downto 0) := (others => '1');
-    constant keep  : in std_logic_vector(1 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user  : in std_logic_vector(1 downto 0) := (others => '-');
     constant id    : in std_logic_vector(7 downto 0) := (others => '-');
     constant dest  : in std_logic_vector(7 downto 0) := (others => '-');
     constant cfg   : in config_t := DEFAULT_CONFIG;
-    constant msg   : in string := "" -- An optional user message added at the end of the report message.
+    constant msg   : in string := ""
   );
 
   -- See doc for transmit for stream8_t.
   procedure transmit (
-    constant data  : in data8_array_t;
+    constant bytes : in data8_array_t;
     signal   strm  : inout stream32_t;
     signal   ready : in std_logic;
     signal   clk   : in std_logic;
     constant last  : in std_logic := '1';
-    constant strb  : in std_logic_vector(3 downto 0) := (others => '1');
-    constant keep  : in std_logic_vector(3 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user  : in std_logic_vector(3 downto 0) := (others => '-');
     constant id    : in std_logic_vector(7 downto 0) := (others => '-');
     constant dest  : in std_logic_vector(7 downto 0) := (others => '-');
     constant cfg   : in config_t := DEFAULT_CONFIG;
-    constant msg   : in string := "" -- An optional user message added at the end of the report message.
+    constant msg   : in string := ""
   );
 
   -- See doc for transmit for stream8_t.
   procedure transmit (
-    constant data  : in data8_array_t;
+    constant bytes : in data8_array_t;
     signal   strm  : inout stream64_t;
     signal   ready : in std_logic;
     signal   clk   : in std_logic;
     constant last  : in std_logic := '1';
-    constant strb  : in std_logic_vector(7 downto 0) := (others => '1');
-    constant keep  : in std_logic_vector(7 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user  : in std_logic_vector(7 downto 0) := (others => '-');
     constant id    : in std_logic_vector(7 downto 0) := (others => '-');
     constant dest  : in std_logic_vector(7 downto 0) := (others => '-');
     constant cfg   : in config_t := DEFAULT_CONFIG;
-    constant msg   : in string := "" -- An optional user message added at the end of the report message.
+    constant msg   : in string := ""
   );
 
   -- See doc for transmit for stream8_t.
   procedure transmit (
-    constant data  : in data8_array_t;
+    constant bytes : in data8_array_t;
     signal   strm  : inout stream128_t;
     signal   ready : in std_logic;
     signal   clk   : in std_logic;
     constant last  : in std_logic := '1';
-    constant strb  : in std_logic_vector(15 downto 0) := (others => '1');
-    constant keep  : in std_logic_vector(15 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user  : in std_logic_vector(15 downto 0) := (others => '-');
     constant id    : in std_logic_vector( 7 downto 0) := (others => '-');
     constant dest  : in std_logic_vector( 7 downto 0) := (others => '-');
     constant cfg   : in config_t := DEFAULT_CONFIG;
-    constant msg   : in string := "" -- An optional user message added at the end of the report message.
+    constant msg   : in string := ""
   );
 
   -- See doc for transmit for stream8_t.
   procedure transmit (
-    constant data  : in data8_array_t;
+    constant bytes : in data8_array_t;
     signal   strm  : inout stream256_t;
     signal   ready : in std_logic;
     signal   clk   : in std_logic;
     constant last  : in std_logic := '1';
-    constant strb  : in std_logic_vector(31 downto 0) := (others => '1');
-    constant keep  : in std_logic_vector(31 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user  : in std_logic_vector(31 downto 0) := (others => '-');
     constant id    : in std_logic_vector( 7 downto 0) := (others => '-');
     constant dest  : in std_logic_vector( 7 downto 0) := (others => '-');
     constant cfg   : in config_t := DEFAULT_CONFIG;
-    constant msg   : in string := "" -- An optional user message added at the end of the report message.
+    constant msg   : in string := ""
   );
 
   -- See doc for transmit for stream8_t.
   procedure transmit (
-    constant data  : in data8_array_t;
+    constant bytes : in data8_array_t;
     signal   strm  : inout stream512_t;
     signal   ready : in std_logic;
     signal   clk   : in std_logic;
     constant last  : in std_logic := '1';
-    constant strb  : in std_logic_vector(63 downto 0) := (others => '1');
-    constant keep  : in std_logic_vector(63 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user  : in std_logic_vector(63 downto 0) := (others => '-');
     constant id    : in std_logic_vector( 7 downto 0) := (others => '-');
     constant dest  : in std_logic_vector( 7 downto 0) := (others => '-');
     constant cfg   : in config_t := DEFAULT_CONFIG;
-    constant msg   : in string := "" -- An optional user message added at the end of the report message.
+    constant msg   : in string := ""
   );
 
   -- See doc for transmit for stream8_t.
   procedure transmit (
-    constant data  : in data8_array_t;
+    constant bytes : in data8_array_t;
     signal   strm  : inout stream1024_t;
     signal   ready : in std_logic;
     signal   clk   : in std_logic;
     constant last  : in std_logic := '1';
-    constant strb  : in std_logic_vector(127 downto 0) := (others => '1');
-    constant keep  : in std_logic_vector(127 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user  : in std_logic_vector(127 downto 0) := (others => '-');
     constant id    : in std_logic_vector(  7 downto 0) := (others => '-');
     constant dest  : in std_logic_vector(  7 downto 0) := (others => '-');
     constant cfg   : in config_t := DEFAULT_CONFIG;
-    constant msg   : in string := "" -- An optional user message added at the end of the report message.
+    constant msg   : in string := ""
   );
 
 end package;
@@ -239,7 +236,7 @@ package body bfm is
 
   -- Shared byte packing and handshake logic for all stream widths.
   procedure transmit_bytes (
-    constant data : in data8_array_t;
+    constant bytes : in data8_array_t;
     -- Stream signals
     signal sdata : out std_logic_vector;
     signal sstrb, skeep, suser : out std_logic_vector;
@@ -248,25 +245,33 @@ package body bfm is
     -- Transmit parameters
     signal ready, clk : in std_logic;
     constant last : in std_logic;
-    constant strb, keep, user, id, dest : in std_logic_vector;
+    constant byte_types : in byte_array_t;
+    constant user, id, dest : in std_logic_vector;
     constant cfg : in config_t;
     constant msg : in string
   ) is
-    -- View data with ascending, zero-based indices without copying it.
-    -- This preserves array order for any bounds or direction: bytes(0) is data(data'left).
-    alias bytes : data8_array_t(0 to data'length - 1) is data;
+    -- View bytes with ascending, zero-based indices without copying it.
+    -- This preserves array order for any bounds or direction: bdata(0) is bytes(bytes'left).
+    alias bdata : data8_array_t(0 to bytes'length - 1) is bytes;
+    alias btypes : byte_array_t(0 to byte_types'length - 1) is byte_types;
     constant BYTES_PER_TRANSFER : positive := sdata'length / 8;
-    constant TRANSFERS : natural := (data'length + BYTES_PER_TRANSFER - 1) / BYTES_PER_TRANSFER;
+    constant TRANSFERS : natural := (bytes'length + BYTES_PER_TRANSFER - 1) / BYTES_PER_TRANSFER;
     constant init_wakeup : std_logic := swakeup;
+    variable btype : byte_type_t;
     variable word : std_logic_vector(sdata'range);
-    variable word_strb : std_logic_vector(sstrb'range);
-    variable word_keep : std_logic_vector(skeep'range);
     variable index : natural;
   begin
     report to_string(cfg.REPORT_PREFIX) &
-      "transmit: data length := " & to_string(data'length) & msg;
+      "transmit: bytes length := " & to_string(bytes'length) & msg;
 
-    if data'length = 0 then
+    assert byte_types'length = 1 or byte_types'length = bytes'length
+      report to_string(cfg.REPORT_PREFIX) &
+        "transmit: byte_types length must be 1 or match bytes length" &
+        "; bytes length := " & to_string(bytes'length) &
+        ", byte_types length := " & to_string(byte_types'length) & msg
+      severity failure;
+
+    if bytes'length = 0 then
       return;
     end if;
 
@@ -279,16 +284,29 @@ package body bfm is
 
     for transfer in 0 to TRANSFERS - 1 loop
       word := (others => '0');
-      word_strb := strb;
-      word_keep := keep;
       for lane in 0 to BYTES_PER_TRANSFER - 1 loop
         index := transfer * BYTES_PER_TRANSFER + lane;
-        if index < data'length then
-          word(8 * lane + 7 downto 8 * lane) := bytes(index);
-        else
-          word_strb(lane) := '0';
-          word_keep(lane) := '0';
+        btype := NUL;
+        if index < bytes'length then
+          word(8 * lane + 7 downto 8 * lane) := bdata(index);
+          if btypes'length = 1 then
+            btype := btypes(0);
+          else
+            btype := btypes(index);
+          end if;
+        elsif btypes'length = 1 then
+          if btypes(0) = OTHER then
+            btype := OTHER;
+          end if;
         end if;
+
+        case btype is
+          when axi_stream.DATA => sstrb(lane) <= '1'; skeep(lane) <= '1';
+          when POSITION => sstrb(lane) <= '0'; skeep(lane) <= '1';
+          when NUL      => sstrb(lane) <= '0'; skeep(lane) <= '0';
+          when RESERVED => sstrb(lane) <= '1'; skeep(lane) <= '0';
+          when OTHER    => null;
+        end case;
       end loop;
 
       if transfer = TRANSFERS - 1 then
@@ -296,8 +314,6 @@ package body bfm is
       end if;
 
       sdata <= word;
-      sstrb <= word_strb;
-      skeep <= word_keep;
       transmit_wait_for_ready(ready, clk, cfg, msg);
     end loop;
 
@@ -311,59 +327,56 @@ package body bfm is
 
 
   procedure transmit (
-    constant data   : in data8_array_t;
+    constant bytes  : in data8_array_t;
     signal   strm   : inout stream8_t;
     signal   ready  : in std_logic;
     signal   clk    : in std_logic;
     constant last   : in std_logic := '1';
-    constant strb   : in std_logic_vector(0 downto 0) := (others => '1');
-    constant keep   : in std_logic_vector(0 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user   : in std_logic_vector(0 downto 0) := (others => '-');
     constant id     : in std_logic_vector(7 downto 0) := (others => '-');
     constant dest   : in std_logic_vector(7 downto 0) := (others => '-');
     constant cfg    : in config_t := DEFAULT_CONFIG;
-    constant msg    : in string := "" -- An optional user message added at the end of the report message.
+    constant msg    : in string := ""
   ) is
   begin
     transmit_bytes(
-      data,
+      bytes,
       strm.data, strm.strb, strm.keep, strm.user, strm.id, strm.dest, strm.valid, strm.last, strm.wakeup,
-      ready, clk, last, strb, keep, user, id, dest, cfg, msg
+      ready, clk, last, byte_types, user, id, dest, cfg, msg
     );
   end procedure;
 
 
   procedure transmit (
-    constant data   : in data8_array_t;
+    constant bytes  : in data8_array_t;
     signal   strm   : inout stream16_t;
     signal   ready  : in std_logic;
     signal   clk    : in std_logic;
     constant last   : in std_logic := '1';
-    constant strb   : in std_logic_vector(1 downto 0) := (others => '1');
-    constant keep   : in std_logic_vector(1 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user   : in std_logic_vector(1 downto 0) := (others => '-');
     constant id     : in std_logic_vector(7 downto 0) := (others => '-');
     constant dest   : in std_logic_vector(7 downto 0) := (others => '-');
     constant cfg    : in config_t := DEFAULT_CONFIG;
-    constant msg    : in string := "" -- An optional user message added at the end of the report message.
+    constant msg    : in string := ""
   ) is
   begin
     transmit_bytes(
-      data,
+      bytes,
       strm.data, strm.strb, strm.keep, strm.user, strm.id, strm.dest, strm.valid, strm.last, strm.wakeup,
-      ready, clk, last, strb, keep, user, id, dest, cfg, msg
+      ready, clk, last, byte_types, user, id, dest, cfg, msg
     );
   end procedure;
 
 
   procedure transmit (
-    constant data   : in data8_array_t;
+    constant bytes  : in data8_array_t;
     signal   strm   : inout stream32_t;
     signal   ready  : in std_logic;
     signal   clk    : in std_logic;
     constant last   : in std_logic := '1';
-    constant strb   : in std_logic_vector(3 downto 0) := (others => '1');
-    constant keep   : in std_logic_vector(3 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user   : in std_logic_vector(3 downto 0) := (others => '-');
     constant id     : in std_logic_vector(7 downto 0) := (others => '-');
     constant dest   : in std_logic_vector(7 downto 0) := (others => '-');
@@ -372,123 +385,118 @@ package body bfm is
   ) is
   begin
     transmit_bytes(
-      data,
+      bytes,
       strm.data, strm.strb, strm.keep, strm.user, strm.id, strm.dest, strm.valid, strm.last, strm.wakeup,
-      ready, clk, last, strb, keep, user, id, dest, cfg, msg
+      ready, clk, last, byte_types, user, id, dest, cfg, msg
     );
   end procedure;
 
 
   procedure transmit (
-    constant data   : in data8_array_t;
+    constant bytes  : in data8_array_t;
     signal   strm   : inout stream64_t;
     signal   ready  : in std_logic;
     signal   clk    : in std_logic;
     constant last   : in std_logic := '1';
-    constant strb   : in std_logic_vector(7 downto 0) := (others => '1');
-    constant keep   : in std_logic_vector(7 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user   : in std_logic_vector(7 downto 0) := (others => '-');
     constant id     : in std_logic_vector(7 downto 0) := (others => '-');
     constant dest   : in std_logic_vector(7 downto 0) := (others => '-');
     constant cfg    : in config_t := DEFAULT_CONFIG;
-    constant msg    : in string := "" -- An optional user message added at the end of the report message.
+    constant msg    : in string := ""
   ) is
   begin
     transmit_bytes(
-      data,
+      bytes,
       strm.data, strm.strb, strm.keep, strm.user, strm.id, strm.dest, strm.valid, strm.last, strm.wakeup,
-      ready, clk, last, strb, keep, user, id, dest, cfg, msg
+      ready, clk, last, byte_types, user, id, dest, cfg, msg
     );
   end procedure;
 
 
   procedure transmit (
-    constant data   : in data8_array_t;
+    constant bytes  : in data8_array_t;
     signal   strm   : inout stream128_t;
     signal   ready  : in std_logic;
     signal   clk    : in std_logic;
     constant last   : in std_logic := '1';
-    constant strb   : in std_logic_vector(15 downto 0) := (others => '1');
-    constant keep   : in std_logic_vector(15 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user   : in std_logic_vector(15 downto 0) := (others => '-');
     constant id     : in std_logic_vector( 7 downto 0) := (others => '-');
     constant dest   : in std_logic_vector( 7 downto 0) := (others => '-');
     constant cfg    : in config_t := DEFAULT_CONFIG;
-    constant msg    : in string := "" -- An optional user message added at the end of the report message.
+    constant msg    : in string := ""
   ) is
   begin
     transmit_bytes(
-      data,
+      bytes,
       strm.data, strm.strb, strm.keep, strm.user, strm.id, strm.dest, strm.valid, strm.last, strm.wakeup,
-      ready, clk, last, strb, keep, user, id, dest, cfg, msg
+      ready, clk, last, byte_types, user, id, dest, cfg, msg
     );
   end procedure;
 
 
   procedure transmit (
-    constant data   : in data8_array_t;
+    constant bytes  : in data8_array_t;
     signal   strm   : inout stream256_t;
     signal   ready  : in std_logic;
     signal   clk    : in std_logic;
     constant last   : in std_logic := '1';
-    constant strb   : in std_logic_vector(31 downto 0) := (others => '1');
-    constant keep   : in std_logic_vector(31 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user   : in std_logic_vector(31 downto 0) := (others => '-');
     constant id     : in std_logic_vector( 7 downto 0) := (others => '-');
     constant dest   : in std_logic_vector( 7 downto 0) := (others => '-');
     constant cfg    : in config_t := DEFAULT_CONFIG;
-    constant msg    : in string := "" -- An optional user message added at the end of the report message.
+    constant msg    : in string := ""
   ) is
   begin
     transmit_bytes(
-      data,
+      bytes,
       strm.data, strm.strb, strm.keep, strm.user, strm.id, strm.dest, strm.valid, strm.last, strm.wakeup,
-      ready, clk, last, strb, keep, user, id, dest, cfg, msg
+      ready, clk, last, byte_types, user, id, dest, cfg, msg
     );
   end procedure;
 
   procedure transmit (
-    constant data   : in data8_array_t;
+    constant bytes  : in data8_array_t;
     signal   strm   : inout stream512_t;
     signal   ready  : in std_logic;
     signal   clk    : in std_logic;
     constant last   : in std_logic := '1';
-    constant strb   : in std_logic_vector(63 downto 0) := (others => '1');
-    constant keep   : in std_logic_vector(63 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user   : in std_logic_vector(63 downto 0) := (others => '-');
     constant id     : in std_logic_vector( 7 downto 0) := (others => '-');
     constant dest   : in std_logic_vector( 7 downto 0) := (others => '-');
     constant cfg    : in config_t := DEFAULT_CONFIG;
-    constant msg    : in string := "" -- An optional user message added at the end of the report message.
+    constant msg    : in string := ""
   ) is
   begin
     transmit_bytes(
-      data,
+      bytes,
       strm.data, strm.strb, strm.keep, strm.user, strm.id, strm.dest, strm.valid, strm.last, strm.wakeup,
-      ready, clk, last, strb, keep, user, id, dest, cfg, msg
+      ready, clk, last, byte_types, user, id, dest, cfg, msg
     );
   end procedure;
 
 
   procedure transmit (
-    constant data   : in data8_array_t;
+    constant bytes  : in data8_array_t;
     signal   strm   : inout stream1024_t;
     signal   ready  : in std_logic;
     signal   clk    : in std_logic;
     constant last   : in std_logic := '1';
-    constant strb   : in std_logic_vector(127 downto 0) := (others => '1');
-    constant keep   : in std_logic_vector(127 downto 0) := (others => '1');
+    constant byte_types : in byte_array_t := (0 => DATA);
     constant user   : in std_logic_vector(127 downto 0) := (others => '-');
     constant id     : in std_logic_vector(  7 downto 0) := (others => '-');
     constant dest   : in std_logic_vector(  7 downto 0) := (others => '-');
     constant cfg    : in config_t := DEFAULT_CONFIG;
-    constant msg    : in string := "" -- An optional user message added at the end of the report message.
+    constant msg    : in string := ""
   ) is
   begin
     transmit_bytes(
-      data,
+      bytes,
       strm.data, strm.strb, strm.keep, strm.user, strm.id, strm.dest, strm.valid, strm.last, strm.wakeup,
-      ready, clk, last, strb, keep, user, id, dest, cfg, msg
+      ready, clk, last, byte_types, user, id, dest, cfg, msg
     );
   end procedure;
 

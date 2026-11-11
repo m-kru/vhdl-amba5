@@ -270,6 +270,10 @@ package axi_stream is
   -- - OTHER:    other values including meta values not described in the standard.
   type byte_type_t is (DATA, POSITION, NUL, RESERVED, OTHER);
 
+  type byte_type_array_t is array (natural range <>) of byte_type_t;
+
+  subtype byte_array_t is byte_type_array_t;
+
   function byte_type (strm : stream8_t) return byte_type_t;
   function byte_type (strm : stream16_t;   byte_idx : natural) return byte_type_t;
   function byte_type (strm : stream32_t;   byte_idx : natural) return byte_type_t;
