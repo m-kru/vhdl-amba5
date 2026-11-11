@@ -270,84 +270,84 @@ package axi_stream is
   -- - OTHER:    other values including meta values not described in the standard.
   type byte_type_t is (DATA, POSITION, NUL, RESERVED, OTHER);
 
-  function byte_type (s8 : stream8_t) return byte_type_t;
-  function byte_type (s16   : stream16_t;   byte_idx : natural) return byte_type_t;
-  function byte_type (s32   : stream32_t;   byte_idx : natural) return byte_type_t;
-  function byte_type (s64   : stream64_t;   byte_idx : natural) return byte_type_t;
-  function byte_type (s128  : stream128_t;  byte_idx : natural) return byte_type_t;
-  function byte_type (s256  : stream256_t;  byte_idx : natural) return byte_type_t;
-  function byte_type (s512  : stream512_t;  byte_idx : natural) return byte_type_t;
-  function byte_type (s1024 : stream1024_t; byte_idx : natural) return byte_type_t;
+  function byte_type (strm : stream8_t) return byte_type_t;
+  function byte_type (strm : stream16_t;   byte_idx : natural) return byte_type_t;
+  function byte_type (strm : stream32_t;   byte_idx : natural) return byte_type_t;
+  function byte_type (strm : stream64_t;   byte_idx : natural) return byte_type_t;
+  function byte_type (strm : stream128_t;  byte_idx : natural) return byte_type_t;
+  function byte_type (strm : stream256_t;  byte_idx : natural) return byte_type_t;
+  function byte_type (strm : stream512_t;  byte_idx : natural) return byte_type_t;
+  function byte_type (strm : stream1024_t; byte_idx : natural) return byte_type_t;
 
 
   --
   -- Conversion functions
   --
 
-  function to_stream8 (s16   : stream16_t)   return stream8_t;
-  function to_stream8 (s32   : stream32_t)   return stream8_t;
-  function to_stream8 (s64   : stream64_t)   return stream8_t;
-  function to_stream8 (s128  : stream128_t)  return stream8_t;
-  function to_stream8 (s512  : stream512_t)  return stream8_t;
-  function to_stream8 (s256  : stream256_t)  return stream8_t;
-  function to_stream8 (s1024 : stream1024_t) return stream8_t;
+  function to_stream8 (strm : stream16_t)   return stream8_t;
+  function to_stream8 (strm : stream32_t)   return stream8_t;
+  function to_stream8 (strm : stream64_t)   return stream8_t;
+  function to_stream8 (strm : stream128_t)  return stream8_t;
+  function to_stream8 (strm : stream512_t)  return stream8_t;
+  function to_stream8 (strm : stream256_t)  return stream8_t;
+  function to_stream8 (strm : stream1024_t) return stream8_t;
 
-  function to_stream16 (s8    : stream8_t)    return stream16_t;
-  function to_stream16 (s32   : stream32_t)   return stream16_t;
-  function to_stream16 (s64   : stream64_t)   return stream16_t;
-  function to_stream16 (s128  : stream128_t)  return stream16_t;
-  function to_stream16 (s512  : stream512_t)  return stream16_t;
-  function to_stream16 (s256  : stream256_t)  return stream16_t;
-  function to_stream16 (s1024 : stream1024_t) return stream16_t;
+  function to_stream16 (strm : stream8_t)    return stream16_t;
+  function to_stream16 (strm : stream32_t)   return stream16_t;
+  function to_stream16 (strm : stream64_t)   return stream16_t;
+  function to_stream16 (strm : stream128_t)  return stream16_t;
+  function to_stream16 (strm : stream512_t)  return stream16_t;
+  function to_stream16 (strm : stream256_t)  return stream16_t;
+  function to_stream16 (strm : stream1024_t) return stream16_t;
 
-  function to_stream32 (s8    : stream8_t)    return stream32_t;
-  function to_stream32 (s16   : stream16_t)   return stream32_t;
-  function to_stream32 (s64   : stream64_t)   return stream32_t;
-  function to_stream32 (s128  : stream128_t)  return stream32_t;
-  function to_stream32 (s512  : stream512_t)  return stream32_t;
-  function to_stream32 (s256  : stream256_t)  return stream32_t;
-  function to_stream32 (s1024 : stream1024_t) return stream32_t;
+  function to_stream32 (strm : stream8_t)    return stream32_t;
+  function to_stream32 (strm : stream16_t)   return stream32_t;
+  function to_stream32 (strm : stream64_t)   return stream32_t;
+  function to_stream32 (strm : stream128_t)  return stream32_t;
+  function to_stream32 (strm : stream512_t)  return stream32_t;
+  function to_stream32 (strm : stream256_t)  return stream32_t;
+  function to_stream32 (strm : stream1024_t) return stream32_t;
 
-  function to_stream64 (s8    : stream8_t)    return stream64_t;
-  function to_stream64 (s16   : stream16_t)   return stream64_t;
-  function to_stream64 (s32   : stream32_t)   return stream64_t;
-  function to_stream64 (s128  : stream128_t)  return stream64_t;
-  function to_stream64 (s512  : stream512_t)  return stream64_t;
-  function to_stream64 (s256  : stream256_t)  return stream64_t;
-  function to_stream64 (s1024 : stream1024_t) return stream64_t;
+  function to_stream64 (strm : stream8_t)    return stream64_t;
+  function to_stream64 (strm : stream16_t)   return stream64_t;
+  function to_stream64 (strm : stream32_t)   return stream64_t;
+  function to_stream64 (strm : stream128_t)  return stream64_t;
+  function to_stream64 (strm : stream512_t)  return stream64_t;
+  function to_stream64 (strm : stream256_t)  return stream64_t;
+  function to_stream64 (strm : stream1024_t) return stream64_t;
 
-  function to_stream128 (s8    : stream8_t)    return stream128_t;
-  function to_stream128 (s16   : stream16_t)   return stream128_t;
-  function to_stream128 (s32   : stream32_t)   return stream128_t;
-  function to_stream128 (s64   : stream64_t)   return stream128_t;
-  function to_stream128 (s512  : stream512_t)  return stream128_t;
-  function to_stream128 (s256  : stream256_t)  return stream128_t;
-  function to_stream128 (s1024 : stream1024_t) return stream128_t;
+  function to_stream128 (strm : stream8_t)    return stream128_t;
+  function to_stream128 (strm : stream16_t)   return stream128_t;
+  function to_stream128 (strm : stream32_t)   return stream128_t;
+  function to_stream128 (strm : stream64_t)   return stream128_t;
+  function to_stream128 (strm : stream512_t)  return stream128_t;
+  function to_stream128 (strm : stream256_t)  return stream128_t;
+  function to_stream128 (strm : stream1024_t) return stream128_t;
 
-  function to_stream256 (s8    : stream8_t)    return stream256_t;
-  function to_stream256 (s16   : stream16_t)   return stream256_t;
-  function to_stream256 (s32   : stream32_t)   return stream256_t;
-  function to_stream256 (s64   : stream64_t)   return stream256_t;
-  function to_stream256 (s128  : stream128_t)  return stream256_t;
-  function to_stream256 (s512  : stream512_t)  return stream256_t;
-  function to_stream256 (s1024 : stream1024_t) return stream256_t;
+  function to_stream256 (strm : stream8_t)    return stream256_t;
+  function to_stream256 (strm : stream16_t)   return stream256_t;
+  function to_stream256 (strm : stream32_t)   return stream256_t;
+  function to_stream256 (strm : stream64_t)   return stream256_t;
+  function to_stream256 (strm : stream128_t)  return stream256_t;
+  function to_stream256 (strm : stream512_t)  return stream256_t;
+  function to_stream256 (strm : stream1024_t) return stream256_t;
 
-  function to_stream512 (s8    : stream8_t)    return stream512_t;
-  function to_stream512 (s16   : stream16_t)   return stream512_t;
-  function to_stream512 (s32   : stream32_t)   return stream512_t;
-  function to_stream512 (s64   : stream64_t)   return stream512_t;
-  function to_stream512 (s128  : stream128_t)  return stream512_t;
-  function to_stream512 (s256  : stream256_t)  return stream512_t;
-  function to_stream512 (s1024 : stream1024_t) return stream512_t;
+  function to_stream512 (strm : stream8_t)    return stream512_t;
+  function to_stream512 (strm : stream16_t)   return stream512_t;
+  function to_stream512 (strm : stream32_t)   return stream512_t;
+  function to_stream512 (strm : stream64_t)   return stream512_t;
+  function to_stream512 (strm : stream128_t)  return stream512_t;
+  function to_stream512 (strm : stream256_t)  return stream512_t;
+  function to_stream512 (strm : stream1024_t) return stream512_t;
 
 
-  function to_stream1024 (s8   : stream8_t)   return stream1024_t;
-  function to_stream1024 (s16  : stream16_t)  return stream1024_t;
-  function to_stream1024 (s32  : stream32_t)  return stream1024_t;
-  function to_stream1024 (s64  : stream64_t)  return stream1024_t;
-  function to_stream1024 (s128 : stream128_t) return stream1024_t;
-  function to_stream1024 (s256 : stream256_t) return stream1024_t;
-  function to_stream1024 (s512 : stream512_t) return stream1024_t;
+  function to_stream1024 (strm : stream8_t)   return stream1024_t;
+  function to_stream1024 (strm : stream16_t)  return stream1024_t;
+  function to_stream1024 (strm : stream32_t)  return stream1024_t;
+  function to_stream1024 (strm : stream64_t)  return stream1024_t;
+  function to_stream1024 (strm : stream128_t) return stream1024_t;
+  function to_stream1024 (strm : stream256_t) return stream1024_t;
+  function to_stream1024 (strm : stream512_t) return stream1024_t;
 
   --
   -- Functions for converting sterams for pretty printing.
@@ -357,16 +357,16 @@ package axi_stream is
     slv1024 : std_logic_vector(1023 downto 0); data_byte_count : positive
   ) return string;
 
-  function to_debug (s : stream8_t;   indent : string := "") return string;
-  function to_debug (s : stream16_t;  indent : string := "") return string;
-  function to_debug (s : stream32_t;  indent : string := "") return string;
-  function to_debug (s : stream64_t;  indent : string := "") return string;
-  function to_debug (s : stream128_t; indent : string := "") return string;
-  function to_debug (s : stream256_t; indent : string := "") return string;
-  function to_debug (s : stream512_t; indent : string := "") return string;
+  function to_debug (strm : stream8_t;   indent : string := "") return string;
+  function to_debug (strm : stream16_t;  indent : string := "") return string;
+  function to_debug (strm : stream32_t;  indent : string := "") return string;
+  function to_debug (strm : stream64_t;  indent : string := "") return string;
+  function to_debug (strm : stream128_t; indent : string := "") return string;
+  function to_debug (strm : stream256_t; indent : string := "") return string;
+  function to_debug (strm : stream512_t; indent : string := "") return string;
 
   function to_debug (
-    s : stream1024_t; indent : string := ""; data_byte_count : positive := 128
+    strm : stream1024_t; indent : string := ""; data_byte_count : positive := 128
   ) return string;
 
 end package;
@@ -378,9 +378,9 @@ package body axi_stream is
   -- byte_type functions
   --
 
-  function byte_type (s8 : stream8_t) return byte_type_t is
+  function byte_type (strm : stream8_t) return byte_type_t is
   begin
-    case s8.keep(0) & s8.strb(0) is
+    case strm.keep(0) & strm.strb(0) is
       when "11" => return DATA;
       when "10" => return POSITION;
       when "00" => return NUL;
@@ -390,9 +390,9 @@ package body axi_stream is
   end function;
 
 
-  function byte_type (s16 : stream16_t; byte_idx : natural) return byte_type_t is
+  function byte_type (strm : stream16_t; byte_idx : natural) return byte_type_t is
   begin
-    case s16.keep(byte_idx) & s16.strb(byte_idx) is
+    case strm.keep(byte_idx) & strm.strb(byte_idx) is
       when "11" => return DATA;
       when "10" => return POSITION;
       when "00" => return NUL;
@@ -402,9 +402,9 @@ package body axi_stream is
   end function;
 
 
-  function byte_type (s32 : stream32_t; byte_idx : natural) return byte_type_t is
+  function byte_type (strm : stream32_t; byte_idx : natural) return byte_type_t is
   begin
-    case s32.keep(byte_idx) & s32.strb(byte_idx) is
+    case strm.keep(byte_idx) & strm.strb(byte_idx) is
       when "11" => return DATA;
       when "10" => return POSITION;
       when "00" => return NUL;
@@ -414,9 +414,9 @@ package body axi_stream is
   end function;
 
 
-  function byte_type (s64 : stream64_t; byte_idx : natural) return byte_type_t is
+  function byte_type (strm : stream64_t; byte_idx : natural) return byte_type_t is
   begin
-    case s64.keep(byte_idx) & s64.strb(byte_idx) is
+    case strm.keep(byte_idx) & strm.strb(byte_idx) is
       when "11" => return DATA;
       when "10" => return POSITION;
       when "00" => return NUL;
@@ -426,9 +426,9 @@ package body axi_stream is
   end function;
 
 
-  function byte_type (s128 : stream128_t; byte_idx : natural) return byte_type_t is
+  function byte_type (strm : stream128_t; byte_idx : natural) return byte_type_t is
   begin
-    case s128.keep(byte_idx) & s128.strb(byte_idx) is
+    case strm.keep(byte_idx) & strm.strb(byte_idx) is
       when "11" => return DATA;
       when "10" => return POSITION;
       when "00" => return NUL;
@@ -438,9 +438,9 @@ package body axi_stream is
   end function;
 
 
-  function byte_type (s256 : stream256_t; byte_idx : natural) return byte_type_t is
+  function byte_type (strm : stream256_t; byte_idx : natural) return byte_type_t is
   begin
-    case s256.keep(byte_idx) & s256.strb(byte_idx) is
+    case strm.keep(byte_idx) & strm.strb(byte_idx) is
       when "11" => return DATA;
       when "10" => return POSITION;
       when "00" => return NUL;
@@ -450,9 +450,9 @@ package body axi_stream is
   end function;
 
 
-  function byte_type (s512 : stream512_t; byte_idx : natural) return byte_type_t is
+  function byte_type (strm : stream512_t; byte_idx : natural) return byte_type_t is
   begin
-    case s512.keep(byte_idx) & s512.strb(byte_idx) is
+    case strm.keep(byte_idx) & strm.strb(byte_idx) is
       when "11" => return DATA;
       when "10" => return POSITION;
       when "00" => return NUL;
@@ -462,9 +462,9 @@ package body axi_stream is
   end function;
 
 
-  function byte_type (s1024 : stream1024_t; byte_idx : natural) return byte_type_t is
+  function byte_type (strm : stream1024_t; byte_idx : natural) return byte_type_t is
   begin
-    case s1024.keep(byte_idx) & s1024.strb(byte_idx) is
+    case strm.keep(byte_idx) & strm.strb(byte_idx) is
       when "11" => return DATA;
       when "10" => return POSITION;
       when "00" => return NUL;
@@ -563,122 +563,122 @@ package body axi_stream is
   end function;
 
 
-  function to_stream8 (s16 : stream16_t) return stream8_t is
-    constant s : stream8_t := (
-      s16.data(7 downto 0),
-      s16.strb(0 downto 0),
-      s16.keep(0 downto 0),
-      s16.user(0 downto 0),
-      s16.valid,
-      s16.last,
-      s16.wakeup,
-      s16.id,
-      s16.dest
+  function to_stream8 (strm : stream16_t) return stream8_t is
+    constant s8 : stream8_t := (
+      strm.data(7 downto 0),
+      strm.strb(0 downto 0),
+      strm.keep(0 downto 0),
+      strm.user(0 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s8;
   end function;
 
 
-  function to_stream8 (s32 : stream32_t) return stream8_t is
-    constant s : stream8_t := (
-      s32.data(7 downto 0),
-      s32.strb(0 downto 0),
-      s32.keep(0 downto 0),
-      s32.user(0 downto 0),
-      s32.valid,
-      s32.last,
-      s32.wakeup,
-      s32.id,
-      s32.dest
+  function to_stream8 (strm : stream32_t) return stream8_t is
+    constant s8 : stream8_t := (
+      strm.data(7 downto 0),
+      strm.strb(0 downto 0),
+      strm.keep(0 downto 0),
+      strm.user(0 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s8;
   end function;
 
 
-  function to_stream8 (s64 : stream64_t) return stream8_t is
-    constant s : stream8_t := (
-      s64.data(7 downto 0),
-      s64.strb(0 downto 0),
-      s64.keep(0 downto 0),
-      s64.user(0 downto 0),
-      s64.valid,
-      s64.last,
-      s64.wakeup,
-      s64.id,
-      s64.dest
+  function to_stream8 (strm : stream64_t) return stream8_t is
+    constant s8 : stream8_t := (
+      strm.data(7 downto 0),
+      strm.strb(0 downto 0),
+      strm.keep(0 downto 0),
+      strm.user(0 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s8;
   end function;
 
 
-  function to_stream8 (s128 : stream128_t) return stream8_t is
-    constant s : stream8_t := (
-      s128.data(7 downto 0),
-      s128.strb(0 downto 0),
-      s128.keep(0 downto 0),
-      s128.user(0 downto 0),
-      s128.valid,
-      s128.last,
-      s128.wakeup,
-      s128.id,
-      s128.dest
+  function to_stream8 (strm : stream128_t) return stream8_t is
+    constant s8 : stream8_t := (
+      strm.data(7 downto 0),
+      strm.strb(0 downto 0),
+      strm.keep(0 downto 0),
+      strm.user(0 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s8;
   end function;
 
 
-  function to_stream8 (s256 : stream256_t) return stream8_t is
-    constant s : stream8_t := (
-      s256.data(7 downto 0),
-      s256.strb(0 downto 0),
-      s256.keep(0 downto 0),
-      s256.user(0 downto 0),
-      s256.valid,
-      s256.last,
-      s256.wakeup,
-      s256.id,
-      s256.dest
+  function to_stream8 (strm : stream256_t) return stream8_t is
+    constant s8 : stream8_t := (
+      strm.data(7 downto 0),
+      strm.strb(0 downto 0),
+      strm.keep(0 downto 0),
+      strm.user(0 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s8;
   end function;
 
 
-  function to_stream8 (s512 : stream512_t) return stream8_t is
-    constant s : stream8_t := (
-      s512.data(7 downto 0),
-      s512.strb(0 downto 0),
-      s512.keep(0 downto 0),
-      s512.user(0 downto 0),
-      s512.valid,
-      s512.last,
-      s512.wakeup,
-      s512.id,
-      s512.dest
+  function to_stream8 (strm : stream512_t) return stream8_t is
+    constant s8 : stream8_t := (
+      strm.data(7 downto 0),
+      strm.strb(0 downto 0),
+      strm.keep(0 downto 0),
+      strm.user(0 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s8;
   end function;
 
 
-  function to_stream8 (s1024 : stream1024_t) return stream8_t is
-    constant s : stream8_t := (
-      s1024.data(7 downto 0),
-      s1024.strb(0 downto 0),
-      s1024.keep(0 downto 0),
-      s1024.user(0 downto 0),
-      s1024.valid,
-      s1024.last,
-      s1024.wakeup,
-      s1024.id,
-      s1024.dest
+  function to_stream8 (strm : stream1024_t) return stream8_t is
+    constant s8 : stream8_t := (
+      strm.data(7 downto 0),
+      strm.strb(0 downto 0),
+      strm.keep(0 downto 0),
+      strm.user(0 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s8;
   end function;
 
   --
@@ -702,127 +702,127 @@ package body axi_stream is
   end function;
 
 
-  function to_stream16 (s8 : stream8_t) return stream16_t is
-    variable s : stream16_t := init(
+  function to_stream16 (strm : stream8_t) return stream16_t is
+    variable s16 : stream16_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(7 downto 0) := s8.data;
-    s.strb(0 downto 0) := s8.strb;
-    s.keep(0 downto 0) := s8.keep;
-    s.user(0 downto 0) := s8.user;
-    s.valid  := s8.valid;
-    s.last   := s8.last;
-    s.wakeup := s8.wakeup;
-    s.id     := s8.id;
-    s.dest   := s8.dest;
+    s16.data(7 downto 0) := strm.data;
+    s16.strb(0 downto 0) := strm.strb;
+    s16.keep(0 downto 0) := strm.keep;
+    s16.user(0 downto 0) := strm.user;
+    s16.valid  := strm.valid;
+    s16.last   := strm.last;
+    s16.wakeup := strm.wakeup;
+    s16.id     := strm.id;
+    s16.dest   := strm.dest;
 
-    return s;
+    return s16;
   end function;
 
 
-  function to_stream16 (s32 : stream32_t) return stream16_t is
-    constant s : stream16_t := (
-      s32.data(15 downto 0),
-      s32.strb( 1 downto 0),
-      s32.keep( 1 downto 0),
-      s32.user( 1 downto 0),
-      s32.valid,
-      s32.last,
-      s32.wakeup,
-      s32.id,
-      s32.dest
+  function to_stream16 (strm : stream32_t) return stream16_t is
+    constant s16 : stream16_t := (
+      strm.data(15 downto 0),
+      strm.strb( 1 downto 0),
+      strm.keep( 1 downto 0),
+      strm.user( 1 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s16;
   end function;
 
 
-  function to_stream16 (s64 : stream64_t) return stream16_t is
-    constant s : stream16_t := (
-      s64.data(15 downto 0),
-      s64.strb( 1 downto 0),
-      s64.keep( 1 downto 0),
-      s64.user( 1 downto 0),
-      s64.valid,
-      s64.last,
-      s64.wakeup,
-      s64.id,
-      s64.dest
+  function to_stream16 (strm : stream64_t) return stream16_t is
+    constant s16 : stream16_t := (
+      strm.data(15 downto 0),
+      strm.strb( 1 downto 0),
+      strm.keep( 1 downto 0),
+      strm.user( 1 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s16;
   end function;
 
 
-  function to_stream16 (s128 : stream128_t) return stream16_t is
-    constant s : stream16_t := (
-      s128.data(15 downto 0),
-      s128.strb( 1 downto 0),
-      s128.keep( 1 downto 0),
-      s128.user( 1 downto 0),
-      s128.valid,
-      s128.last,
-      s128.wakeup,
-      s128.id,
-      s128.dest
+  function to_stream16 (strm : stream128_t) return stream16_t is
+    constant s16 : stream16_t := (
+      strm.data(15 downto 0),
+      strm.strb( 1 downto 0),
+      strm.keep( 1 downto 0),
+      strm.user( 1 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s16;
   end function;
 
 
-  function to_stream16 (s256 : stream256_t) return stream16_t is
-    constant s : stream16_t := (
-      s256.data(15 downto 0),
-      s256.strb( 1 downto 0),
-      s256.keep( 1 downto 0),
-      s256.user( 1 downto 0),
-      s256.valid,
-      s256.last,
-      s256.wakeup,
-      s256.id,
-      s256.dest
+  function to_stream16 (strm : stream256_t) return stream16_t is
+    constant s16 : stream16_t := (
+      strm.data(15 downto 0),
+      strm.strb( 1 downto 0),
+      strm.keep( 1 downto 0),
+      strm.user( 1 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s16;
   end function;
 
 
-  function to_stream16 (s512 : stream512_t) return stream16_t is
-    constant s : stream16_t := (
-      s512.data(15 downto 0),
-      s512.strb( 1 downto 0),
-      s512.keep( 1 downto 0),
-      s512.user( 1 downto 0),
-      s512.valid,
-      s512.last,
-      s512.wakeup,
-      s512.id,
-      s512.dest
+  function to_stream16 (strm : stream512_t) return stream16_t is
+    constant s16 : stream16_t := (
+      strm.data(15 downto 0),
+      strm.strb( 1 downto 0),
+      strm.keep( 1 downto 0),
+      strm.user( 1 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s16;
   end function;
 
 
-  function to_stream16 (s1024 : stream1024_t) return stream16_t is
-    constant s : stream16_t := (
-      s1024.data(15 downto 0),
-      s1024.strb( 1 downto 0),
-      s1024.keep( 1 downto 0),
-      s1024.user( 1 downto 0),
-      s1024.valid,
-      s1024.last,
-      s1024.wakeup,
-      s1024.id,
-      s1024.dest
+  function to_stream16 (strm : stream1024_t) return stream16_t is
+    constant s16 : stream16_t := (
+      strm.data(15 downto 0),
+      strm.strb( 1 downto 0),
+      strm.keep( 1 downto 0),
+      strm.user( 1 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s16;
   end function;
 
   --
@@ -846,132 +846,132 @@ package body axi_stream is
   end function;
 
 
-  function to_stream32 (s8 : stream8_t) return stream32_t is
-    variable s : stream32_t := init(
+  function to_stream32 (strm : stream8_t) return stream32_t is
+    variable s32 : stream32_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(7 downto 0) := s8.data;
-    s.strb(0 downto 0) := s8.strb;
-    s.keep(0 downto 0) := s8.keep;
-    s.user(0 downto 0) := s8.user;
-    s.valid  := s8.valid;
-    s.last   := s8.last;
-    s.wakeup := s8.wakeup;
-    s.id     := s8.id;
-    s.dest   := s8.dest;
+    s32.data(7 downto 0) := strm.data;
+    s32.strb(0 downto 0) := strm.strb;
+    s32.keep(0 downto 0) := strm.keep;
+    s32.user(0 downto 0) := strm.user;
+    s32.valid  := strm.valid;
+    s32.last   := strm.last;
+    s32.wakeup := strm.wakeup;
+    s32.id     := strm.id;
+    s32.dest   := strm.dest;
 
-    return s;
+    return s32;
   end function;
 
 
-  function to_stream32 (s16 : stream16_t) return stream32_t is
-    variable s : stream32_t := init(
+  function to_stream32 (strm : stream16_t) return stream32_t is
+    variable s32 : stream32_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(15 downto 0) := s16.data;
-    s.strb( 1 downto 0) := s16.strb;
-    s.keep( 1 downto 0) := s16.keep;
-    s.user( 1 downto 0) := s16.user;
-    s.valid  := s16.valid;
-    s.last   := s16.last;
-    s.wakeup := s16.wakeup;
-    s.id     := s16.id;
-    s.dest   := s16.dest;
+    s32.data(15 downto 0) := strm.data;
+    s32.strb( 1 downto 0) := strm.strb;
+    s32.keep( 1 downto 0) := strm.keep;
+    s32.user( 1 downto 0) := strm.user;
+    s32.valid  := strm.valid;
+    s32.last   := strm.last;
+    s32.wakeup := strm.wakeup;
+    s32.id     := strm.id;
+    s32.dest   := strm.dest;
 
-    return s;
+    return s32;
   end function;
 
 
-  function to_stream32 (s64 : stream64_t) return stream32_t is
-    constant s : stream32_t := (
-      s64.data(31 downto 0),
-      s64.strb( 3 downto 0),
-      s64.keep( 3 downto 0),
-      s64.user( 3 downto 0),
-      s64.valid,
-      s64.last,
-      s64.wakeup,
-      s64.id,
-      s64.dest
+  function to_stream32 (strm : stream64_t) return stream32_t is
+    constant s32 : stream32_t := (
+      strm.data(31 downto 0),
+      strm.strb( 3 downto 0),
+      strm.keep( 3 downto 0),
+      strm.user( 3 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s32;
   end function;
 
 
-  function to_stream32 (s128 : stream128_t) return stream32_t is
-    constant s : stream32_t := (
-      s128.data(31 downto 0),
-      s128.strb( 3 downto 0),
-      s128.keep( 3 downto 0),
-      s128.user( 3 downto 0),
-      s128.valid,
-      s128.last,
-      s128.wakeup,
-      s128.id,
-      s128.dest
+  function to_stream32 (strm : stream128_t) return stream32_t is
+    constant s32 : stream32_t := (
+      strm.data(31 downto 0),
+      strm.strb( 3 downto 0),
+      strm.keep( 3 downto 0),
+      strm.user( 3 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s32;
   end function;
 
 
-  function to_stream32 (s256 : stream256_t) return stream32_t is
-    constant s : stream32_t := (
-      s256.data(31 downto 0),
-      s256.strb( 3 downto 0),
-      s256.keep( 3 downto 0),
-      s256.user( 3 downto 0),
-      s256.valid,
-      s256.last,
-      s256.wakeup,
-      s256.id,
-      s256.dest
+  function to_stream32 (strm : stream256_t) return stream32_t is
+    constant s32 : stream32_t := (
+      strm.data(31 downto 0),
+      strm.strb( 3 downto 0),
+      strm.keep( 3 downto 0),
+      strm.user( 3 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s32;
   end function;
 
 
-  function to_stream32 (s512 : stream512_t) return stream32_t is
-    constant s : stream32_t := (
-      s512.data(31 downto 0),
-      s512.strb( 3 downto 0),
-      s512.keep( 3 downto 0),
-      s512.user( 3 downto 0),
-      s512.valid,
-      s512.last,
-      s512.wakeup,
-      s512.id,
-      s512.dest
+  function to_stream32 (strm : stream512_t) return stream32_t is
+    constant s32 : stream32_t := (
+      strm.data(31 downto 0),
+      strm.strb( 3 downto 0),
+      strm.keep( 3 downto 0),
+      strm.user( 3 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s32;
   end function;
 
 
-  function to_stream32 (s1024 : stream1024_t) return stream32_t is
-    constant s : stream32_t := (
-      s1024.data(31 downto 0),
-      s1024.strb( 3 downto 0),
-      s1024.keep( 3 downto 0),
-      s1024.user( 3 downto 0),
-      s1024.valid,
-      s1024.last,
-      s1024.wakeup,
-      s1024.id,
-      s1024.dest
+  function to_stream32 (strm : stream1024_t) return stream32_t is
+    constant s32 : stream32_t := (
+      strm.data(31 downto 0),
+      strm.strb( 3 downto 0),
+      strm.keep( 3 downto 0),
+      strm.user( 3 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s32;
   end function;
 
   --
@@ -995,137 +995,137 @@ package body axi_stream is
   end function;
 
 
-  function to_stream64 (s8 : stream8_t) return stream64_t is
-    variable s : stream64_t := init(
+  function to_stream64 (strm : stream8_t) return stream64_t is
+    variable s64 : stream64_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(7 downto 0) := s8.data;
-    s.strb(0 downto 0) := s8.strb;
-    s.keep(0 downto 0) := s8.keep;
-    s.user(0 downto 0) := s8.user;
-    s.valid  := s8.valid;
-    s.last   := s8.last;
-    s.wakeup := s8.wakeup;
-    s.id     := s8.id;
-    s.dest   := s8.dest;
+    s64.data(7 downto 0) := strm.data;
+    s64.strb(0 downto 0) := strm.strb;
+    s64.keep(0 downto 0) := strm.keep;
+    s64.user(0 downto 0) := strm.user;
+    s64.valid  := strm.valid;
+    s64.last   := strm.last;
+    s64.wakeup := strm.wakeup;
+    s64.id     := strm.id;
+    s64.dest   := strm.dest;
 
-    return s;
+    return s64;
   end function;
 
 
-  function to_stream64 (s16 : stream16_t) return stream64_t is
-    variable s : stream64_t := init(
+  function to_stream64 (strm : stream16_t) return stream64_t is
+    variable s64 : stream64_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(15 downto 0) := s16.data;
-    s.strb( 1 downto 0) := s16.strb;
-    s.keep( 1 downto 0) := s16.keep;
-    s.user( 1 downto 0) := s16.user;
-    s.valid  := s16.valid;
-    s.last   := s16.last;
-    s.wakeup := s16.wakeup;
-    s.id     := s16.id;
-    s.dest   := s16.dest;
+    s64.data(15 downto 0) := strm.data;
+    s64.strb( 1 downto 0) := strm.strb;
+    s64.keep( 1 downto 0) := strm.keep;
+    s64.user( 1 downto 0) := strm.user;
+    s64.valid  := strm.valid;
+    s64.last   := strm.last;
+    s64.wakeup := strm.wakeup;
+    s64.id     := strm.id;
+    s64.dest   := strm.dest;
 
-    return s;
+    return s64;
   end function;
 
 
-  function to_stream64 (s32 : stream32_t) return stream64_t is
-    variable s : stream64_t := init(
+  function to_stream64 (strm : stream32_t) return stream64_t is
+    variable s64 : stream64_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(31 downto 0) := s32.data;
-    s.strb( 3 downto 0) := s32.strb;
-    s.keep( 3 downto 0) := s32.keep;
-    s.user( 3 downto 0) := s32.user;
-    s.valid  := s32.valid;
-    s.last   := s32.last;
-    s.wakeup := s32.wakeup;
-    s.id     := s32.id;
-    s.dest   := s32.dest;
+    s64.data(31 downto 0) := strm.data;
+    s64.strb( 3 downto 0) := strm.strb;
+    s64.keep( 3 downto 0) := strm.keep;
+    s64.user( 3 downto 0) := strm.user;
+    s64.valid  := strm.valid;
+    s64.last   := strm.last;
+    s64.wakeup := strm.wakeup;
+    s64.id     := strm.id;
+    s64.dest   := strm.dest;
 
-    return s;
+    return s64;
   end function;
 
 
-  function to_stream64 (s128 : stream128_t) return stream64_t is
-    constant s : stream64_t := (
-      s128.data(63 downto 0),
-      s128.strb( 7 downto 0),
-      s128.keep( 7 downto 0),
-      s128.user( 7 downto 0),
-      s128.valid,
-      s128.last,
-      s128.wakeup,
-      s128.id,
-      s128.dest
+  function to_stream64 (strm : stream128_t) return stream64_t is
+    constant s64 : stream64_t := (
+      strm.data(63 downto 0),
+      strm.strb( 7 downto 0),
+      strm.keep( 7 downto 0),
+      strm.user( 7 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s64;
   end function;
 
 
-  function to_stream64 (s256 : stream256_t) return stream64_t is
-    constant s : stream64_t := (
-      s256.data(63 downto 0),
-      s256.strb( 7 downto 0),
-      s256.keep( 7 downto 0),
-      s256.user( 7 downto 0),
-      s256.valid,
-      s256.last,
-      s256.wakeup,
-      s256.id,
-      s256.dest
+  function to_stream64 (strm : stream256_t) return stream64_t is
+    constant s64 : stream64_t := (
+      strm.data(63 downto 0),
+      strm.strb( 7 downto 0),
+      strm.keep( 7 downto 0),
+      strm.user( 7 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s64;
   end function;
 
 
-  function to_stream64 (s512 : stream512_t) return stream64_t is
-    constant s : stream64_t := (
-      s512.data(63 downto 0),
-      s512.strb( 7 downto 0),
-      s512.keep( 7 downto 0),
-      s512.user( 7 downto 0),
-      s512.valid,
-      s512.last,
-      s512.wakeup,
-      s512.id,
-      s512.dest
+  function to_stream64 (strm : stream512_t) return stream64_t is
+    constant s64 : stream64_t := (
+      strm.data(63 downto 0),
+      strm.strb( 7 downto 0),
+      strm.keep( 7 downto 0),
+      strm.user( 7 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s64;
   end function;
 
 
-  function to_stream64 (s1024 : stream1024_t) return stream64_t is
-    constant s : stream64_t := (
-      s1024.data(63 downto 0),
-      s1024.strb( 7 downto 0),
-      s1024.keep( 7 downto 0),
-      s1024.user( 7 downto 0),
-      s1024.valid,
-      s1024.last,
-      s1024.wakeup,
-      s1024.id,
-      s1024.dest
+  function to_stream64 (strm : stream1024_t) return stream64_t is
+    constant s64 : stream64_t := (
+      strm.data(63 downto 0),
+      strm.strb( 7 downto 0),
+      strm.keep( 7 downto 0),
+      strm.user( 7 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s64;
   end function;
 
   --
@@ -1149,142 +1149,142 @@ package body axi_stream is
   end function;
 
 
-  function to_stream128 (s8 : stream8_t) return stream128_t is
-    variable s : stream128_t := init(
+  function to_stream128 (strm : stream8_t) return stream128_t is
+    variable s128 : stream128_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(7 downto 0) := s8.data;
-    s.strb(0 downto 0) := s8.strb;
-    s.keep(0 downto 0) := s8.keep;
-    s.user(0 downto 0) := s8.user;
-    s.valid  := s8.valid;
-    s.last   := s8.last;
-    s.wakeup := s8.wakeup;
-    s.id     := s8.id;
-    s.dest   := s8.dest;
+    s128.data(7 downto 0) := strm.data;
+    s128.strb(0 downto 0) := strm.strb;
+    s128.keep(0 downto 0) := strm.keep;
+    s128.user(0 downto 0) := strm.user;
+    s128.valid  := strm.valid;
+    s128.last   := strm.last;
+    s128.wakeup := strm.wakeup;
+    s128.id     := strm.id;
+    s128.dest   := strm.dest;
 
-    return s;
+    return s128;
   end function;
 
 
-  function to_stream128 (s16 : stream16_t) return stream128_t is
-    variable s : stream128_t := init(
+  function to_stream128 (strm : stream16_t) return stream128_t is
+    variable s128 : stream128_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(15 downto 0) := s16.data;
-    s.strb( 1 downto 0) := s16.strb;
-    s.keep( 1 downto 0) := s16.keep;
-    s.user( 1 downto 0) := s16.user;
-    s.valid  := s16.valid;
-    s.last   := s16.last;
-    s.wakeup := s16.wakeup;
-    s.id     := s16.id;
-    s.dest   := s16.dest;
+    s128.data(15 downto 0) := strm.data;
+    s128.strb( 1 downto 0) := strm.strb;
+    s128.keep( 1 downto 0) := strm.keep;
+    s128.user( 1 downto 0) := strm.user;
+    s128.valid  := strm.valid;
+    s128.last   := strm.last;
+    s128.wakeup := strm.wakeup;
+    s128.id     := strm.id;
+    s128.dest   := strm.dest;
 
-    return s;
+    return s128;
   end function;
 
 
-  function to_stream128 (s32 : stream32_t) return stream128_t is
-    variable s : stream128_t := init(
+  function to_stream128 (strm : stream32_t) return stream128_t is
+    variable s128 : stream128_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(31 downto 0) := s32.data;
-    s.strb( 3 downto 0) := s32.strb;
-    s.keep( 3 downto 0) := s32.keep;
-    s.user( 3 downto 0) := s32.user;
-    s.valid  := s32.valid;
-    s.last   := s32.last;
-    s.wakeup := s32.wakeup;
-    s.id     := s32.id;
-    s.dest   := s32.dest;
+    s128.data(31 downto 0) := strm.data;
+    s128.strb( 3 downto 0) := strm.strb;
+    s128.keep( 3 downto 0) := strm.keep;
+    s128.user( 3 downto 0) := strm.user;
+    s128.valid  := strm.valid;
+    s128.last   := strm.last;
+    s128.wakeup := strm.wakeup;
+    s128.id     := strm.id;
+    s128.dest   := strm.dest;
 
-    return s;
+    return s128;
   end function;
 
 
-  function to_stream128 (s64 : stream64_t) return stream128_t is
-    variable s : stream128_t := init(
+  function to_stream128 (strm : stream64_t) return stream128_t is
+    variable s128 : stream128_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(63 downto 0) := s64.data;
-    s.strb( 7 downto 0) := s64.strb;
-    s.keep( 7 downto 0) := s64.keep;
-    s.user( 7 downto 0) := s64.user;
-    s.valid  := s64.valid;
-    s.last   := s64.last;
-    s.wakeup := s64.wakeup;
-    s.id     := s64.id;
-    s.dest   := s64.dest;
+    s128.data(63 downto 0) := strm.data;
+    s128.strb( 7 downto 0) := strm.strb;
+    s128.keep( 7 downto 0) := strm.keep;
+    s128.user( 7 downto 0) := strm.user;
+    s128.valid  := strm.valid;
+    s128.last   := strm.last;
+    s128.wakeup := strm.wakeup;
+    s128.id     := strm.id;
+    s128.dest   := strm.dest;
 
-    return s;
+    return s128;
   end function;
 
 
-  function to_stream128 (s256 : stream256_t) return stream128_t is
-    constant s : stream128_t := (
-      s256.data(127 downto 0),
-      s256.strb( 15 downto 0),
-      s256.keep( 15 downto 0),
-      s256.user( 15 downto 0),
-      s256.valid,
-      s256.last,
-      s256.wakeup,
-      s256.id,
-      s256.dest
+  function to_stream128 (strm : stream256_t) return stream128_t is
+    constant s128 : stream128_t := (
+      strm.data(127 downto 0),
+      strm.strb( 15 downto 0),
+      strm.keep( 15 downto 0),
+      strm.user( 15 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s128;
   end function;
 
 
-  function to_stream128 (s512 : stream512_t) return stream128_t is
-    constant s : stream128_t := (
-      s512.data(127 downto 0),
-      s512.strb( 15 downto 0),
-      s512.keep( 15 downto 0),
-      s512.user( 15 downto 0),
-      s512.valid,
-      s512.last,
-      s512.wakeup,
-      s512.id,
-      s512.dest
+  function to_stream128 (strm : stream512_t) return stream128_t is
+    constant s128 : stream128_t := (
+      strm.data(127 downto 0),
+      strm.strb( 15 downto 0),
+      strm.keep( 15 downto 0),
+      strm.user( 15 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s128;
   end function;
 
 
-  function to_stream128 (s1024 : stream1024_t) return stream128_t is
-    constant s : stream128_t := (
-      s1024.data(127 downto 0),
-      s1024.strb( 15 downto 0),
-      s1024.keep( 15 downto 0),
-      s1024.user( 15 downto 0),
-      s1024.valid,
-      s1024.last,
-      s1024.wakeup,
-      s1024.id,
-      s1024.dest
+  function to_stream128 (strm : stream1024_t) return stream128_t is
+    constant s128 : stream128_t := (
+      strm.data(127 downto 0),
+      strm.strb( 15 downto 0),
+      strm.keep( 15 downto 0),
+      strm.user( 15 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s128;
   end function;
 
   --
@@ -1308,147 +1308,147 @@ package body axi_stream is
   end function;
 
 
-  function to_stream256 (s8 : stream8_t) return stream256_t is
-    variable s : stream256_t := init(
+  function to_stream256 (strm : stream8_t) return stream256_t is
+    variable s256 : stream256_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(7 downto 0) := s8.data;
-    s.strb(0 downto 0) := s8.strb;
-    s.keep(0 downto 0) := s8.keep;
-    s.user(0 downto 0) := s8.user;
-    s.valid  := s8.valid;
-    s.last   := s8.last;
-    s.wakeup := s8.wakeup;
-    s.id     := s8.id;
-    s.dest   := s8.dest;
+    s256.data(7 downto 0) := strm.data;
+    s256.strb(0 downto 0) := strm.strb;
+    s256.keep(0 downto 0) := strm.keep;
+    s256.user(0 downto 0) := strm.user;
+    s256.valid  := strm.valid;
+    s256.last   := strm.last;
+    s256.wakeup := strm.wakeup;
+    s256.id     := strm.id;
+    s256.dest   := strm.dest;
 
-    return s;
+    return s256;
   end function;
 
 
-  function to_stream256 (s16 : stream16_t) return stream256_t is
-    variable s : stream256_t := init(
+  function to_stream256 (strm : stream16_t) return stream256_t is
+    variable s256 : stream256_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(15 downto 0) := s16.data;
-    s.strb( 1 downto 0) := s16.strb;
-    s.keep( 1 downto 0) := s16.keep;
-    s.user( 1 downto 0) := s16.user;
-    s.valid  := s16.valid;
-    s.last   := s16.last;
-    s.wakeup := s16.wakeup;
-    s.id     := s16.id;
-    s.dest   := s16.dest;
+    s256.data(15 downto 0) := strm.data;
+    s256.strb( 1 downto 0) := strm.strb;
+    s256.keep( 1 downto 0) := strm.keep;
+    s256.user( 1 downto 0) := strm.user;
+    s256.valid  := strm.valid;
+    s256.last   := strm.last;
+    s256.wakeup := strm.wakeup;
+    s256.id     := strm.id;
+    s256.dest   := strm.dest;
 
-    return s;
+    return s256;
   end function;
 
 
-  function to_stream256 (s32 : stream32_t) return stream256_t is
-    variable s : stream256_t := init(
+  function to_stream256 (strm : stream32_t) return stream256_t is
+    variable s256 : stream256_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(31 downto 0) := s32.data;
-    s.strb( 3 downto 0) := s32.strb;
-    s.keep( 3 downto 0) := s32.keep;
-    s.user( 3 downto 0) := s32.user;
-    s.valid  := s32.valid;
-    s.last   := s32.last;
-    s.wakeup := s32.wakeup;
-    s.id     := s32.id;
-    s.dest   := s32.dest;
+    s256.data(31 downto 0) := strm.data;
+    s256.strb( 3 downto 0) := strm.strb;
+    s256.keep( 3 downto 0) := strm.keep;
+    s256.user( 3 downto 0) := strm.user;
+    s256.valid  := strm.valid;
+    s256.last   := strm.last;
+    s256.wakeup := strm.wakeup;
+    s256.id     := strm.id;
+    s256.dest   := strm.dest;
 
-    return s;
+    return s256;
   end function;
 
 
-  function to_stream256 (s64 : stream64_t) return stream256_t is
-    variable s : stream256_t := init(
+  function to_stream256 (strm : stream64_t) return stream256_t is
+    variable s256 : stream256_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(63 downto 0) := s64.data;
-    s.strb( 7 downto 0) := s64.strb;
-    s.keep( 7 downto 0) := s64.keep;
-    s.user( 7 downto 0) := s64.user;
-    s.valid  := s64.valid;
-    s.last   := s64.last;
-    s.wakeup := s64.wakeup;
-    s.id     := s64.id;
-    s.dest   := s64.dest;
+    s256.data(63 downto 0) := strm.data;
+    s256.strb( 7 downto 0) := strm.strb;
+    s256.keep( 7 downto 0) := strm.keep;
+    s256.user( 7 downto 0) := strm.user;
+    s256.valid  := strm.valid;
+    s256.last   := strm.last;
+    s256.wakeup := strm.wakeup;
+    s256.id     := strm.id;
+    s256.dest   := strm.dest;
 
-    return s;
+    return s256;
   end function;
 
 
-  function to_stream256 (s128 : stream128_t) return stream256_t is
-    variable s : stream256_t := init(
+  function to_stream256 (strm : stream128_t) return stream256_t is
+    variable s256 : stream256_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(127 downto 0) := s128.data;
-    s.strb( 15 downto 0) := s128.strb;
-    s.keep( 15 downto 0) := s128.keep;
-    s.user( 15 downto 0) := s128.user;
-    s.valid  := s128.valid;
-    s.last   := s128.last;
-    s.wakeup := s128.wakeup;
-    s.id     := s128.id;
-    s.dest   := s128.dest;
+    s256.data(127 downto 0) := strm.data;
+    s256.strb( 15 downto 0) := strm.strb;
+    s256.keep( 15 downto 0) := strm.keep;
+    s256.user( 15 downto 0) := strm.user;
+    s256.valid  := strm.valid;
+    s256.last   := strm.last;
+    s256.wakeup := strm.wakeup;
+    s256.id     := strm.id;
+    s256.dest   := strm.dest;
 
-    return s;
+    return s256;
   end function;
 
 
-  function to_stream256 (s512 : stream512_t) return stream256_t is
-    constant s : stream256_t := (
-      s512.data(255 downto 0),
-      s512.strb( 31 downto 0),
-      s512.keep( 31 downto 0),
-      s512.user( 31 downto 0),
-      s512.valid,
-      s512.last,
-      s512.wakeup,
-      s512.id,
-      s512.dest
+  function to_stream256 (strm : stream512_t) return stream256_t is
+    constant s256 : stream256_t := (
+      strm.data(255 downto 0),
+      strm.strb( 31 downto 0),
+      strm.keep( 31 downto 0),
+      strm.user( 31 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s256;
   end function;
 
 
-  function to_stream256 (s1024 : stream1024_t) return stream256_t is
-    constant s : stream256_t := (
-      s1024.data(255 downto 0),
-      s1024.strb( 31 downto 0),
-      s1024.keep( 31 downto 0),
-      s1024.user( 31 downto 0),
-      s1024.valid,
-      s1024.last,
-      s1024.wakeup,
-      s1024.id,
-      s1024.dest
+  function to_stream256 (strm : stream1024_t) return stream256_t is
+    constant s256 : stream256_t := (
+      strm.data(255 downto 0),
+      strm.strb( 31 downto 0),
+      strm.keep( 31 downto 0),
+      strm.user( 31 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s256;
   end function;
 
 
@@ -1473,152 +1473,152 @@ package body axi_stream is
   end function;
 
 
-  function to_stream512 (s8 : stream8_t) return stream512_t is
-    variable s : stream512_t := init(
+  function to_stream512 (strm : stream8_t) return stream512_t is
+    variable s512 : stream512_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(7 downto 0) := s8.data;
-    s.strb(0 downto 0) := s8.strb;
-    s.keep(0 downto 0) := s8.keep;
-    s.user(0 downto 0) := s8.user;
-    s.valid  := s8.valid;
-    s.last   := s8.last;
-    s.wakeup := s8.wakeup;
-    s.id     := s8.id;
-    s.dest   := s8.dest;
+    s512.data(7 downto 0) := strm.data;
+    s512.strb(0 downto 0) := strm.strb;
+    s512.keep(0 downto 0) := strm.keep;
+    s512.user(0 downto 0) := strm.user;
+    s512.valid  := strm.valid;
+    s512.last   := strm.last;
+    s512.wakeup := strm.wakeup;
+    s512.id     := strm.id;
+    s512.dest   := strm.dest;
 
-    return s;
+    return s512;
   end function;
 
 
-  function to_stream512 (s16 : stream16_t) return stream512_t is
-    variable s : stream512_t := init(
+  function to_stream512 (strm : stream16_t) return stream512_t is
+    variable s512 : stream512_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(15 downto 0) := s16.data;
-    s.strb( 1 downto 0) := s16.strb;
-    s.keep( 1 downto 0) := s16.keep;
-    s.user( 1 downto 0) := s16.user;
-    s.valid  := s16.valid;
-    s.last   := s16.last;
-    s.wakeup := s16.wakeup;
-    s.id     := s16.id;
-    s.dest   := s16.dest;
+    s512.data(15 downto 0) := strm.data;
+    s512.strb( 1 downto 0) := strm.strb;
+    s512.keep( 1 downto 0) := strm.keep;
+    s512.user( 1 downto 0) := strm.user;
+    s512.valid  := strm.valid;
+    s512.last   := strm.last;
+    s512.wakeup := strm.wakeup;
+    s512.id     := strm.id;
+    s512.dest   := strm.dest;
 
-    return s;
+    return s512;
   end function;
 
 
-  function to_stream512 (s32 : stream32_t) return stream512_t is
-    variable s : stream512_t := init(
+  function to_stream512 (strm : stream32_t) return stream512_t is
+    variable s512 : stream512_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(31 downto 0) := s32.data;
-    s.strb( 3 downto 0) := s32.strb;
-    s.keep( 3 downto 0) := s32.keep;
-    s.user( 3 downto 0) := s32.user;
-    s.valid  := s32.valid;
-    s.last   := s32.last;
-    s.wakeup := s32.wakeup;
-    s.id     := s32.id;
-    s.dest   := s32.dest;
+    s512.data(31 downto 0) := strm.data;
+    s512.strb( 3 downto 0) := strm.strb;
+    s512.keep( 3 downto 0) := strm.keep;
+    s512.user( 3 downto 0) := strm.user;
+    s512.valid  := strm.valid;
+    s512.last   := strm.last;
+    s512.wakeup := strm.wakeup;
+    s512.id     := strm.id;
+    s512.dest   := strm.dest;
 
-    return s;
+    return s512;
   end function;
 
 
-  function to_stream512 (s64 : stream64_t) return stream512_t is
-    variable s : stream512_t := init(
+  function to_stream512 (strm : stream64_t) return stream512_t is
+    variable s512 : stream512_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(63 downto 0) := s64.data;
-    s.strb( 7 downto 0) := s64.strb;
-    s.keep( 7 downto 0) := s64.keep;
-    s.user( 7 downto 0) := s64.user;
-    s.valid  := s64.valid;
-    s.last   := s64.last;
-    s.wakeup := s64.wakeup;
-    s.id     := s64.id;
-    s.dest   := s64.dest;
+    s512.data(63 downto 0) := strm.data;
+    s512.strb( 7 downto 0) := strm.strb;
+    s512.keep( 7 downto 0) := strm.keep;
+    s512.user( 7 downto 0) := strm.user;
+    s512.valid  := strm.valid;
+    s512.last   := strm.last;
+    s512.wakeup := strm.wakeup;
+    s512.id     := strm.id;
+    s512.dest   := strm.dest;
 
-    return s;
+    return s512;
   end function;
 
 
-  function to_stream512 (s128 : stream128_t) return stream512_t is
-    variable s : stream512_t := init(
+  function to_stream512 (strm : stream128_t) return stream512_t is
+    variable s512 : stream512_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(127 downto 0) := s128.data;
-    s.strb( 15 downto 0) := s128.strb;
-    s.keep( 15 downto 0) := s128.keep;
-    s.user( 15 downto 0) := s128.user;
-    s.valid  := s128.valid;
-    s.last   := s128.last;
-    s.wakeup := s128.wakeup;
-    s.id     := s128.id;
-    s.dest   := s128.dest;
+    s512.data(127 downto 0) := strm.data;
+    s512.strb( 15 downto 0) := strm.strb;
+    s512.keep( 15 downto 0) := strm.keep;
+    s512.user( 15 downto 0) := strm.user;
+    s512.valid  := strm.valid;
+    s512.last   := strm.last;
+    s512.wakeup := strm.wakeup;
+    s512.id     := strm.id;
+    s512.dest   := strm.dest;
 
-    return s;
+    return s512;
   end function;
 
 
-  function to_stream512 (s256 : stream256_t) return stream512_t is
-    variable s : stream512_t := init(
+  function to_stream512 (strm : stream256_t) return stream512_t is
+    variable s512 : stream512_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(255 downto 0) := s256.data;
-    s.strb( 31 downto 0) := s256.strb;
-    s.keep( 31 downto 0) := s256.keep;
-    s.user( 31 downto 0) := s256.user;
-    s.valid  := s256.valid;
-    s.last   := s256.last;
-    s.wakeup := s256.wakeup;
-    s.id     := s256.id;
-    s.dest   := s256.dest;
+    s512.data(255 downto 0) := strm.data;
+    s512.strb( 31 downto 0) := strm.strb;
+    s512.keep( 31 downto 0) := strm.keep;
+    s512.user( 31 downto 0) := strm.user;
+    s512.valid  := strm.valid;
+    s512.last   := strm.last;
+    s512.wakeup := strm.wakeup;
+    s512.id     := strm.id;
+    s512.dest   := strm.dest;
 
-    return s;
+    return s512;
   end function;
 
 
-  function to_stream512 (s1024 : stream1024_t) return stream512_t is
-    constant s : stream512_t := (
-      s1024.data(511 downto 0),
-      s1024.strb( 63 downto 0),
-      s1024.keep( 63 downto 0),
-      s1024.user( 63 downto 0),
-      s1024.valid,
-      s1024.last,
-      s1024.wakeup,
-      s1024.id,
-      s1024.dest
+  function to_stream512 (strm : stream1024_t) return stream512_t is
+    constant s512 : stream512_t := (
+      strm.data(511 downto 0),
+      strm.strb( 63 downto 0),
+      strm.keep( 63 downto 0),
+      strm.user( 63 downto 0),
+      strm.valid,
+      strm.last,
+      strm.wakeup,
+      strm.id,
+      strm.dest
     );
   begin
-    return s;
+    return s512;
   end function;
 
 
@@ -1643,157 +1643,157 @@ package body axi_stream is
   end function;
 
 
-  function to_stream1024 (s8 : stream8_t) return stream1024_t is
-    variable s : stream1024_t := init(
+  function to_stream1024 (strm : stream8_t) return stream1024_t is
+    variable s1024 : stream1024_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(7 downto 0) := s8.data;
-    s.strb(0 downto 0) := s8.strb;
-    s.keep(0 downto 0) := s8.keep;
-    s.user(0 downto 0) := s8.user;
-    s.valid  := s8.valid;
-    s.last   := s8.last;
-    s.wakeup := s8.wakeup;
-    s.id     := s8.id;
-    s.dest   := s8.dest;
+    s1024.data(7 downto 0) := strm.data;
+    s1024.strb(0 downto 0) := strm.strb;
+    s1024.keep(0 downto 0) := strm.keep;
+    s1024.user(0 downto 0) := strm.user;
+    s1024.valid  := strm.valid;
+    s1024.last   := strm.last;
+    s1024.wakeup := strm.wakeup;
+    s1024.id     := strm.id;
+    s1024.dest   := strm.dest;
 
-    return s;
+    return s1024;
   end function;
 
 
-  function to_stream1024 (s16 : stream16_t) return stream1024_t is
-    variable s : stream1024_t := init(
+  function to_stream1024 (strm : stream16_t) return stream1024_t is
+    variable s1024 : stream1024_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(15 downto 0) := s16.data;
-    s.strb( 1 downto 0) := s16.strb;
-    s.keep( 1 downto 0) := s16.keep;
-    s.user( 1 downto 0) := s16.user;
-    s.valid  := s16.valid;
-    s.last   := s16.last;
-    s.wakeup := s16.wakeup;
-    s.id     := s16.id;
-    s.dest   := s16.dest;
+    s1024.data(15 downto 0) := strm.data;
+    s1024.strb( 1 downto 0) := strm.strb;
+    s1024.keep( 1 downto 0) := strm.keep;
+    s1024.user( 1 downto 0) := strm.user;
+    s1024.valid  := strm.valid;
+    s1024.last   := strm.last;
+    s1024.wakeup := strm.wakeup;
+    s1024.id     := strm.id;
+    s1024.dest   := strm.dest;
 
-    return s;
+    return s1024;
   end function;
 
 
-  function to_stream1024 (s32 : stream32_t) return stream1024_t is
-    variable s : stream1024_t := init(
+  function to_stream1024 (strm : stream32_t) return stream1024_t is
+    variable s1024 : stream1024_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(31 downto 0) := s32.data;
-    s.strb( 3 downto 0) := s32.strb;
-    s.keep( 3 downto 0) := s32.keep;
-    s.user( 3 downto 0) := s32.user;
-    s.valid  := s32.valid;
-    s.last   := s32.last;
-    s.wakeup := s32.wakeup;
-    s.id     := s32.id;
-    s.dest   := s32.dest;
+    s1024.data(31 downto 0) := strm.data;
+    s1024.strb( 3 downto 0) := strm.strb;
+    s1024.keep( 3 downto 0) := strm.keep;
+    s1024.user( 3 downto 0) := strm.user;
+    s1024.valid  := strm.valid;
+    s1024.last   := strm.last;
+    s1024.wakeup := strm.wakeup;
+    s1024.id     := strm.id;
+    s1024.dest   := strm.dest;
 
-    return s;
+    return s1024;
   end function;
 
 
-  function to_stream1024 (s64 : stream64_t) return stream1024_t is
-    variable s : stream1024_t := init(
+  function to_stream1024 (strm : stream64_t) return stream1024_t is
+    variable s1024 : stream1024_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(63 downto 0) := s64.data;
-    s.strb( 7 downto 0) := s64.strb;
-    s.keep( 7 downto 0) := s64.keep;
-    s.user( 7 downto 0) := s64.user;
-    s.valid  := s64.valid;
-    s.last   := s64.last;
-    s.wakeup := s64.wakeup;
-    s.id     := s64.id;
-    s.dest   := s64.dest;
+    s1024.data(63 downto 0) := strm.data;
+    s1024.strb( 7 downto 0) := strm.strb;
+    s1024.keep( 7 downto 0) := strm.keep;
+    s1024.user( 7 downto 0) := strm.user;
+    s1024.valid  := strm.valid;
+    s1024.last   := strm.last;
+    s1024.wakeup := strm.wakeup;
+    s1024.id     := strm.id;
+    s1024.dest   := strm.dest;
 
-    return s;
+    return s1024;
   end function;
 
 
-  function to_stream1024 (s128 : stream128_t) return stream1024_t is
-    variable s : stream1024_t := init(
+  function to_stream1024 (strm : stream128_t) return stream1024_t is
+    variable s1024 : stream1024_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(127 downto 0) := s128.data;
-    s.strb( 15 downto 0) := s128.strb;
-    s.keep( 15 downto 0) := s128.keep;
-    s.user( 15 downto 0) := s128.user;
-    s.valid  := s128.valid;
-    s.last   := s128.last;
-    s.wakeup := s128.wakeup;
-    s.id     := s128.id;
-    s.dest   := s128.dest;
+    s1024.data(127 downto 0) := strm.data;
+    s1024.strb( 15 downto 0) := strm.strb;
+    s1024.keep( 15 downto 0) := strm.keep;
+    s1024.user( 15 downto 0) := strm.user;
+    s1024.valid  := strm.valid;
+    s1024.last   := strm.last;
+    s1024.wakeup := strm.wakeup;
+    s1024.id     := strm.id;
+    s1024.dest   := strm.dest;
 
-    return s;
+    return s1024;
   end function;
 
 
-  function to_stream1024 (s512 : stream512_t) return stream1024_t is
-    variable s : stream1024_t := init(
+  function to_stream1024 (strm : stream512_t) return stream1024_t is
+    variable s1024 : stream1024_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(511 downto 0) := s512.data;
-    s.strb( 63 downto 0) := s512.strb;
-    s.keep( 63 downto 0) := s512.keep;
-    s.user( 63 downto 0) := s512.user;
-    s.valid  := s512.valid;
-    s.last   := s512.last;
-    s.wakeup := s512.wakeup;
-    s.id     := s512.id;
-    s.dest   := s512.dest;
+    s1024.data(511 downto 0) := strm.data;
+    s1024.strb( 63 downto 0) := strm.strb;
+    s1024.keep( 63 downto 0) := strm.keep;
+    s1024.user( 63 downto 0) := strm.user;
+    s1024.valid  := strm.valid;
+    s1024.last   := strm.last;
+    s1024.wakeup := strm.wakeup;
+    s1024.id     := strm.id;
+    s1024.dest   := strm.dest;
 
-    return s;
+    return s1024;
   end function;
 
 
-  function to_stream1024 (s256 : stream256_t) return stream1024_t is
-    variable s : stream1024_t := init(
+  function to_stream1024 (strm : stream256_t) return stream1024_t is
+    variable s1024 : stream1024_t := init(
       data => (others => '-'),
       strb => (others => '-'),
       keep => (others => '-'),
       user => (others => '-')
     );
   begin
-    s.data(255 downto 0) := s256.data;
-    s.strb( 31 downto 0) := s256.strb;
-    s.keep( 31 downto 0) := s256.keep;
-    s.user( 31 downto 0) := s256.user;
-    s.valid  := s256.valid;
-    s.last   := s256.last;
-    s.wakeup := s256.wakeup;
-    s.id     := s256.id;
-    s.dest   := s256.dest;
+    s1024.data(255 downto 0) := strm.data;
+    s1024.strb( 31 downto 0) := strm.strb;
+    s1024.keep( 31 downto 0) := strm.keep;
+    s1024.user( 31 downto 0) := strm.user;
+    s1024.valid  := strm.valid;
+    s1024.last   := strm.last;
+    s1024.wakeup := strm.wakeup;
+    s1024.id     := strm.id;
+    s1024.dest   := strm.dest;
 
-    return s;
+    return s1024;
   end function;
 
   --
@@ -1820,66 +1820,66 @@ package body axi_stream is
   end function;
 
 
-  function to_debug (s : stream8_t; indent : string := "") return string is
+  function to_debug (strm : stream8_t; indent : string := "") return string is
   begin
-    return to_debug(to_stream1024(s), indent, 1);
+    return to_debug(to_stream1024(strm), indent, 1);
   end function;
 
 
-  function to_debug (s : stream16_t; indent : string := "") return string is
+  function to_debug (strm : stream16_t; indent : string := "") return string is
   begin
-    return to_debug(to_stream1024(s), indent, 2);
+    return to_debug(to_stream1024(strm), indent, 2);
   end function;
 
 
-  function to_debug (s : stream32_t; indent : string := "") return string is
+  function to_debug (strm : stream32_t; indent : string := "") return string is
   begin
-    return to_debug(to_stream1024(s), indent, 4);
+    return to_debug(to_stream1024(strm), indent, 4);
   end function;
 
 
-  function to_debug (s : stream64_t; indent : string := "") return string is
+  function to_debug (strm : stream64_t; indent : string := "") return string is
   begin
-    return to_debug(to_stream1024(s), indent, 8);
+    return to_debug(to_stream1024(strm), indent, 8);
   end function;
 
 
-  function to_debug (s : stream128_t; indent : string := "") return string is
+  function to_debug (strm : stream128_t; indent : string := "") return string is
   begin
-    return to_debug(to_stream1024(s), indent, 16);
+    return to_debug(to_stream1024(strm), indent, 16);
   end function;
 
 
-  function to_debug (s : stream256_t; indent : string := "") return string is
+  function to_debug (strm : stream256_t; indent : string := "") return string is
   begin
-    return to_debug(to_stream1024(s), indent, 32);
+    return to_debug(to_stream1024(strm), indent, 32);
   end function;
 
 
-  function to_debug (s : stream512_t; indent : string := "") return string is
+  function to_debug (strm : stream512_t; indent : string := "") return string is
   begin
-    return to_debug(to_stream1024(s), indent, 64);
+    return to_debug(to_stream1024(strm), indent, 64);
   end function;
 
 
   function to_debug (
-    s : stream1024_t; indent : string := ""; data_byte_count : positive := 128
+    strm : stream1024_t; indent : string := ""; data_byte_count : positive := 128
   ) return string is
-    constant data : string :=     data_to_hstring(s.data, data_byte_count);
-    constant strb : string := metadata_to_hstring(s.strb, data_byte_count);
-    constant keep : string := metadata_to_hstring(s.keep, data_byte_count);
-    constant user : string := metadata_to_hstring(s.user, data_byte_count);
+    constant data : string :=     data_to_hstring(strm.data, data_byte_count);
+    constant strb : string := metadata_to_hstring(strm.strb, data_byte_count);
+    constant keep : string := metadata_to_hstring(strm.keep, data_byte_count);
+    constant user : string := metadata_to_hstring(strm.user, data_byte_count);
   begin
     return "(" & LF &
       indent & "  data   => x""" & data                & """," & LF &
       indent & "  strb   => x""" & strb                & """," & LF &
       indent & "  keep   => x""" & keep                & """," & LF &
       indent & "  user   => x""" & user                & """," & LF &
-      indent & "  valid  => '"   & to_string(s.valid)  & "',"  & LF &
-      indent & "  last   => '"   & to_string(s.last)   & "',"  & LF &
-      indent & "  wakeup => '"   & to_string(s.wakeup) & "',"  & LF &
-      indent & "  id     => x""" & to_hstring(s.id)    & """," & LF &
-      indent & "  dest   => x""" & to_hstring(s.dest)  & """"  & LF &
+      indent & "  valid  => '"   & to_string(strm.valid)  & "',"  & LF &
+      indent & "  last   => '"   & to_string(strm.last)   & "',"  & LF &
+      indent & "  wakeup => '"   & to_string(strm.wakeup) & "',"  & LF &
+      indent & "  id     => x""" & to_hstring(strm.id)    & """," & LF &
+      indent & "  dest   => x""" & to_hstring(strm.dest)  & """"  & LF &
       indent & ")";
   end function;
 
