@@ -79,6 +79,20 @@ package data is
   type  data1024_vector_2d_t is array (natural range <>) of data1024_vector_t;
 
   --
+  -- Equality functions
+  -- Compare elements by position, regardless of array bounds or direction.
+  --
+
+  function "=" (l, r : data8_array_t)    return boolean;
+  function "=" (l, r : data16_array_t)   return boolean;
+  function "=" (l, r : data32_array_t)   return boolean;
+  function "=" (l, r : data64_array_t)   return boolean;
+  function "=" (l, r : data128_array_t)  return boolean;
+  function "=" (l, r : data256_array_t)  return boolean;
+  function "=" (l, r : data512_array_t)  return boolean;
+  function "=" (l, r : data1024_array_t) return boolean;
+
+  --
   -- Array conversion functions
   --
 
@@ -1094,5 +1108,144 @@ package body data is
     return res;
   end function;
 
+
+  --
+  -- Equality functions
+  --
+
+  function "=" (l, r : data8_array_t) return boolean is
+    alias la : data8_array_t(0 to l'length - 1) is l;
+    alias ra : data8_array_t(0 to r'length - 1) is r;
+  begin
+    if l'length /= r'length then
+      return false;
+    end if;
+
+    for i in la'range loop
+      if la(i) /= ra(i) then
+        return false;
+      end if;
+    end loop;
+    return true;
+  end function;
+
+
+  function "=" (l, r : data16_array_t) return boolean is
+    alias la : data16_array_t(0 to l'length - 1) is l;
+    alias ra : data16_array_t(0 to r'length - 1) is r;
+  begin
+    if l'length /= r'length then
+      return false;
+    end if;
+
+    for i in la'range loop
+      if la(i) /= ra(i) then
+        return false;
+      end if;
+    end loop;
+    return true;
+  end function;
+
+
+  function "=" (l, r : data32_array_t) return boolean is
+    alias la : data32_array_t(0 to l'length - 1) is l;
+    alias ra : data32_array_t(0 to r'length - 1) is r;
+  begin
+    if l'length /= r'length then
+      return false;
+    end if;
+
+    for i in la'range loop
+      if la(i) /= ra(i) then
+        return false;
+      end if;
+    end loop;
+    return true;
+  end function;
+
+
+  function "=" (l, r : data64_array_t) return boolean is
+    alias la : data64_array_t(0 to l'length - 1) is l;
+    alias ra : data64_array_t(0 to r'length - 1) is r;
+  begin
+    if l'length /= r'length then
+      return false;
+    end if;
+
+    for i in la'range loop
+      if la(i) /= ra(i) then
+        return false;
+      end if;
+    end loop;
+    return true;
+  end function;
+
+
+  function "=" (l, r : data128_array_t) return boolean is
+    alias la : data128_array_t(0 to l'length - 1) is l;
+    alias ra : data128_array_t(0 to r'length - 1) is r;
+  begin
+    if l'length /= r'length then
+      return false;
+    end if;
+
+    for i in la'range loop
+      if la(i) /= ra(i) then
+        return false;
+      end if;
+    end loop;
+    return true;
+  end function;
+
+
+  function "=" (l, r : data256_array_t) return boolean is
+    alias la : data256_array_t(0 to l'length - 1) is l;
+    alias ra : data256_array_t(0 to r'length - 1) is r;
+  begin
+    if l'length /= r'length then
+      return false;
+    end if;
+
+    for i in la'range loop
+      if la(i) /= ra(i) then
+        return false;
+      end if;
+    end loop;
+    return true;
+  end function;
+
+
+  function "=" (l, r : data512_array_t) return boolean is
+    alias la : data512_array_t(0 to l'length - 1) is l;
+    alias ra : data512_array_t(0 to r'length - 1) is r;
+  begin
+    if l'length /= r'length then
+      return false;
+    end if;
+
+    for i in la'range loop
+      if la(i) /= ra(i) then
+        return false;
+      end if;
+    end loop;
+    return true;
+  end function;
+
+
+  function "=" (l, r : data1024_array_t) return boolean is
+    alias la : data1024_array_t(0 to l'length - 1) is l;
+    alias ra : data1024_array_t(0 to r'length - 1) is r;
+  begin
+    if l'length /= r'length then
+      return false;
+    end if;
+
+    for i in la'range loop
+      if la(i) /= ra(i) then
+        return false;
+      end if;
+    end loop;
+    return true;
+  end function;
 
 end package body;
