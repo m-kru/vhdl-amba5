@@ -79,6 +79,20 @@ package data is
   type  data1024_vector_2d_t is array (natural range <>) of data1024_vector_t;
 
   --
+  -- String conversion functions
+  -- Single-line hexadecimal literals in array order; empty arrays return "()".
+  --
+
+  function to_string(d : data8_array_t)    return string;
+  function to_string(d : data16_array_t)   return string;
+  function to_string(d : data32_array_t)   return string;
+  function to_string(d : data64_array_t)   return string;
+  function to_string(d : data128_array_t)  return string;
+  function to_string(d : data256_array_t)  return string;
+  function to_string(d : data512_array_t)  return string;
+  function to_string(d : data1024_array_t) return string;
+
+  --
   -- Equality functions
   -- Compare elements by position, regardless of array bounds or direction.
   --
@@ -164,6 +178,154 @@ end package data;
 
 
 package body data is
+
+  --
+  -- String conversion functions
+  --
+
+  function to_string(d : data8_array_t) return string is
+    variable res : string(1 to d'length * (8 / 4 + 5) + 2);
+    variable j : positive := 2;
+  begin
+    res(1) := '(';
+    for i in d'range loop
+      if i /= d'left then
+        res(j to j+1) := ", ";
+        j := j + 2;
+      end if;
+      res(j to j + 8 / 4 + 2) := "x""" & to_hstring(d(i)) & """";
+      j := j + 8 / 4 + 3;
+    end loop;
+    res(j) := ')';
+    return res(1 to j);
+  end function;
+
+
+  function to_string(d : data16_array_t) return string is
+    variable res : string(1 to d'length * (16 / 4 + 5) + 2);
+    variable j : positive := 2;
+  begin
+    res(1) := '(';
+    for i in d'range loop
+      if i /= d'left then
+        res(j to j+1) := ", ";
+        j := j + 2;
+      end if;
+      res(j to j + 16 / 4 + 2) := "x""" & to_hstring(d(i)) & """";
+      j := j + 16 / 4 + 3;
+    end loop;
+    res(j) := ')';
+    return res(1 to j);
+  end function;
+
+
+  function to_string(d : data32_array_t) return string is
+    variable res : string(1 to d'length * (32 / 4 + 5) + 2);
+    variable j : positive := 2;
+  begin
+    res(1) := '(';
+    for i in d'range loop
+      if i /= d'left then
+        res(j to j+1) := ", ";
+        j := j + 2;
+      end if;
+      res(j to j + 32 / 4 + 2) := "x""" & to_hstring(d(i)) & """";
+      j := j + 32 / 4 + 3;
+    end loop;
+    res(j) := ')';
+    return res(1 to j);
+  end function;
+
+
+  function to_string(d : data64_array_t) return string is
+    variable res : string(1 to d'length * (64 / 4 + 5) + 2);
+    variable j : positive := 2;
+  begin
+    res(1) := '(';
+    for i in d'range loop
+      if i /= d'left then
+        res(j to j+1) := ", ";
+        j := j + 2;
+      end if;
+      res(j to j + 64 / 4 + 2) := "x""" & to_hstring(d(i)) & """";
+      j := j + 64 / 4 + 3;
+    end loop;
+    res(j) := ')';
+    return res(1 to j);
+  end function;
+
+
+  function to_string(d : data128_array_t) return string is
+    variable res : string(1 to d'length * (128 / 4 + 5) + 2);
+    variable j : positive := 2;
+  begin
+    res(1) := '(';
+    for i in d'range loop
+      if i /= d'left then
+        res(j to j+1) := ", ";
+        j := j + 2;
+      end if;
+      res(j to j + 128 / 4 + 2) := "x""" & to_hstring(d(i)) & """";
+      j := j + 128 / 4 + 3;
+    end loop;
+    res(j) := ')';
+    return res(1 to j);
+  end function;
+
+
+  function to_string(d : data256_array_t) return string is
+    variable res : string(1 to d'length * (256 / 4 + 5) + 2);
+    variable j : positive := 2;
+  begin
+    res(1) := '(';
+    for i in d'range loop
+      if i /= d'left then
+        res(j to j+1) := ", ";
+        j := j + 2;
+      end if;
+      res(j to j + 256 / 4 + 2) := "x""" & to_hstring(d(i)) & """";
+      j := j + 256 / 4 + 3;
+    end loop;
+    res(j) := ')';
+    return res(1 to j);
+  end function;
+
+
+  function to_string(d : data512_array_t) return string is
+    variable res : string(1 to d'length * (512 / 4 + 5) + 2);
+    variable j : positive := 2;
+  begin
+    res(1) := '(';
+    for i in d'range loop
+      if i /= d'left then
+        res(j to j+1) := ", ";
+        j := j + 2;
+      end if;
+      res(j to j + 512 / 4 + 2) := "x""" & to_hstring(d(i)) & """";
+      j := j + 512 / 4 + 3;
+    end loop;
+    res(j) := ')';
+    return res(1 to j);
+  end function;
+
+
+  function to_string(d : data1024_array_t) return string is
+    variable res : string(1 to d'length * (1024 / 4 + 5) + 2);
+    variable j : positive := 2;
+  begin
+    res(1) := '(';
+    for i in d'range loop
+      if i /= d'left then
+        res(j to j+1) := ", ";
+        j := j + 2;
+      end if;
+      res(j to j + 1024 / 4 + 2) := "x""" & to_hstring(d(i)) & """";
+      j := j + 1024 / 4 + 3;
+    end loop;
+    res(j) := ')';
+    return res(1 to j);
+  end function;
+
 
   --
   -- Array conversion functions
