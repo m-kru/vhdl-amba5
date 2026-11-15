@@ -21,9 +21,9 @@ library amba5_axi_stream;
 --
 -- The drop_event_o is asserted for one clock cycle each time a packet is dropped.
 -- To count the dropped packets simply count the clock cycles the drop_event was asserted.
-entity Packet_Dropper is
+entity packet_dropper is
   generic (
-    REPORT_PREFIX : string := "axi stream: packet dropper: "
+    REPORT_PREFIX : string := "axi_stream: packet_dropper: "
   );
   port (
     arstn_i : in  std_logic := '1';
@@ -41,7 +41,7 @@ entity Packet_Dropper is
 end entity;
 
 
-architecture rtl of Packet_Dropper is
+architecture rtl of packet_dropper is
 
   type state_t is (IDLE, DROPPING, FORWARDING);
   signal state : state_t := IDLE;

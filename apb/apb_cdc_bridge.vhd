@@ -54,11 +54,11 @@ library work;
 -- the reset signal. The external completer doesn't know it is connected to the CRC bridge.
 -- This is why its transaction data has to be stored in the requester logic.
 --
--- The entity has the 'APB' prefix in its name to ease scoping constraints to the module and
--- finding cells. The 'CDC_Bridge' name would be too generic.
-entity APB_CDC_Bridge is
+-- The entity has the 'apb' prefix in its name to ease scoping constraints to the module and
+-- finding cells. The 'cdc_bridge' name would be too generic.
+entity apb_cdc_bridge is
   generic (
-    REPORT_PREFIX : string := "apb: cdc: "
+    REPORT_PREFIX : string := "apb: cdc_bridge: "
   );
   port (
     -- Ports to external requester - the bridge is a completer
@@ -74,7 +74,7 @@ entity APB_CDC_Bridge is
   );
 end entity;
 
-architecture rtl of APB_CDC_Bridge is
+architecture rtl of apb_cdc_bridge is
 
   signal com_transfer_start, com_transfer_end, com_transfer_end_prev : std_logic;
   signal req_transfer_start, req_transfer_start_prev, req_transfer_end : std_logic;

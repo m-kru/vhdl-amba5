@@ -21,7 +21,7 @@ library work;
 -- to the clock edge. If not synchronized, the whole transaction is shorter by one clock
 -- cycle (lower latency). However, in case of multiple requesters and completers, there might
 -- be timing closure problems.
-entity Crossbar is
+entity crossbar is
   generic (
     REPORT_PREFIX   : string := "apb: crossbar: "; -- Prefix used in report messages
     REQUESTER_COUNT : positive := 1;
@@ -43,7 +43,7 @@ entity Crossbar is
 end entity;
 
 
-architecture rtl of Crossbar is
+architecture rtl of crossbar is
 
   -- Sanity checks
   constant zero_mask_fail          : string_t := masks_has_zero(MASKS);

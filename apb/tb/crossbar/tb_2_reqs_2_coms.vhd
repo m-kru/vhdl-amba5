@@ -178,7 +178,7 @@ completer : for i in com_range generate
 end generate;
 
 
-  DUT : entity amba5_apb.Crossbar
+  DUT : entity amba5_apb.crossbar
   generic map (
     REQUESTER_COUNT => REQ_COUNT,
     COMPLETER_COUNT => COM_COUNT,

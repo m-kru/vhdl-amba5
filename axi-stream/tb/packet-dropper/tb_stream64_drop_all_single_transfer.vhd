@@ -51,7 +51,7 @@ begin
 
 
 
-  DUT : entity amba5_axi_stream.Packet_Dropper
+  DUT : entity amba5_axi_stream.packet_dropper
   port map (
     arstn_i => arstn,
     clk_i   => clk,

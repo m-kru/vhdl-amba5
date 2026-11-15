@@ -9,7 +9,7 @@ namespace eval vhdl::amba5::axi-stream {
     proc src {} {
       hbs::AddDep vhdl::amba5::data::src
       hbs::SetLib "amba5_axi_stream"
-      hbs::AddFile axi-stream.vhd
+      hbs::AddFile axi_stream.vhd
     }
 
     proc _tb {top} {
@@ -23,24 +23,24 @@ namespace eval vhdl::amba5::axi-stream {
     }
 
     # Testbench for interface errors functions.
-    proc tb-errors-functions {} {
+    proc tb_errors_functions {} {
       _tb "tb_errors_functions"
       hbs::SetExitSeverity "failure"
-      hbs::AddFile tb/tb-errors-functions.vhd
+      hbs::AddFile tb/tb_errors_functions.vhd
       hbs::Run
     }
 
     # Testbench for interface warnings functions.
-    proc tb-warnings-functions {} {
+    proc tb_warnings_functions {} {
       _tb "tb_warnings_functions"
-      hbs::AddFile tb/tb-warnings-functions.vhd
+      hbs::AddFile tb/tb_warnings_functions.vhd
       hbs::Run
     }
 
     # Testbench for to_debug functions.
-    proc tb-stream-to-debug {} {
+    proc tb_stream_to_debug {} {
       _tb "tb_stream_to_debug"
-      hbs::AddFile tb/tb-stream-to_debug.vhd
+      hbs::AddFile tb/tb_stream_to_debug.vhd
       hbs::Run
     }
 
@@ -69,17 +69,17 @@ It detects erroneous and unrecommended scenarios on the interface."
     }
 
     # Testbench for errors detection logic.
-    proc tb-detect-errors {} {
+    proc tb_detect_errors {} {
       _tb "tb_detect_errors"
-      hbs::AddFile tb/checker/tb-detect-errors.vhd
+      hbs::AddFile tb/checker/tb_detect_errors.vhd
       hbs::SetExitSeverity "failure"
       hbs::Run
     }
 
     # Testbench for warnings detection logic.
-    proc tb-detect-warnings {} {
+    proc tb_detect_warnings {} {
       _tb "tb_detect_warnings"
-      hbs::AddFile tb/checker/tb-detect-warnings.vhd
+      hbs::AddFile tb/checker/tb_detect_warnings.vhd
       hbs::Run
     }
 
@@ -110,9 +110,9 @@ It is useful only for simulations."
       hbs::SetLib ""
     }
 
-    proc tb-stream8-transmit {} {
+    proc tb_stream8_transmit {} {
       _tb "tb_stream8_transmit"
-      hbs::AddFile tb/bfm/tb-stream8-transmit.vhd
+      hbs::AddFile tb/bfm/tb_stream8_transmit.vhd
       hbs::Run
     }
 
@@ -127,7 +127,7 @@ It is useful only for simulations."
       hbs::AddDep vhdl::amba5::string::src
       hbs::AddDep vhdl::amba5::axi-stream::pkg::src
       hbs::SetLib "amba5_axi_stream"
-      hbs::AddFile buffer-receiver.vhd
+      hbs::AddFile buffer_receiver.vhd
     }
 
     proc _tb {top} {
@@ -152,14 +152,14 @@ It is useful only for simulations."
     hbs::Register $doc
   }
 
-  namespace eval packet-dropper {
+  namespace eval packet_dropper {
     set doc "ToDo"
 
     proc src {} {
       hbs::AddDep vhdl::amba5::string::src
       hbs::AddDep vhdl::amba5::axi-stream::pkg::src
       hbs::SetLib "amba5_axi_stream"
-      hbs::AddFile packet-dropper.vhd
+      hbs::AddFile packet_dropper.vhd
     }
 
     proc _tb {top} {
@@ -175,57 +175,57 @@ It is useful only for simulations."
       hbs::SetLib ""
     }
 
-    proc tb-stream8-basic-back-pressure-and-drop {} {
+    proc tb_stream8_basic_back_pressure_and_drop {} {
       _tb "tb_stream8_basic_back_pressure_and_drop"
-      hbs::AddFile tb/packet-dropper/tb-stream8-basic-back-pressure-and-drop.vhd
+      hbs::AddFile tb/packet-dropper/tb_stream8_basic_back_pressure_and_drop.vhd
       hbs::Run
     }
 
-    proc tb-stream8-transmitter-not-always-valid {} {
+    proc tb_stream8_transmitter_not_always_valid {} {
       _tb "tb_stream8_transmitter_not_always_valid"
-      hbs::AddFile tb/packet-dropper/tb-stream8-transmitter-not-always-valid.vhd
+      hbs::AddFile tb/packet-dropper/tb_stream8_transmitter_not_always_valid.vhd
       hbs::Run
     }
 
-    proc tb-stream8-id-dest {} {
+    proc tb_stream8_id_dest {} {
       _tb "tb_stream8_id_dest"
-      hbs::AddFile tb/packet-dropper/tb-stream8-id-dest.vhd
+      hbs::AddFile tb/packet-dropper/tb_stream8_id_dest.vhd
       hbs::Run
     }
 
-    proc tb-stream8-receiver-ready-after-valid {} {
+    proc tb_stream8_receiver_ready_after_valid {} {
       _tb "tb_stream8_receiver_ready_after_valid"
-      hbs::AddFile tb/packet-dropper/tb-stream8-receiver-ready-after-valid.vhd
+      hbs::AddFile tb/packet-dropper/tb_stream8_receiver_ready_after_valid.vhd
       hbs::Run
     }
 
-    proc tb-stream16-no-back-pressure-no-drop {} {
+    proc tb_stream16_no_back_pressure_no_drop {} {
       _tb "tb_stream16_no_back_pressure_no_drop"
-      hbs::AddFile tb/packet-dropper/tb-stream16-no-back-pressure-no-drop.vhd
+      hbs::AddFile tb/packet-dropper/tb_stream16_no_back_pressure_no_drop.vhd
       hbs::Run
     }
 
-    proc tb-stream32-drop-every-other {} {
+    proc tb_stream32_drop_every_other {} {
       _tb "tb_stream32_drop_every_other"
-      hbs::AddFile tb/packet-dropper/tb-stream32-drop-every-other.vhd
+      hbs::AddFile tb/packet-dropper/tb_stream32_drop_every_other.vhd
       hbs::Run
     }
 
-    proc tb-stream64-drop-all-single-transfer {} {
+    proc tb_stream64_drop_all_single_transfer {} {
       _tb "tb_stream64_drop_all_single_transfer"
-      hbs::AddFile tb/packet-dropper/tb-stream64-drop-all-single-transfer.vhd
+      hbs::AddFile tb/packet-dropper/tb_stream64_drop_all_single_transfer.vhd
       hbs::Run
     }
 
-    proc tb-stream128-all-single-transfer-drop-one {} {
+    proc tb_stream128_all_single_transfer_drop_one {} {
       _tb "tb_stream128_all_single_transfer_drop_one"
-      hbs::AddFile tb/packet-dropper/tb-stream128-all-single-transfer-drop-one.vhd
+      hbs::AddFile tb/packet-dropper/tb_stream128_all_single_transfer_drop_one.vhd
       hbs::Run
     }
 
-    proc tb-stream256-all-single-transfer-forward-one {} {
+    proc tb_stream256_all_single_transfer_forward_one {} {
       _tb "tb_stream256_all_single_transfer_forward_one"
-      hbs::AddFile tb/packet-dropper/tb-stream256-all-single-transfer-forward-one.vhd
+      hbs::AddFile tb/packet-dropper/tb_stream256_all_single_transfer_forward_one.vhd
       hbs::Run
     }
 

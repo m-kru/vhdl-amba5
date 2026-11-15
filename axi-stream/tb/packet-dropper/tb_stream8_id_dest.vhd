@@ -43,7 +43,7 @@ begin
   clk <= not clk after CLK_PERIOD / 2;
 
 
-  DUT : entity amba5_axi_stream.Packet_Dropper
+  DUT : entity amba5_axi_stream.packet_dropper
   port map (
     clk_i => clk,
 

@@ -209,7 +209,7 @@ package serial_bridge is
 
   -- Initializes serial bridge with elements set to given values.
   function init (
-    REPORT_PREFIX   : string := "apb: serial bridge: ";
+    REPORT_PREFIX   : string := "apb: serial_bridge: ";
     ADDR_BYTE_COUNT : positive range 1 to 4 := 1;
     ibyte_ready     : std_logic := '0';
     obyte_valid     : std_logic := '0';
@@ -263,7 +263,7 @@ package body serial_bridge is
 
 
   function init (
-    REPORT_PREFIX   : string := "apb: serial bridge: ";
+    REPORT_PREFIX   : string := "apb: serial_bridge: ";
     ADDR_BYTE_COUNT : positive range 1 to 4 := 1;
     ibyte_ready     : std_logic := '0';
     obyte_valid     : std_logic := '0';

@@ -38,7 +38,7 @@ package mock_completer is
   -- The init function initializes mock_completer_t.
   -- The base address (ADDR) must be byte-aligned.
   function init (
-    memory_size : natural; REPORT_PREFIX : string := "apb: mock completer: "; ADDR : natural := 0
+    memory_size : natural; REPORT_PREFIX : string := "apb: mock_completer: "; ADDR : natural := 0
   ) return mock_completer_t;
 
   -- The reset function resets the mock Completer.
@@ -60,7 +60,7 @@ package body mock_completer is
 
   function init (
     memory_size   : natural;
-    REPORT_PREFIX : string := "apb: mock completer: ";
+    REPORT_PREFIX : string := "apb: mock_completer: ";
     ADDR : natural := 0
   ) return mock_completer_t is
     variable mc : mock_completer_t(memory(0 to memory_size - 1));

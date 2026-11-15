@@ -96,7 +96,7 @@ begin
   end process;
 
 
-  DUT : entity amba5_apb.Shared_Bus
+  DUT : entity amba5_apb.shared_bus
   generic map (
     REQUESTER_COUNT => 2,
     ADDRS => (0 => "00000000000000000000000000000000"),

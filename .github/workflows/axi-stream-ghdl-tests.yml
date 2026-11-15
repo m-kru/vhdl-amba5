@@ -24,4 +24,4 @@ jobs:
         run: |
           export HBS_TOOL=ghdl
           export HBS_BUILD_DIR=build-axi-stream-ghdl
-          ./hbs test axi-stream
+          ./hbs test axi_stream

@@ -29,13 +29,13 @@ package bfm is
   end record;
 
   constant DEFAULT_CONFIG : config_t := (
-    REPORT_PREFIX  => make("axi stream: bfm: "),
+    REPORT_PREFIX  => make("axi_stream: bfm: "),
     timeout => 100 ns,
     timeout_severity => error
   );
 
   function init (
-    REPORT_PREFIX : string := "apb: bfm: ";
+    REPORT_PREFIX : string := "axi_stream: bfm: ";
     timeout : time   := 100 ns;
     timeout_severity : severity_level := error
   ) return config_t;
@@ -189,7 +189,7 @@ end package;
 package body bfm is
 
   function init (
-    REPORT_PREFIX : string := "apb: bfm: ";
+    REPORT_PREFIX : string := "axi_stream: bfm: ";
     timeout : time   := 100 ns;
     timeout_severity : severity_level := error
   ) return config_t is

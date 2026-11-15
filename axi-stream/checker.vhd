@@ -36,7 +36,7 @@ package checker is
   alias checker_vector_t is checker_array_t;
 
   -- Initializes checker_t with the REPORT_PREFIX set to given value.
-  function init (REPORT_PREFIX : string := "axi stream: checker: ") return checker_t;
+  function init (REPORT_PREFIX : string := "axi_stream: checker: ") return checker_t;
 
   -- Resets the checker. It enforces clear of errors and warnings and resets the checker state.
   function reset (checker : checker_t) return checker_t;
@@ -112,7 +112,7 @@ end package;
 
 package body checker is
 
-  function init (REPORT_PREFIX : string := "axi stream: checker: ") return checker_t is
+  function init (REPORT_PREFIX : string := "axi_stream: checker: ") return checker_t is
     variable ck : checker_t;
   begin
     ck.REPORT_PREFIX := make(REPORT_PREFIX);

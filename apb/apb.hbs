@@ -23,16 +23,16 @@ namespace eval vhdl::amba5::apb {
     }
 
     # Testbench for protection_t functions.
-    proc tb-prot-funcs {} {
+    proc tb_prot_funcs {} {
       _tb "tb_prot_funcs"
-      hbs::AddFile tb/tb-prot-funcs.vhd
+      hbs::AddFile tb/tb_prot_funcs.vhd
       hbs::Run
     }
 
     # Testbench for various util functions.
-    proc tb-util-funcs {} {
+    proc tb_util_funcs {} {
       _tb "tb_util_funcs"
-      hbs::AddFile tb/tb-util-funcs.vhd
+      hbs::AddFile tb/tb_util_funcs.vhd
       hbs::Run
     }
 
@@ -61,24 +61,24 @@ It detects erroneous and unrecommended scenarios on the interface."
     }
 
     # Testbench for warnings detection logic.
-    proc tb-detect-warnings {} {
+    proc tb_detect_warnings {} {
       _tb "tb_detect_warnings"
-      hbs::AddFile tb/checker/tb-detect-warnings.vhd
+      hbs::AddFile tb/checker/tb_detect_warnings.vhd
       hbs::Run
     }
 
     # Testbench for errors detection logic.
-    proc tb-detect-errors {} {
+    proc tb_detect_errors {} {
       _tb "tb_detect_errors"
-      hbs::AddFile tb/checker/tb-detect-errors.vhd
+      hbs::AddFile tb/checker/tb_detect_errors.vhd
       hbs::SetExitSeverity "failure"
       hbs::Run
     }
 
     # Testbench checking that no warnings or errors are issued during correct transaction.
-    proc tb-correct-transaction {} {
+    proc tb_correct_transaction {} {
       _tb "tb_correct_transaction"
-      hbs::AddFile tb/checker/tb-correct-transaction.vhd
+      hbs::AddFile tb/checker/tb_correct_transaction.vhd
       hbs::SetExitSeverity "warning"
       hbs::Run
     }
@@ -110,27 +110,27 @@ It is useful only for simulations."
       hbs::SetLib ""
     }
 
-    proc tb-write {} {
+    proc tb_write {} {
       _tb "tb_write"
-      hbs::AddFile tb/bfm/tb-write.vhd
+      hbs::AddFile tb/bfm/tb_write.vhd
       hbs::Run
     }
 
-    proc tb-read {} {
+    proc tb_read {} {
       _tb "tb_read"
-      hbs::AddFile tb/bfm/tb-read.vhd
+      hbs::AddFile tb/bfm/tb_read.vhd
       hbs::Run
     }
 
-    proc tb-writeb {} {
+    proc tb_writeb {} {
       _tb "tb_writeb"
-      hbs::AddFile tb/bfm/tb-writeb.vhd
+      hbs::AddFile tb/bfm/tb_writeb.vhd
       hbs::Run
     }
 
-    proc tb-readb {} {
+    proc tb_readb {} {
       _tb "tb_readb"
-      hbs::AddFile tb/bfm/tb-readb.vhd
+      hbs::AddFile tb/bfm/tb_readb.vhd
       hbs::Run
     }
 
@@ -151,7 +151,7 @@ It is useful only for simulations."
       hbs::SetTool "nvc"
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::AddDep vhdl::amba5::apb::bfm::src
-      hbs::AddDep vhdl::amba5::apb::mock-completer::src
+      hbs::AddDep vhdl::amba5::apb::mock_completer::src
       if {$hbs::Tool eq "nvc"} {
         hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
         hbs::AddPreSimCb hbs::SetArgSuffix "--dump-arrays"
@@ -163,21 +163,21 @@ It is useful only for simulations."
 
     # Making an equivalent testbench with asynchronous address decoding makes
     # no sense as all requesters address the same completer all the time.
-    proc tb-3-reqs-1-com {} {
+    proc tb_3_reqs_1_com {} {
       _tb "tb_3_reqs_1_com"
-      hbs::AddFile tb/crossbar/tb-3-reqs-1-com.vhd
+      hbs::AddFile tb/crossbar/tb_3_reqs_1_com.vhd
       hbs::Run
     }
 
-    proc tb-2-reqs-2-coms-sync-addr-decoding {} {
+    proc tb_2_reqs_2_coms_sync_addr_decoding {} {
       _tb "tb_2_reqs_2_coms"
-      hbs::AddFile tb/crossbar/tb-2-reqs-2-coms.vhd
+      hbs::AddFile tb/crossbar/tb_2_reqs_2_coms.vhd
       hbs::Run
     }
 
-    proc tb-2-reqs-2-coms-async-addr-decoding {} {
+    proc tb_2_reqs_2_coms_async_addr_decoding {} {
       _tb "tb_2_reqs_2_coms"
-      hbs::AddFile tb/crossbar/tb-2-reqs-2-coms.vhd
+      hbs::AddFile tb/crossbar/tb_2_reqs_2_coms.vhd
       hbs::SetGeneric SYNC_ADDR_DECODING "false"
       hbs::Run
     }
@@ -185,7 +185,7 @@ It is useful only for simulations."
     hbs::Register $doc
   }
 
-  namespace eval shared-bus {
+  namespace eval shared_bus {
     set doc "A shared bus interconnect.
 At any time at most only one requester can be connected to one completer."
 
@@ -193,14 +193,14 @@ At any time at most only one requester can be connected to one completer."
       hbs::AddDep vhdl::amba5::string::src
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "amba5_apb"
-      hbs::AddFile shared-bus.vhd
+      hbs::AddFile shared_bus.vhd
     }
 
     proc _tb {top} {
       hbs::SetTool "nvc"
       hbs::AddDep vhdl::amba5::apb::checker::src
       hbs::AddDep vhdl::amba5::apb::bfm::src
-      hbs::AddDep vhdl::amba5::apb::mock-completer::src
+      hbs::AddDep vhdl::amba5::apb::mock_completer::src
       if {$hbs::Tool eq "nvc"} {
         hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
         hbs::AddPreSimCb hbs::SetArgSuffix "--dump-arrays"
@@ -210,28 +210,28 @@ At any time at most only one requester can be connected to one completer."
       hbs::SetLib ""
     }
 
-    proc tb-2-reqs-1-com-sync-addr-decoding {} {
+    proc tb_2_reqs_1_com_sync_addr_decoding {} {
       _tb "tb_2_reqs_1_com"
-      hbs::AddFile tb/shared-bus/tb-2-reqs-1-com.vhd
+      hbs::AddFile tb/shared-bus/tb_2_reqs_1_com.vhd
       hbs::Run
     }
 
-    proc tb-2-reqs-1-com-async-addr-decoding {} {
+    proc tb_2_reqs_1_com_async_addr_decoding {} {
       _tb "tb_2_reqs_1_com"
-      hbs::AddFile tb/shared-bus/tb-2-reqs-1-com.vhd
+      hbs::AddFile tb/shared-bus/tb_2_reqs_1_com.vhd
       hbs::SetGeneric SYNC_ADDR_DECODING "false"
       hbs::Run
     }
 
-    proc tb-1-req-2-coms-sync-addr-decoding {} {
+    proc tb_1_req_2_coms_sync_addr_decoding {} {
       _tb "tb_1_req_2_coms"
-      hbs::AddFile tb/shared-bus/tb-1-req-2-coms.vhd
+      hbs::AddFile tb/shared-bus/tb_1_req_2_coms.vhd
       hbs::Run
     }
 
-    proc tb-1-req-2-coms-async-addr-decoding {} {
+    proc tb_1_req_2_coms_async_addr_decoding {} {
       _tb "tb_1_req_2_coms"
-      hbs::AddFile tb/shared-bus/tb-1-req-2-coms.vhd
+      hbs::AddFile tb/shared-bus/tb_1_req_2_coms.vhd
       hbs::SetGeneric SYNC_ADDR_DECODING "false"
       hbs::Run
     }
@@ -239,7 +239,7 @@ At any time at most only one requester can be connected to one completer."
     hbs::Register $doc
   }
 
-  namespace eval mock-completer {
+  namespace eval mock_completer {
     set doc "Simple memory Completer that is always ready.
 Used internally for testbenches."
 
@@ -248,7 +248,7 @@ Used internally for testbenches."
       hbs::AddDep vhdl::amba5::string::src
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "amba5_apb"
-      hbs::AddFile mock-completer.vhd
+      hbs::AddFile mock_completer.vhd
     }
 
     proc tb {} {
@@ -270,20 +270,20 @@ Used internally for testbenches."
     hbs::Register $doc
   }
 
-  namespace eval serial-bridge {
+  namespace eval serial_bridge {
     set doc "Bridge capable of converting stream of bytes into APB transactions."
 
     proc src {} {
       hbs::AddDep vhdl::amba5::string::src
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "amba5_apb"
-      hbs::AddFile serial-bridge.vhd
+      hbs::AddFile serial_bridge.vhd
     }
 
     proc _tb {top} {
       hbs::SetTool "nvc"
       hbs::AddDep vhdl::amba5::apb::checker::src
-      hbs::AddDep vhdl::amba5::apb::mock-completer::src
+      hbs::AddDep vhdl::amba5::apb::mock_completer::src
       if {$hbs::Tool eq "nvc"} {
         hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
         hbs::AddPreSimCb hbs::SetArgSuffix "--dump-arrays"
@@ -293,22 +293,22 @@ Used internally for testbenches."
       hbs::SetLib ""
     }
 
-    proc tb-read {} {
+    proc tb_read {} {
       _tb "tb_read"
-      hbs::AddFile tb/serial-bridge/tb-read.vhd
+      hbs::AddFile tb/serial-bridge/tb_read.vhd
       hbs::Run
     }
 
-    proc tb-write {} {
+    proc tb_write {} {
       _tb "tb_write"
-      hbs::AddFile tb/serial-bridge/tb-write.vhd
+      hbs::AddFile tb/serial-bridge/tb_write.vhd
       hbs::Run
     }
 
     hbs::Register $doc
   }
 
-  namespace eval cdc-bridge {
+  namespace eval cdc_bridge {
     set doc "A clock domain corssing bridge.
 The bridge is capable of connecting arbitrary clock domains."
 
@@ -316,7 +316,7 @@ The bridge is capable of connecting arbitrary clock domains."
     proc src {args} {
       hbs::AddDep vhdl::amba5::apb::pkg::src
       hbs::SetLib "amba5_apb"
-      hbs::AddFile cdc-bridge.vhd
+      hbs::AddFile apb_cdc_bridge.vhd
 
       set argCount [llength $args]
       if {$argCount == 1} {
@@ -332,7 +332,7 @@ The bridge is capable of connecting arbitrary clock domains."
 
       if {$hbs::Tool eq "vivado-prj"} {
         hbs::AddFile vivado/apb-cdc-bridge-ref.xdc
-        set_property SCOPED_TO_REF APB_CDC_Bridge [get_files apb-cdc-bridge-ref.xdc]
+        set_property SCOPED_TO_REF apb_cdc_bridge [get_files apb-cdc-bridge-ref.xdc]
         hbs::AddFile vivado/apb-cdc-bridge-cell.tcl
         set_property USED_IN_SYNTHESIS false [get_files apb-cdc-bridge-cell.tcl]
       } else {
@@ -345,7 +345,7 @@ The bridge is capable of connecting arbitrary clock domains."
       hbs::AddDep vhdl::amba5::data::src
       hbs::AddDep vhdl::amba5::apb::bfm::src
       hbs::AddDep vhdl::amba5::apb::checker::src
-      hbs::AddDep vhdl::amba5::apb::mock-completer::src
+      hbs::AddDep vhdl::amba5::apb::mock_completer::src
       if {$hbs::Tool eq "nvc"} {
         hbs::AddPreSimCb hbs::SetArgPrefix "--messages=compact"
         hbs::AddPreSimCb hbs::SetArgSuffix "--dump-arrays"
@@ -356,28 +356,28 @@ The bridge is capable of connecting arbitrary clock domains."
       hbs::AddFile tb/cdc-bridge/tb.vhd
     }
 
-    proc tb-to-faster {} {
+    proc tb_to_faster {} {
       _tb
       hbs::SetGeneric REQ_CLK_PERIOD 10
       hbs::SetGeneric COM_CLK_PERIOD 3
       hbs::Run
     }
 
-    proc tb-to-slower {} {
+    proc tb_to_slower {} {
       _tb
       hbs::SetGeneric REQ_CLK_PERIOD 5
       hbs::SetGeneric COM_CLK_PERIOD 12
       hbs::Run
     }
 
-    proc tb-similar-faster {} {
+    proc tb_similar_faster {} {
       _tb
       hbs::SetGeneric REQ_CLK_PERIOD 23
       hbs::SetGeneric COM_CLK_PERIOD 22
       hbs::Run
     }
 
-    proc tb-similar-slower {} {
+    proc tb_similar_slower {} {
       _tb
       hbs::SetGeneric REQ_CLK_PERIOD 22
       hbs::SetGeneric COM_CLK_PERIOD 23

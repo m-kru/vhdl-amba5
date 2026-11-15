@@ -22,9 +22,9 @@ library work;
 -- to the clock edge. If not synchronized, the whole transaction is shorter by one clock
 -- cycle (lower latency). However, in case of multiple requesters and completers, there might
 -- be timing closure problems.
-entity Shared_Bus is
+entity shared_bus is
   generic (
-    REPORT_PREFIX   : string := "apb: shared bus: ";
+    REPORT_PREFIX   : string := "apb: shared_bus: ";
     REQUESTER_COUNT : positive := 1;
     COMPLETER_COUNT : positive := 1;
     ADDRS : addr_array_t(0 to COMPLETER_COUNT - 1); -- Completer addresses
@@ -44,7 +44,7 @@ entity Shared_Bus is
 end entity;
 
 
-architecture rtl of Shared_Bus is
+architecture rtl of shared_bus is
 
   -- Sanity checks
   constant zero_mask_fail          : string_t := masks_has_zero(MASKS);

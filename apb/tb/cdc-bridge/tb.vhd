@@ -49,7 +49,7 @@ begin
   clk_com <= not clk_com after CLK_FAST_PERIOD / 2;
 
 
-  DUT : entity amba5_apb.APB_CDC_Bridge
+  DUT : entity amba5_apb.apb_cdc_bridge
   port map (
     com_arstn_i => arstn,
     com_clk_i   => clk_req,

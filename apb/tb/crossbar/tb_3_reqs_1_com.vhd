@@ -166,7 +166,7 @@ end generate;
   end process;
 
 
-  DUT : entity amba5_apb.Crossbar
+  DUT : entity amba5_apb.crossbar
   generic map (
     REQUESTER_COUNT => REQ_COUNT,
     ADDRS => (0 => "00000000000000000000000000000000"),
