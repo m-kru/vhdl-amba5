@@ -262,6 +262,20 @@ package axi_stream is
   ) return stream1024_t;
 
 
+  --
+  -- Returns true when both valid and last are asserted.
+  --
+
+  function is_last (strm : stream8_t)    return boolean;
+  function is_last (strm : stream16_t)   return boolean;
+  function is_last (strm : stream32_t)   return boolean;
+  function is_last (strm : stream64_t)   return boolean;
+  function is_last (strm : stream128_t)  return boolean;
+  function is_last (strm : stream256_t)  return boolean;
+  function is_last (strm : stream512_t)  return boolean;
+  function is_last (strm : stream1024_t) return boolean;
+
+
   -- Stream byte data type determined by the keep and strb values.
   -- - DATA:     keep = '1' and strb = '1',
   -- - POSITION: keep = '1' and strb = '0',
@@ -377,6 +391,58 @@ end package;
 
 
 package body axi_stream is
+
+  --
+  -- is_last functions
+  --
+
+  function is_last (strm : stream8_t) return boolean is
+  begin
+    return strm.valid = '1' and strm.last = '1';
+  end function;
+
+
+  function is_last (strm : stream16_t) return boolean is
+  begin
+    return strm.valid = '1' and strm.last = '1';
+  end function;
+
+
+  function is_last (strm : stream32_t) return boolean is
+  begin
+    return strm.valid = '1' and strm.last = '1';
+  end function;
+
+
+  function is_last (strm : stream64_t) return boolean is
+  begin
+    return strm.valid = '1' and strm.last = '1';
+  end function;
+
+
+  function is_last (strm : stream128_t) return boolean is
+  begin
+    return strm.valid = '1' and strm.last = '1';
+  end function;
+
+
+  function is_last (strm : stream256_t) return boolean is
+  begin
+    return strm.valid = '1' and strm.last = '1';
+  end function;
+
+
+  function is_last (strm : stream512_t) return boolean is
+  begin
+    return strm.valid = '1' and strm.last = '1';
+  end function;
+
+
+  function is_last (strm : stream1024_t) return boolean is
+  begin
+    return strm.valid = '1' and strm.last = '1';
+  end function;
+
 
   --
   -- byte_type functions
