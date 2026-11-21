@@ -239,9 +239,9 @@ package axi_stream is
   -- Stream type with data width of 1024 bits.
   type stream1024_t is record
     data   : data1024_t;
-    strb   : std_logic_vector(127  downto 0);
-    keep   : std_logic_vector(127  downto 0);
-    user   : std_logic_vector(127  downto 0);
+    strb   : std_logic_vector(127 downto 0);
+    keep   : std_logic_vector(127 downto 0);
+    user   : std_logic_vector(127 downto 0);
     valid  : std_logic;
     last   : std_logic;
     wakeup : std_logic;
@@ -251,9 +251,9 @@ package axi_stream is
 
   function init (
     data   : data1024_t := (others => '0');
-    strb   : std_logic_vector(127  downto 0) := (others => '1');
-    keep   : std_logic_vector(127  downto 0) := (others => '1');
-    user   : std_logic_vector(127  downto 0) := (others => '-');
+    strb   : std_logic_vector(127 downto 0) := (others => '1');
+    keep   : std_logic_vector(127 downto 0) := (others => '1');
+    user   : std_logic_vector(127 downto 0) := (others => '-');
     valid  : std_logic := '0';
     last   : std_logic := '0';
     wakeup : std_logic := '1';
@@ -306,16 +306,16 @@ package axi_stream is
   function to_stream8 (strm : stream32_t)   return stream8_t;
   function to_stream8 (strm : stream64_t)   return stream8_t;
   function to_stream8 (strm : stream128_t)  return stream8_t;
-  function to_stream8 (strm : stream512_t)  return stream8_t;
   function to_stream8 (strm : stream256_t)  return stream8_t;
+  function to_stream8 (strm : stream512_t)  return stream8_t;
   function to_stream8 (strm : stream1024_t) return stream8_t;
 
   function to_stream16 (strm : stream8_t)    return stream16_t;
   function to_stream16 (strm : stream32_t)   return stream16_t;
   function to_stream16 (strm : stream64_t)   return stream16_t;
   function to_stream16 (strm : stream128_t)  return stream16_t;
-  function to_stream16 (strm : stream512_t)  return stream16_t;
   function to_stream16 (strm : stream256_t)  return stream16_t;
+  function to_stream16 (strm : stream512_t)  return stream16_t;
   function to_stream16 (strm : stream1024_t) return stream16_t;
 
   function to_stream32 (strm : stream8_t)    return stream32_t;
@@ -368,7 +368,7 @@ package axi_stream is
   function to_stream1024 (strm : stream512_t) return stream1024_t;
 
   --
-  -- Functions for converting sterams for pretty printing.
+  -- Functions for converting streams for pretty printing.
   --
 
   function data_to_hstring (
@@ -1698,9 +1698,9 @@ package body axi_stream is
 
   function init (
     data   : data1024_t := (others => '0');
-    strb   : std_logic_vector(127  downto 0) := (others => '1');
-    keep   : std_logic_vector(127  downto 0) := (others => '1');
-    user   : std_logic_vector(127  downto 0) := (others => '-');
+    strb   : std_logic_vector(127 downto 0) := (others => '1');
+    keep   : std_logic_vector(127 downto 0) := (others => '1');
+    user   : std_logic_vector(127 downto 0) := (others => '-');
     valid  : std_logic := '0';
     last   : std_logic := '0';
     wakeup : std_logic := '1';
