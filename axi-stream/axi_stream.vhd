@@ -775,8 +775,8 @@ package body axi_stream is
   function to_stream16 (strm : stream8_t) return stream16_t is
     variable s16 : stream16_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -919,8 +919,8 @@ package body axi_stream is
   function to_stream32 (strm : stream8_t) return stream32_t is
     variable s32 : stream32_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -941,8 +941,8 @@ package body axi_stream is
   function to_stream32 (strm : stream16_t) return stream32_t is
     variable s32 : stream32_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1068,8 +1068,8 @@ package body axi_stream is
   function to_stream64 (strm : stream8_t) return stream64_t is
     variable s64 : stream64_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1090,8 +1090,8 @@ package body axi_stream is
   function to_stream64 (strm : stream16_t) return stream64_t is
     variable s64 : stream64_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1112,8 +1112,8 @@ package body axi_stream is
   function to_stream64 (strm : stream32_t) return stream64_t is
     variable s64 : stream64_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1222,8 +1222,8 @@ package body axi_stream is
   function to_stream128 (strm : stream8_t) return stream128_t is
     variable s128 : stream128_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1244,8 +1244,8 @@ package body axi_stream is
   function to_stream128 (strm : stream16_t) return stream128_t is
     variable s128 : stream128_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1266,8 +1266,8 @@ package body axi_stream is
   function to_stream128 (strm : stream32_t) return stream128_t is
     variable s128 : stream128_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1288,8 +1288,8 @@ package body axi_stream is
   function to_stream128 (strm : stream64_t) return stream128_t is
     variable s128 : stream128_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1381,8 +1381,8 @@ package body axi_stream is
   function to_stream256 (strm : stream8_t) return stream256_t is
     variable s256 : stream256_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1403,8 +1403,8 @@ package body axi_stream is
   function to_stream256 (strm : stream16_t) return stream256_t is
     variable s256 : stream256_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1425,8 +1425,8 @@ package body axi_stream is
   function to_stream256 (strm : stream32_t) return stream256_t is
     variable s256 : stream256_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1447,8 +1447,8 @@ package body axi_stream is
   function to_stream256 (strm : stream64_t) return stream256_t is
     variable s256 : stream256_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1469,8 +1469,8 @@ package body axi_stream is
   function to_stream256 (strm : stream128_t) return stream256_t is
     variable s256 : stream256_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1546,8 +1546,8 @@ package body axi_stream is
   function to_stream512 (strm : stream8_t) return stream512_t is
     variable s512 : stream512_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1568,8 +1568,8 @@ package body axi_stream is
   function to_stream512 (strm : stream16_t) return stream512_t is
     variable s512 : stream512_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1590,8 +1590,8 @@ package body axi_stream is
   function to_stream512 (strm : stream32_t) return stream512_t is
     variable s512 : stream512_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1612,8 +1612,8 @@ package body axi_stream is
   function to_stream512 (strm : stream64_t) return stream512_t is
     variable s512 : stream512_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1634,8 +1634,8 @@ package body axi_stream is
   function to_stream512 (strm : stream128_t) return stream512_t is
     variable s512 : stream512_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1656,8 +1656,8 @@ package body axi_stream is
   function to_stream512 (strm : stream256_t) return stream512_t is
     variable s512 : stream512_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1716,8 +1716,8 @@ package body axi_stream is
   function to_stream1024 (strm : stream8_t) return stream1024_t is
     variable s1024 : stream1024_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1738,8 +1738,8 @@ package body axi_stream is
   function to_stream1024 (strm : stream16_t) return stream1024_t is
     variable s1024 : stream1024_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1760,8 +1760,8 @@ package body axi_stream is
   function to_stream1024 (strm : stream32_t) return stream1024_t is
     variable s1024 : stream1024_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1782,8 +1782,8 @@ package body axi_stream is
   function to_stream1024 (strm : stream64_t) return stream1024_t is
     variable s1024 : stream1024_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1804,8 +1804,8 @@ package body axi_stream is
   function to_stream1024 (strm : stream128_t) return stream1024_t is
     variable s1024 : stream1024_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1826,8 +1826,8 @@ package body axi_stream is
   function to_stream1024 (strm : stream512_t) return stream1024_t is
     variable s1024 : stream1024_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
@@ -1848,8 +1848,8 @@ package body axi_stream is
   function to_stream1024 (strm : stream256_t) return stream1024_t is
     variable s1024 : stream1024_t := init(
       data => (others => '-'),
-      strb => (others => '-'),
-      keep => (others => '-'),
+      strb => (others => '0'),
+      keep => (others => '0'),
       user => (others => '-')
     );
   begin
